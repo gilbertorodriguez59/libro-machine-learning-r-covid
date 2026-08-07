@@ -13,8 +13,6 @@ project:
 lang: es
 bibliography: referencias.bib
 
-# Declaraciones explícitas para evitar que la extensión Shinylive
-# interprete incorrectamente el documento como autocontenido.
 embed-resources: false
 self-contained: false
 
@@ -31,6 +29,7 @@ book:
   subtitle: "Un enfoque práctico con datos abiertos reales"
   author: "Jesús Gilberto Rodríguez Escobedo"
   date: today
+  output-file: "Aprendizaje-y-Clasificacion-Automatica-con-R"
   downloads: [pdf]
   chapters:
     - index.qmd
