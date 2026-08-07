@@ -1,5 +1,9 @@
-# Perfil PDF profesional.
-# Uso: quarto render --profile pdf --to pdf
+# Perfil PDF profesional estable.
+# Uso: quarto render --profile pdf --to pdf --no-cache
+
+# Shinylive se desactiva en PDF. Los laboratorios interactivos permanecen
+# disponibles en la edición web.
+filters: []
 
 execute:
   echo: true
@@ -23,6 +27,7 @@ format:
     toc: true
     lof: true
     number-sections: true
+    keep-tex: false
     include-in-header:
       - latex/configuracion-pdf.tex
       - latex/portada-pdf.tex
