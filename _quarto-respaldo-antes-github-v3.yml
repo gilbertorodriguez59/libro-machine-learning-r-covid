@@ -1,0 +1,59 @@
+project:
+  type: book
+  output-dir: docs
+  resources:
+    - recursos
+    - recursos_colab
+    - imagenes
+    - datos/covid19/procesados`r`n    - datos/covid19/muestras`r`n    - datos/covid19/diccionarios
+    - Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
+
+lang: es
+bibliography: referencias.bib
+
+# Declaraciones explícitas para evitar que la extensión Shinylive
+# interprete incorrectamente el documento como autocontenido.
+embed-resources: false
+self-contained: false
+
+filters:
+  - shinylive
+
+format:
+  html:
+    embed-resources: false
+    self-contained: false
+
+book:
+  title: "Aprendizaje y Clasificación Automática con R"
+  subtitle: "Un enfoque práctico con datos abiertos reales"
+  author: "Jesús Gilberto Rodríguez Escobedo"
+  date: today
+  downloads: [pdf]
+  chapters:
+    - index.qmd
+    - 00-bienvenida.qmd
+    - 00-creditos-editoriales.qmd
+    - 00-licencia-y-uso-academico.qmd
+    - 00-prefacio.qmd
+    - 00-agradecimientos.qmd
+    - 00-cuaderno-google-colab.qmd
+    - 01-introduccion.qmd
+    - 02-preparacion-datos.qmd
+    - 03-analisis-exploratorio.qmd
+    - 04-regresion-lineal-multiple.qmd
+    - 04-regresion-logistica.qmd
+    - 05-knn.qmd
+    - 06-arboles-decision.qmd
+    - 07-random-forest.qmd
+    - 08-evaluacion-modelos.qmd
+    - 09-svm.qmd
+    - 10-naive-bayes.qmd
+    - 11-redes-neuronales.qmd
+    - 12-kmeans.qmd
+  appendices:
+    - glosario.qmd
+    - referencias.qmd
+    - indice-figuras.qmd
+    - indice-tematico.qmd
+    - acerca-del-autor.qmd

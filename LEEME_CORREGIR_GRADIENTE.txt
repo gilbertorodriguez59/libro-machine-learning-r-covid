@@ -1,0 +1,32 @@
+﻿CORRECCIÓN DEL GRADIENTE — CAPÍTULO 12
+
+Error observado:
+Missing $ inserted
+-\etarac{\partial L}{\partial w}
+
+Causa:
+La derivada quedó fuera del modo matemático de LaTeX.
+
+Qué hace este reparador:
+1. Crea un respaldo del capítulo.
+2. Busca varias formas posibles de la fórmula.
+3. Reconstruye el bloque completo como:
+
+$$
+w^{nuevo}
+=
+w^{anterior}
+-
+\etarac{\partial L}{\partial w}
+$$
+
+4. Verifica que la derivada no quede fuera de un bloque matemático.
+5. Genera solamente el capítulo 12 en PDF.
+
+Uso:
+1. Copiar los tres archivos en:
+   C:\libro-machine-learning-r-dev
+2. Ejecutar:
+   CORREGIR_GRADIENTE_CAPITULO_12.bat
+3. Si funciona, ejecutar:
+   PUBLICAR_V0131_SIN_PRUEBAS_REPETIDAS.bat

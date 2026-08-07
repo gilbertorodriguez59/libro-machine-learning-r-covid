@@ -1,0 +1,36 @@
+# Acerca del autor {.unnumbered}
+
+**Jesús Gilberto Rodríguez Escobedo** es físico-matemático, profesor
+universitario, consultor y especialista en ciencias de la computación e
+inteligencia artificial.
+
+Su formación académica comprende estudios en Física y Matemáticas en el
+Instituto Politécnico Nacional, un diplomado en Ciencias de la Computación en
+la Fundación Arturo Rosenblueth, estudios de maestría en Ciencias
+Computacionales con especialidad en Inteligencia Artificial en el Instituto
+Tecnológico y de Estudios Superiores de Monterrey, y estudios de posgrado en
+Ingeniería de la Computación.
+
+Ha desarrollado una extensa trayectoria docente en México y Chile, impartiendo
+asignaturas de matemáticas, probabilidad, estadística, métodos numéricos,
+programación, ciencias de la computación, inteligencia artificial, minería de
+datos y aprendizaje automático. También ha participado en la dirección y
+revisión de proyectos de titulación y tesis en computación, multimedia,
+educación e inteligencia artificial.
+
+En el ámbito profesional ha desempeñado funciones como consultor, líder de
+proyecto, jefe y gerente de sistemas, director de desarrollo y diseñador de
+soluciones informáticas. Su experiencia incluye sistemas de información,
+desarrollo de software, aplicaciones web, productos multimedia y sistemas
+inteligentes.
+
+Sus intereses académicos y de investigación se concentran en el aprendizaje
+automático, la ciencia de datos, los sistemas tutoriales inteligentes, la
+inteligencia artificial aplicada a la educación y el diseño de recursos
+tecnológicos para favorecer la comprensión de conceptos matemáticos y
+computacionales.
+
+Es autor de los volúmenes complementarios:
+
+- *Aprendizaje y Clasificación Automática con R*;
+- *Fundamentos Matemáticos del Aprendizaje Automático*.

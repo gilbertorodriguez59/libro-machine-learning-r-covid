@@ -1,0 +1,78 @@
+# Índice temático {.unnumbered}
+
+## A-C {.unnumbered}
+
+**Aprendizaje no supervisado:** [Introducción](01-introduccion.qmd);
+[k-means](12-kmeans.qmd).
+
+**Aprendizaje supervisado:** [Introducción](01-introduccion.qmd);
+[Evaluación](08-evaluacion-modelos.qmd).
+
+**ATUS:** [Preparación](02-preparacion-datos.qmd);
+[Análisis exploratorio](03-analisis-exploratorio.qmd).
+
+**AUC y curva ROC:** [Evaluación de modelos](08-evaluacion-modelos.qmd).
+
+**Clasificación binaria:** [Regresión logística](04-regresion-logistica.qmd);
+[Naive Bayes](10-naive-bayes.qmd);
+[Redes neuronales](11-redes-neuronales.qmd).
+
+**COVID-19:** [Preparación](02-preparacion-datos.qmd);
+[Análisis exploratorio](03-analisis-exploratorio.qmd);
+[Regresión logística](04-regresion-logistica.qmd);
+[Evaluación](08-evaluacion-modelos.qmd).
+
+## D-H {.unnumbered}
+
+**Datos faltantes:** [Preparación de datos](02-preparacion-datos.qmd).
+
+**Distancia euclidiana:** [k-NN](05-knn.qmd);
+[k-means](12-kmeans.qmd).
+
+**Entropía e impureza:** [Árboles de decisión](06-arboles-decision.qmd);
+[Random Forest](07-random-forest.qmd).
+
+**Escalamiento:** [Preparación](02-preparacion-datos.qmd);
+[k-NN](05-knn.qmd);
+[SVM](09-svm.qmd);
+[k-means](12-kmeans.qmd).
+
+**Hiperparámetros:** [Evaluación](08-evaluacion-modelos.qmd).
+
+## K-R {.unnumbered}
+
+**k-means:** [Agrupamiento con k-means](12-kmeans.qmd).
+
+**k-NN:** [Vecinos más cercanos](05-knn.qmd).
+
+**Matriz de confusión:** [Evaluación](08-evaluacion-modelos.qmd).
+
+**Naive Bayes:** [Clasificador Naive Bayes](10-naive-bayes.qmd).
+
+**Random Forest:** [Random Forest](07-random-forest.qmd).
+
+**Regresión lineal:** [Regresión lineal simple y múltiple](04-regresion-lineal-multiple.qmd).
+
+**Regresión logística:** [Regresión logística](04-regresion-logistica.qmd).
+
+## S-Z {.unnumbered}
+
+**Sensibilidad y especificidad:** [Evaluación](08-evaluacion-modelos.qmd).
+
+**Shinylive:** [Regresión lineal](04-regresion-lineal-multiple.qmd);
+[Regresión logística](04-regresion-logistica.qmd);
+[k-NN](05-knn.qmd);
+[Redes neuronales](11-redes-neuronales.qmd);
+[k-means](12-kmeans.qmd).
+
+**Sobreajuste:** [Evaluación](08-evaluacion-modelos.qmd);
+[Árboles](06-arboles-decision.qmd);
+[Random Forest](07-random-forest.qmd);
+[Redes neuronales](11-redes-neuronales.qmd).
+
+**SVM y kernels:** [Máquinas de vectores de soporte](09-svm.qmd).
+
+**Umbral:** [Regresión logística](04-regresion-logistica.qmd);
+[Evaluación](08-evaluacion-modelos.qmd).
+
+**Validación cruzada:** [Evaluación, validación y comparación](08-evaluacion-modelos.qmd).

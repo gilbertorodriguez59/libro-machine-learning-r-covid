@@ -1,0 +1,34 @@
+# Licencia y uso académico {.unnumbered}
+
+Esta obra se publica con fines educativos y de consulta académica bajo la
+licencia **Creative Commons Atribución-NoComercial-CompartirIgual 4.0
+Internacional (CC BY-NC-SA 4.0)**.
+
+Se autoriza:
+
+- la lectura y descarga;
+- el uso en cursos y actividades académicas;
+- la distribución no comercial;
+- la adaptación con fines educativos;
+
+siempre que se reconozca la autoría, se conserve la referencia completa de la
+obra y las versiones derivadas se compartan bajo una licencia compatible.
+
+Para reutilizaciones extensas, traducciones, publicaciones comerciales o
+incorporación sustancial del contenido en otras obras deberá solicitarse
+autorización al autor.
+
+**Autor:** Jesús Gilberto Rodríguez Escobedo  
+**Edición:** Primera edición digital ampliada, 2026  
+**Lugar:** San Luis Potosí, México  
+
+## Uso responsable de los datos {.unnumbered}
+
+Los ejemplos utilizan datos abiertos de accidentes de tránsito y registros
+epidemiológicos, entre otras fuentes. Los modelos, gráficas e interpretaciones
+son ejercicios académicos elaborados por el autor y no constituyen resultados
+oficiales de las instituciones proveedoras.
+
+Los ejemplos relacionados con COVID-19 son exclusivamente educativos. No son
+instrumentos de diagnóstico, pronóstico clínico ni apoyo directo para tomar
+decisiones médicas.

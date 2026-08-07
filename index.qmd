@@ -1,0 +1,182 @@
+# Presentación {.unnumbered}
+
+## Aprendizaje y Clasificación Automática con R {.unnumbered}
+
+### Un enfoque práctico con datos abiertos reales {.unnumbered}
+
+**Autor:** Jesús Gilberto Rodríguez Escobedo  
+**Versión:** 0.14.1
+**Modalidad:** Libro abierto, práctico e interactivo  
+**Tecnologías:** R · Quarto · Machine Learning · Shinylive · Google Colab · YouTube · GitHub Pages
+
+
+::: {.content-visible when-format="html"}
+
+::: {.callout-note appearance="simple" icon="false"}
+
+## Edición interactiva ampliada
+
+### Aprende Machine Learning haciendo
+
+Libro abierto con código en **R**, datos reales, videos, presentaciones,
+infografías, Google Colab y laboratorios que se ejecutan directamente en el
+navegador.
+
+[Comenzar el libro](01-introduccion.qmd){.btn .btn-primary .btn-lg}
+[Curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger .btn-lg}
+[Cuaderno Google Colab](00-cuaderno-google-colab.qmd){.btn .btn-outline-primary .btn-lg}
+
+![Portada del libro](imagenes/portada-libro-carta.png){fig-alt="Portada del libro Aprendizaje y Clasificación Automática con R" width="58%"}
+
+**13 capítulos · R reproducible · Datos abiertos · Videos · Shinylive · PDF**
+
+:::
+
+:::
+
+Este libro introduce el aprendizaje automático (*Machine Learning*) mediante ejemplos claros, didácticos y prácticos desarrollados principalmente en **R**.
+
+La intención no es escribir un tratado matemático extenso, sino construir una guía aplicada para aprender haciendo con datos abiertos reales. En esta versión trabajamos con datos de accidentes de tránsito de México y los usamos como hilo conductor para explicar preparación de datos, análisis exploratorio y modelos de clasificación.
+
+::: {.callout-note}
+## Enfoque del libro
+El libro combina fundamento conceptual, código reproducible en R, explicación breve del código, interpretación didáctica de resultados y visualizaciones profesionales.
+:::
+
+## Objetivo general {.unnumbered}
+
+Desarrollar competencias básicas e intermedias en aprendizaje automático mediante el análisis, modelado e interpretación de datos reales.
+
+## Público al que va dirigido {.unnumbered}
+
+Este libro está dirigido a estudiantes de ingeniería, ciencias, ciencia de datos, estadística aplicada y áreas afines que desean iniciar en aprendizaje automático con un enfoque práctico.
+
+## Software utilizado {.unnumbered}
+
+- RStudio
+- Consola de R
+- Google Colab
+- GitHub
+- GitHub Pages
+- Quarto Pub
+
+
+## Cuaderno completo de Google Colab {.unnumbered}
+
+El contenido del libro también está disponible como un cuaderno ejecutable de Google Colab. Las explicaciones se presentan en celdas de texto y cada código R está separado para ejecutarse paso a paso.
+
+- [Abrir el cuaderno en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-dev/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+- [Descargar el archivo `.ipynb`](Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+- [Consultar instrucciones de uso](00-cuaderno-google-colab.qmd)
+
+
+## Video de presentación del libro
+
+Este video ofrece una introducción general a la presentación, la licencia de uso y el cuaderno completo de Google Colab.
+
+[Ver el video en YouTube](https://www.youtube.com/watch?v=pyvMWWDqLws){.btn .btn-primary target="_blank"}
+
+::: {.content-visible when-format="html"}
+<div class="video-responsive">
+<iframe src="https://www.youtube.com/embed/pyvMWWDqLws" title="Presentación del libro Aprendizaje y Clasificación Automática con R" frameborder="0" allowfullscreen></iframe>
+</div>
+:::
+
+::: {.content-visible when-format="pdf"}
+\newpage
+
+### Curso completo en YouTube
+
+El libro cuenta con una lista oficial de reproducción en YouTube, donde se
+reúnen el video de presentación y los videos complementarios de cada capítulo.
+
+[▶ Ver el curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger .btn-lg target="_blank"}
+
+Enlace directo:
+
+<https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
+
+**Lista oficial del curso**
+
+Presentación general y videos complementarios de los capítulos.
+
+## Curso completo en YouTube
+
+El libro cuenta con una lista oficial de reproducción en YouTube, donde se reúnen los videos de presentación y de cada capítulo.
+
+[▶ Ver el curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger .btn-lg target="_blank"}
+
+Enlace directo: <https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
+
+::: {.content-visible when-format="html"}
+<div class="playlist-card">
+  <div>
+    <strong>Lista oficial del curso</strong><br>
+    Presentación general y videos complementarios de los capítulos.
+  </div>
+  <div>
+    <a href="https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q" target="_blank" class="btn btn-danger">Abrir curso en YouTube</a>
+  </div>
+</div>
+:::
+
+::: {.content-visible when-format="pdf"}
+### Lista oficial del curso
+
+\begin{center}
+\includegraphics[width=0.25\textwidth]{imagenes/qr-curso-youtube.png}
+\end{center}
+
+<https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
+:::
+
+## Materiales complementarios descargables {.unnumbered}
+
+Para facilitar la presentación, consulta y difusión de las primeras secciones del libro —**Presentación**, **Licencia, autoría y forma de citar**, y **Cuaderno completo para Google Colab**— se ofrecen los siguientes recursos complementarios:
+
+| Recurso | Descripción | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Presentación en PDF | Diapositivas de lectura sobre la Presentación, la licencia y el cuaderno de Colab. | [Ver PDF](recursos/presentacion-licencia-cuaderno.pdf){target="_blank"} | [Descargar PDF](recursos/presentacion-licencia-cuaderno.pdf){download="presentacion-licencia-cuaderno.pdf"} |
+| Presentación editable | Archivo PowerPoint que puede utilizarse para exponer o adaptar el contenido. | [Abrir o descargar PPTX](recursos/presentacion-licencia-cuaderno.pptx) | [Descargar PPTX](recursos/presentacion-licencia-cuaderno.pptx){download="presentacion-licencia-cuaderno.pptx"} |
+| Infografía | Síntesis visual para consulta rápida, clase o difusión educativa. | [Ver infografía](recursos/infografia-presentacion-licencia-cuaderno.png){target="_blank"} | [Descargar PNG](recursos/infografia-presentacion-licencia-cuaderno.png){download="infografia-presentacion-licencia-cuaderno.png"} |
+
+::: {.callout-tip title="Cómo descargar los materiales"}
+Seleccione el enlace de la columna **Descargar**. Dependiendo de la configuración del navegador, el archivo puede descargarse inmediatamente o abrirse primero en una pestaña nueva. En ese caso, utilice el botón de descarga del navegador.
+
+Los archivos se encuentran alojados en el mismo repositorio de GitHub que el libro, por lo que no es necesario iniciar sesión en Google Drive ni solicitar permisos adicionales.
+:::
+
+::: {.callout-note title="Elaboración de los recursos"}
+Estos materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del libro, y posteriormente revisados, seleccionados y adaptados por el autor. El contenido del libro y sus archivos fuente constituyen la referencia principal.
+:::
+
+## Estructura actual del libro {.unnumbered}
+
+1. Introducción al aprendizaje automático.
+2. Preparación de datos reales.
+3. Análisis exploratorio de datos.
+4. Regresión lineal simple y múltiple.
+5. Regresión logística para clasificación.
+6. k vecinos más cercanos (k-NN).
+7. Árboles de decisión.
+8. Random Forest.
+9. Evaluación, validación y comparación de modelos.
+10. Máquinas de Vectores de Soporte (SVM).
+11. Clasificador Naive Bayes.
+12. Redes neuronales artificiales.
+13. Agrupamiento con k-means.
+
+## Ruta prevista para los siguientes capítulos {.unnumbered}
+
+14. Análisis de Componentes Principales (PCA).  
+15. Reglas de asociación con Apriori.  
+16. Comparación integral y selección de algoritmos.  
+17. Proyecto aplicado final con datos abiertos.
+
+## Nota para el lector {.unnumbered}
+
+Los capítulos están diseñados para leerse y ejecutarse paso a paso. Cada bloque de código busca responder una pregunta concreta y cada resultado se acompaña de una interpretación didáctica.
+
+## Fuente principal de los datos {.unnumbered}
+
+Los ejemplos aplicados utilizan información de la Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas del INEGI [@inegi_atus_2024]. Cuando una tabla o gráfica se elabora con estos datos, se indica expresamente la fuente y se distingue el procesamiento realizado por el autor.

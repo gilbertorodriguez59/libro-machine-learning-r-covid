@@ -1,0 +1,105 @@
+# Glosario {.unnumbered}
+
+## A-C {.unnumbered}
+
+**Algoritmo de aprendizaje:** procedimiento que estima un modelo a partir de
+datos y un criterio de ajuste.
+
+**Aprendizaje no supervisado:** búsqueda de estructura en datos sin utilizar
+una variable objetivo conocida.
+
+**Aprendizaje supervisado:** construcción de una función predictiva a partir
+de pares entrada-salida.
+
+**ATUS:** Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y
+Suburbanas publicada por el INEGI.
+
+**AUC:** área bajo la curva ROC; resume la capacidad de discriminación de un
+clasificador para distintos umbrales.
+
+**Clasificación:** problema en el que la respuesta pertenece a un conjunto
+finito de categorías.
+
+**COVID-19:** enfermedad causada por el virus SARS-CoV-2. En este libro se
+utilizan registros abiertos con fines exclusivamente educativos.
+
+**Curva ROC:** representación de sensibilidad frente a la tasa de falsos
+positivos para distintos umbrales.
+
+## D-H {.unnumbered}
+
+**Datos de entrenamiento:** observaciones utilizadas para ajustar los
+parámetros de un modelo.
+
+**Datos de prueba:** observaciones reservadas para estimar el desempeño final
+del modelo.
+
+**Descenso por gradiente:** método iterativo que actualiza parámetros en la
+dirección opuesta al gradiente.
+
+**Entropía:** medida de incertidumbre empleada en árboles de decisión.
+
+**Especificidad:** proporción de negativos reales correctamente identificados.
+
+**Exactitud:** proporción total de predicciones correctas.
+
+**Función de pérdida:** medida de la discrepancia entre una predicción y el
+valor observado.
+
+**Generalización:** capacidad de mantener buen desempeño en observaciones
+nuevas.
+
+**Hiperparámetro:** valor que controla la estructura o el entrenamiento y que
+no se estima como un parámetro ordinario.
+
+## K-R {.unnumbered}
+
+**k-means:** algoritmo de agrupamiento que minimiza la suma de cuadrados dentro
+de los grupos.
+
+**k-NN:** método que predice usando las observaciones más cercanas.
+
+**Kernel:** función que permite representar productos internos en un espacio
+transformado.
+
+**Matriz de confusión:** tabla que compara clases reales y predichas.
+
+**Modelo:** representación aprendida a partir de datos para describir,
+predecir o clasificar.
+
+**Naive Bayes:** clasificador probabilístico que utiliza el teorema de Bayes y
+una hipótesis de independencia condicional.
+
+**Random Forest:** ensamble de árboles construido con muestras bootstrap y
+selección aleatoria de variables.
+
+**Regresión lineal:** modelo para una respuesta numérica basado en una
+combinación lineal de predictores.
+
+**Regresión logística:** modelo probabilístico empleado principalmente en
+clasificación binaria.
+
+**Regularización:** penalización destinada a controlar la complejidad.
+
+## S-Z {.unnumbered}
+
+**Sensibilidad:** proporción de positivos reales correctamente detectados.
+
+**Shinylive:** tecnología que permite ejecutar aplicaciones Shiny para R
+directamente en el navegador mediante WebAssembly.
+
+**Silueta:** medida de cohesión y separación utilizada para evaluar
+agrupamientos.
+
+**Sobreajuste:** adaptación excesiva a los datos de entrenamiento que deteriora
+la generalización.
+
+**SVM:** máquina de vectores de soporte; clasificador basado en margen máximo.
+
+**Umbral de clasificación:** valor utilizado para convertir una probabilidad o
+puntuación en una clase.
+
+**Validación cruzada:** procedimiento de remuestreo para estimar desempeño y
+seleccionar hiperparámetros.
+
+**Variable objetivo:** respuesta que un modelo supervisado intenta predecir.

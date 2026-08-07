@@ -1,0 +1,17 @@
+CORRECCIÓN COVID v0.14.0.4
+
+El cierre 2024 ya utiliza un esquema diferente al de 2020-2023.
+
+Esta versión:
+- procesa los años con esquema reconocido;
+- no se detiene ante un diccionario distinto;
+- no inventa conteos para años no homologados;
+- guarda encabezados y variables candidatas en diagnósticos;
+- genera la muestra con el año válido de mayor número de casos.
+
+INSTALACIÓN
+1. Ejecute INSTALAR_PROCESADOR_COVID_V01404.bat
+2. Después ejecute C:\libro-machine-learning-r-covid-dev\PROCESAR_CIERRES_COVID19.bat
+
+DIAGNÓSTICOS
+C:\libro-machine-learning-r-covid-dev\datos\covid19\diagnosticos

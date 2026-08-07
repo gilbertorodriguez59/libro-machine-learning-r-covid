@@ -1,0 +1,21 @@
+# Bases originales masivas
+datos/covid19/originales/
+docs/datos/covid19/originales/
+datos/covid19/diagnosticos/
+docs/datos/covid19/diagnosticos/
+
+# Archivo ATUS grande no necesario en GitHub
+datos/atus_2024.csv
+docs/datos/atus_2024.csv
+
+# Temporales
+.quarto/
+_freeze/
+*_cache/
+*_files/
+respaldo-*/
+**/respaldo-*/
+*.log
+*.tmp
+Thumbs.db
+.DS_Store

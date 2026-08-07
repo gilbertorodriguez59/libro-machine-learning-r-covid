@@ -1,0 +1,872 @@
+# Evaluación, validación y comparación de modelos
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **matrices de confusión, métricas, validación y selección de modelos** se desarrolla con mayor profundidad
+en los capítulos 6 y 7 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de:
+
+- explicar por qué la exactitud no siempre es suficiente;
+- construir e interpretar una matriz de confusión;
+- calcular exactitud, sensibilidad, especificidad, precisión y valor F1;
+- distinguir entrenamiento, validación y prueba;
+- aplicar validación cruzada estratificada;
+- comparar modelos con criterios predictivos y prácticos;
+- seleccionar un modelo sin depender de una sola métrica.
+
+## Introducción
+
+Entrenar un modelo es apenas la mitad del trabajo. Después debemos responder una pregunta más delicada: **¿qué tan bien funcionará con accidentes que nunca vio durante el aprendizaje?**
+
+Un modelo puede memorizar los datos de entrenamiento y parecer excelente, pero fallar con observaciones nuevas. Por eso la evaluación debe realizarse con datos separados y métricas apropiadas para el objetivo del problema.
+
+En este capítulo se utiliza nuevamente la base preparada a partir de ATUS [@inegi_atus_2024].
+
+## Cargar los datos
+
+```{r cargar-datos-evaluacion}
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+source("util_graficas.R")
+
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (!file.exists(ruta_atus_ml)) {
+  stop(
+    paste(
+      "No se encontró datos/atus_ml_preparado.csv.",
+      "Renderice primero el capítulo de preparación de datos."
+    )
+  )
+}
+
+atus_ml <- read_csv(
+  ruta_atus_ml,
+  show_col_types = FALSE
+)
+```
+
+## Preparar una muestra reproducible
+
+```{r muestra-evaluacion}
+
+set.seed(123)
+
+atus_eval <- atus_ml |>
+  sample_n(min(30000, nrow(atus_ml))) |>
+  mutate(
+    accidente_con_victimas = factor(
+      accidente_con_victimas,
+      levels = c("Solo daños", "Con víctimas")
+    ),
+    MES = factor(MES),
+    ID_HORA = as.numeric(ID_HORA),
+    DIASEMANA = factor(DIASEMANA),
+    TIPACCID = factor(TIPACCID),
+    CAUSAACCI = factor(CAUSAACCI)
+  ) |>
+  na.omit()
+
+prop.table(table(atus_eval$accidente_con_victimas))
+```
+
+::: {.callout-tip title="Interpretación"}
+La tabla de proporciones permite identificar si una clase es mucho más frecuente que la otra. Cuando existe desbalance, una exactitud alta puede resultar engañosa.
+:::
+
+## Entrenamiento, validación y prueba
+
+Los datos pueden dividirse en tres partes:
+
+- **Entrenamiento:** se utiliza para estimar los parámetros del modelo.
+- **Validación:** ayuda a elegir hiperparámetros y comparar alternativas.
+- **Prueba:** se reserva para estimar el desempeño final.
+
+En ejercicios introductorios es frecuente utilizar entrenamiento y prueba, mientras que la validación se realiza mediante validación cruzada dentro del conjunto de entrenamiento.
+
+## División estratificada
+
+Una división estratificada conserva aproximadamente la proporción de cada clase.
+
+```{r division-estratificada}
+
+set.seed(123)
+
+indices_entrenamiento <- unlist(
+  lapply(
+    split(seq_len(nrow(atus_eval)), atus_eval$accidente_con_victimas),
+    function(indices) {
+      sample(indices, size = floor(0.70 * length(indices)))
+    }
+  )
+)
+
+entrenamiento <- atus_eval[indices_entrenamiento, ]
+prueba <- atus_eval[-indices_entrenamiento, ]
+
+prop.table(table(entrenamiento$accidente_con_victimas))
+prop.table(table(prueba$accidente_con_victimas))
+```
+
+::: {.callout-note title="Explicación del código"}
+Los índices se separan por clase y después se toma 70 % de cada grupo. Así se reduce el riesgo de que una clase quede sobrerrepresentada en entrenamiento o prueba.
+:::
+
+## Matriz de confusión
+
+Para una clase positiva denominada **Con víctimas**, la matriz contiene:
+
+- **Verdadero positivo (VP):** el accidente tenía víctimas y el modelo lo detectó.
+- **Falso negativo (FN):** tenía víctimas, pero el modelo lo clasificó como solo daños.
+- **Falso positivo (FP):** era de solo daños, pero el modelo predijo víctimas.
+- **Verdadero negativo (VN):** era de solo daños y se clasificó correctamente.
+
+| Clase real | Predicción positiva | Predicción negativa |
+|---|---:|---:|
+| Positiva | VP | FN |
+| Negativa | FP | VN |
+
+Un falso negativo puede ser especialmente importante cuando el propósito consiste en identificar accidentes con víctimas.
+
+## Métricas principales
+
+### Exactitud
+
+$$
+\text{Exactitud}=\frac{VP+VN}{VP+FN+FP+VN}
+$$
+
+Mide la proporción total de predicciones correctas.
+
+### Sensibilidad
+
+$$
+\text{Sensibilidad}=\frac{VP}{VP+FN}
+$$
+
+Mide qué proporción de los accidentes con víctimas fue detectada.
+
+### Especificidad
+
+$$
+\text{Especificidad}=\frac{VN}{VN+FP}
+$$
+
+Mide qué proporción de los accidentes de solo daños fue reconocida correctamente.
+
+### Precisión
+
+$$
+\text{Precisión}=\frac{VP}{VP+FP}
+$$
+
+Indica qué proporción de las predicciones positivas realmente tenía víctimas.
+
+### Valor F1
+
+$$
+F_1=2\frac{\text{Precisión}\times\text{Sensibilidad}}
+{\text{Precisión}+\text{Sensibilidad}}
+$$
+
+El valor F1 equilibra precisión y sensibilidad.
+
+## Función para calcular métricas
+
+```{r funcion-metricas}
+
+calcular_metricas <- function(real, predicho, positiva = "Con víctimas") {
+  real <- factor(real)
+  predicho <- factor(predicho, levels = levels(real))
+
+  negativas <- setdiff(levels(real), positiva)
+
+  if (length(negativas) != 1) {
+    stop("La función requiere exactamente dos clases.")
+  }
+
+  negativa <- negativas[1]
+  matriz <- table(Real = real, Predicho = predicho)
+
+  VP <- matriz[positiva, positiva]
+  FN <- matriz[positiva, negativa]
+  FP <- matriz[negativa, positiva]
+  VN <- matriz[negativa, negativa]
+
+  division_segura <- function(numerador, denominador) {
+    if (
+      is.na(numerador) ||
+      is.na(denominador) ||
+      denominador == 0
+    ) {
+      return(NA_real_)
+    }
+
+    as.numeric(numerador / denominador)
+  }
+
+  exactitud <- division_segura(VP + VN, VP + FN + FP + VN)
+  sensibilidad <- division_segura(VP, VP + FN)
+  especificidad <- division_segura(VN, VN + FP)
+  precision <- division_segura(VP, VP + FP)
+  f1 <- division_segura(
+    2 * precision * sensibilidad,
+    precision + sensibilidad
+  )
+
+  list(
+    matriz = matriz,
+    metricas = data.frame(
+      exactitud = exactitud,
+      sensibilidad = sensibilidad,
+      especificidad = especificidad,
+      precision = precision,
+      f1 = f1
+    )
+  )
+}
+```
+
+## Modelo de referencia: regla mayoritaria
+
+Antes de celebrar un modelo complejo, conviene compararlo con una regla muy simple: predecir siempre la clase más frecuente.
+
+```{r modelo-referencia}
+
+clase_mayoritaria <- names(
+  which.max(table(entrenamiento$accidente_con_victimas))
+)
+
+prediccion_referencia <- factor(
+  rep(clase_mayoritaria, nrow(prueba)),
+  levels = levels(entrenamiento$accidente_con_victimas)
+)
+
+resultado_referencia <- calcular_metricas(
+  real = prueba$accidente_con_victimas,
+  predicho = prediccion_referencia
+)
+
+resultado_referencia$matriz
+resultado_referencia$metricas
+```
+
+::: {.callout-note title="¿Por qué puede aparecer NA?"}
+El modelo de referencia predice únicamente la clase mayoritaria. Si nunca predice la clase positiva **Con víctimas**, la precisión no puede calcularse porque su denominador es cero. En ese caso R muestra `NA`, que significa **métrica no definida**, pero el libro continúa procesándose normalmente.
+:::
+
+::: {.callout-warning title="Una exactitud alta puede engañar"}
+Si 90 % de los accidentes perteneciera a una sola clase, predecir siempre esa clase produciría 90 % de exactitud sin aprender ninguna relación útil. Por eso deben revisarse sensibilidad, especificidad, precisión y F1.
+:::
+
+## Evaluar una regresión logística
+
+```{r evaluar-logistica}
+
+modelo_logistico <- glm(
+  accidente_con_victimas ~
+    MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+  data = entrenamiento,
+  family = binomial
+)
+
+probabilidad_logistica <- predict(
+  modelo_logistico,
+  newdata = prueba,
+  type = "response"
+)
+
+# glm() modela la probabilidad del segundo nivel del factor.
+clase_positiva_modelada <- levels(
+  entrenamiento$accidente_con_victimas
+)[2]
+
+prediccion_logistica <- ifelse(
+  probabilidad_logistica >= 0.50,
+  clase_positiva_modelada,
+  levels(entrenamiento$accidente_con_victimas)[1]
+)
+
+prediccion_logistica <- factor(
+  prediccion_logistica,
+  levels = levels(entrenamiento$accidente_con_victimas)
+)
+
+resultado_logistico <- calcular_metricas(
+  real = prueba$accidente_con_victimas,
+  predicho = prediccion_logistica
+)
+
+resultado_logistico$matriz
+resultado_logistico$metricas
+```
+
+::: {.callout-important title="Revise qué clase modela R"}
+En una regresión logística binaria, `glm()` calcula la probabilidad del segundo nivel del factor respuesta. El orden de los niveles debe verificarse antes de transformar probabilidades en clases.
+:::
+
+## Comparación inicial
+
+```{r tabla-comparacion-inicial}
+
+comparacion_inicial <- bind_rows(
+  cbind(
+    modelo = "Regla mayoritaria",
+    resultado_referencia$metricas
+  ),
+  cbind(
+    modelo = "Regresión logística",
+    resultado_logistico$metricas
+  )
+)
+
+comparacion_inicial
+```
+
+```{r grafica-comparacion-inicial}
+#| fig-cap: "Comparación de métricas entre una regla de referencia y la regresión logística."
+
+comparacion_larga <- comparacion_inicial |>
+  tidyr::pivot_longer(
+    cols = -modelo,
+    names_to = "metrica",
+    values_to = "valor"
+  )
+
+ggplot(
+  comparacion_larga,
+  aes(x = metrica, y = valor, fill = modelo)
+) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(
+    limits = c(0, 1),
+    labels = scales::label_percent(accuracy = 1)
+  ) +
+  labs(
+    title = "Un modelo debe superar una referencia sencilla",
+    x = "Métrica",
+    y = "Valor",
+    fill = "Modelo"
+  ) +
+  tema_libro()
+```
+
+**Fuente:** Elaboración propia con datos del INEGI, ATUS 2024.
+
+## Umbral de clasificación
+
+El umbral de 0.50 no es una ley universal. Reducirlo puede aumentar la sensibilidad, aunque también puede generar más falsos positivos.
+
+```{r evaluar-umbrales}
+
+umbrales <- seq(0.10, 0.90, by = 0.05)
+
+metricas_umbral <- lapply(umbrales, function(umbral) {
+  prediccion <- ifelse(
+    probabilidad_logistica >= umbral,
+    clase_positiva_modelada,
+    levels(entrenamiento$accidente_con_victimas)[1]
+  )
+
+  prediccion <- factor(
+    prediccion,
+    levels = levels(entrenamiento$accidente_con_victimas)
+  )
+
+  metricas <- calcular_metricas(
+    prueba$accidente_con_victimas,
+    prediccion
+  )$metricas
+
+  cbind(umbral = umbral, metricas)
+}) |>
+  bind_rows()
+
+metricas_umbral
+```
+
+::: {.callout-note title="Decisión práctica"}
+El mejor umbral depende del costo de cada error. Cuando omitir un accidente con víctimas es más grave que generar una alerta adicional, puede priorizarse la sensibilidad.
+:::
+
+## Validación cruzada
+
+La validación cruzada divide el conjunto de entrenamiento en varios pliegues. Cada pliegue funciona una vez como validación y los restantes como entrenamiento.
+
+En validación cruzada de $K$ pliegues:
+
+1. se divide la muestra en $K$ partes;
+2. se entrena con $K-1$ partes;
+3. se evalúa en la parte restante;
+4. se repite hasta utilizar todos los pliegues;
+5. se promedian las métricas.
+
+### Crear pliegues estratificados
+
+```{r crear-pliegues}
+
+crear_pliegues <- function(respuesta, k = 5, semilla = 123) {
+  set.seed(semilla)
+
+  pliegues <- integer(length(respuesta))
+
+  for (clase in levels(factor(respuesta))) {
+    indices <- which(respuesta == clase)
+    etiquetas <- rep(seq_len(k), length.out = length(indices))
+    pliegues[indices] <- sample(etiquetas)
+  }
+
+  pliegues
+}
+
+pliegue <- crear_pliegues(
+  entrenamiento$accidente_con_victimas,
+  k = 5
+)
+
+table(pliegue, entrenamiento$accidente_con_victimas)
+```
+
+### Validación cruzada de la regresión logística
+
+```{r validacion-cruzada-logistica}
+
+resultados_cv <- lapply(1:5, function(k) {
+  datos_entrenamiento <- entrenamiento[pliegue != k, ]
+  datos_validacion <- entrenamiento[pliegue == k, ]
+
+  modelo <- glm(
+    accidente_con_victimas ~
+      MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+    data = datos_entrenamiento,
+    family = binomial
+  )
+
+  probabilidad <- predict(
+    modelo,
+    newdata = datos_validacion,
+    type = "response"
+  )
+
+  clase_modelada <- levels(
+    datos_entrenamiento$accidente_con_victimas
+  )[2]
+
+  prediccion <- ifelse(
+    probabilidad >= 0.50,
+    clase_modelada,
+    levels(datos_entrenamiento$accidente_con_victimas)[1]
+  )
+
+  prediccion <- factor(
+    prediccion,
+    levels = levels(datos_entrenamiento$accidente_con_victimas)
+  )
+
+  metricas <- calcular_metricas(
+    datos_validacion$accidente_con_victimas,
+    prediccion
+  )$metricas
+
+  cbind(pliegue = k, metricas)
+}) |>
+  bind_rows()
+
+resultados_cv
+```
+
+```{r resumen-validacion-cruzada}
+
+resumen_cv <- resultados_cv |>
+  summarise(
+    across(
+      where(is.numeric) & !matches("pliegue"),
+      list(media = mean, desviacion = sd),
+      na.rm = TRUE
+    )
+  )
+
+resumen_cv
+```
+
+::: {.callout-tip title="Interpretación"}
+La media resume el desempeño esperado y la desviación estándar muestra su estabilidad. Dos modelos con medias parecidas pueden diferir mucho si uno presenta resultados más variables entre pliegues.
+:::
+
+## Cómo comparar varios modelos
+
+Para comparar regresión logística, k-NN, árbol de decisión y Random Forest conviene utilizar:
+
+1. la misma muestra;
+2. la misma variable respuesta;
+3. la misma partición de entrenamiento y prueba;
+4. el mismo criterio para definir la clase positiva;
+5. las mismas métricas;
+6. una validación cruzada equivalente;
+7. tiempos de entrenamiento y predicción;
+8. facilidad de interpretación.
+
+Una tabla de decisión puede tener esta estructura:
+
+| Modelo | Exactitud | Sensibilidad | Especificidad | F1 | Interpretación | Costo computacional |
+|---|---:|---:|---:|---:|---|---|
+| Regresión logística |  |  |  |  | Alta | Bajo |
+| k-NN |  |  |  |  | Media-baja | Medio |
+| Árbol de decisión |  |  |  |  | Alta | Bajo |
+| Random Forest |  |  |  |  | Media | Alto |
+
+## Selección del modelo final
+
+No existe un modelo universalmente mejor. La selección depende de la finalidad:
+
+- Si se requiere explicar el efecto de las variables, puede preferirse regresión logística.
+- Si se necesita una regla visual y fácil de comunicar, un árbol puede ser apropiado.
+- Si se prioriza capacidad predictiva y estabilidad, Random Forest puede resultar competitivo.
+- Si el costo de los falsos negativos es alto, debe priorizarse sensibilidad.
+- Si las alertas falsas son costosas, precisión y especificidad cobran mayor importancia.
+
+::: {.callout-important title="Principio fundamental"}
+El mejor modelo no es necesariamente el que tiene la mayor exactitud, sino el que responde mejor al objetivo, controla los errores relevantes y mantiene un desempeño estable con datos nuevos.
+:::
+
+## Actividad guiada
+
+1. Ejecute la regresión logística con umbrales de 0.30, 0.50 y 0.70.
+2. Registre la matriz de confusión de cada caso.
+3. Compare sensibilidad, especificidad, precisión y F1.
+4. Explique qué umbral elegiría para detectar accidentes con víctimas.
+5. Justifique su decisión considerando el costo de falsos negativos y falsos positivos.
+
+## Actividades para el lector
+
+1. Construya una función que calcule la exactitud balanceada:
+
+   $$
+   \text{Exactitud balanceada}=\frac{\text{Sensibilidad}+\text{Especificidad}}{2}
+   $$
+
+2. Compare la variabilidad de las métricas en validación cruzada.
+3. Repita el procedimiento con un árbol de decisión.
+4. Elabore una tabla comparativa con los cuatro modelos estudiados.
+5. Escriba una recomendación técnica de no más de 200 palabras.
+
+## Resumen del capítulo
+
+En este capítulo aprendimos que evaluar un modelo requiere datos no utilizados durante el entrenamiento, una clase positiva bien definida y varias métricas. También construimos una regla de referencia, estudiamos el efecto del umbral y aplicamos validación cruzada estratificada. Estas herramientas permiten comparar modelos de forma más justa y elegirlos según el objetivo real del análisis.
+
+
+## Referencias fundamentales sobre evaluación
+
+La validación cruzada y su uso para estimar el desempeño de modelos fueron examinados comparativamente por @kohavi1995crossvalidation. Para el análisis mediante curvas ROC y AUC, una referencia ampliamente utilizada es @fawcett2006roc. Una visión integrada de partición de datos, remuestreo y comparación de modelos aparece en @james2021islr.
+
+
+## Laboratorio interactivo: matriz de confusión y métricas
+
+::: {.content-visible when-format="html"}
+
+Modifica los cuatro valores de la matriz de confusión y observa cómo cambian
+exactitud, sensibilidad, especificidad, precisión y F1.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Calculadora de métricas de clasificación"),
+  sidebarLayout(
+    sidebarPanel(
+      numericInput("vp", "Verdaderos positivos", 40, min = 0),
+      numericInput("vn", "Verdaderos negativos", 45, min = 0),
+      numericInput("fp", "Falsos positivos", 5, min = 0),
+      numericInput("fn", "Falsos negativos", 10, min = 0)
+    ),
+    mainPanel(
+      tableOutput("matriz"),
+      tableOutput("metricas"),
+      plotOutput("grafica", height = "320px")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  calc <- reactive({
+    vp <- input$vp; vn <- input$vn; fp <- input$fp; fn <- input$fn
+    total <- vp + vn + fp + fn
+    exactitud <- ifelse(total == 0, NA, (vp + vn) / total)
+    sensibilidad <- ifelse(vp + fn == 0, NA, vp / (vp + fn))
+    especificidad <- ifelse(vn + fp == 0, NA, vn / (vn + fp))
+    precision <- ifelse(vp + fp == 0, NA, vp / (vp + fp))
+    f1 <- ifelse(
+      is.na(precision) || is.na(sensibilidad) || precision + sensibilidad == 0,
+      NA,
+      2 * precision * sensibilidad / (precision + sensibilidad)
+    )
+    list(
+      matriz = matrix(c(vn, fp, fn, vp), nrow = 2, byrow = TRUE,
+                      dimnames = list(
+                        "Real" = c("Clase 0", "Clase 1"),
+                        "Predicho" = c("Clase 0", "Clase 1")
+                      )),
+      metricas = c(
+        Exactitud = exactitud,
+        Sensibilidad = sensibilidad,
+        Especificidad = especificidad,
+        Precision = precision,
+        F1 = f1
+      )
+    )
+  })
+
+  output$matriz <- renderTable({
+    as.data.frame.matrix(calc()$matriz)
+  }, rownames = TRUE)
+
+  output$metricas <- renderTable({
+    data.frame(
+      Métrica = names(calc()$metricas),
+      Valor = round(as.numeric(calc()$metricas), 4)
+    )
+  })
+
+  output$grafica <- renderPlot({
+    m <- calc()$metricas
+    barplot(
+      m,
+      ylim = c(0, 1),
+      ylab = "Valor",
+      main = "Métricas del modelo"
+    )
+    abline(h = seq(0, 1, by = 0.2), lty = 3)
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+La calculadora permite editar la matriz de confusión y obtener automáticamente
+exactitud, sensibilidad, especificidad, precisión y F1.
+
+:::
+
+## Materiales complementarios del capítulo
+
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<iframe width="100%" height="420"
+src="https://www.youtube.com/embed/ShiKrfhIfpY"
+title="Capítulo 9. Evaluación, validación y comparación de modelos"
+frameborder="0"
+allowfullscreen></iframe>
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Video del capítulo
+
+Disponible en YouTube:
+
+<https://youtu.be/ShiKrfhIfpY>
+
+:::
+
+| Recurso | Descripción | Abrir o descargar |
+|---|---|---|
+| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-09/capitulo-09-evaluacion-modelos-presentacion.pdf){target="_blank"} |
+| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-09/capitulo-09-evaluacion-modelos-presentacion.pptx) |
+| Infografía | Resumen visual del capítulo. | [Abrir infografía](recursos/capitulo-09/capitulo-09-evaluacion-modelos-infografia.png){target="_blank"} |
+
+::: {.content-visible when-format="html"}
+
+![Infografía del capítulo 9](recursos/capitulo-09/capitulo-09-evaluacion-modelos-infografia.png){fig-alt="Capítulo 9. Evaluación, validación y comparación de modelos" width="85%"}
+
+:::
+
+Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
+contenido del libro y revisados y adaptados por el autor.
+
+## Caso aplicado B: evaluación del modelo COVID-19
+
+La evaluación debe realizarse con observaciones que no participaron en el
+ajuste del modelo.
+
+```{r}
+#| label: covid-evaluacion
+#| message: false
+#| warning: false
+
+library(readr)
+library(dplyr)
+library(tidyr)
+
+covid <- read_csv(
+  "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz",
+  show_col_types = FALSE
+)
+
+covid_modelo <- covid |>
+  select(
+    MURIO,
+    EDAD,
+    NEUMONIA,
+    DIABETES,
+    HIPERTENSION,
+    OBESIDAD,
+    RENAL_CRONICA
+  ) |>
+  drop_na()
+
+set.seed(2026)
+
+indice_entrenamiento <- sample(
+  seq_len(nrow(covid_modelo)),
+  size = floor(0.80 * nrow(covid_modelo))
+)
+
+covid_train <- covid_modelo[indice_entrenamiento, ]
+covid_test <- covid_modelo[-indice_entrenamiento, ]
+
+modelo_covid <- glm(
+  MURIO ~ EDAD + NEUMONIA + DIABETES +
+    HIPERTENSION + OBESIDAD + RENAL_CRONICA,
+  data = covid_train,
+  family = binomial()
+)
+
+covid_test$probabilidad <- predict(
+  modelo_covid,
+  newdata = covid_test,
+  type = "response"
+)
+
+umbral <- 0.50
+
+covid_test$prediccion <- ifelse(
+  covid_test$probabilidad >= umbral,
+  1,
+  0
+)
+
+VP <- sum(
+  covid_test$prediccion == 1 &
+    covid_test$MURIO == 1
+)
+
+VN <- sum(
+  covid_test$prediccion == 0 &
+    covid_test$MURIO == 0
+)
+
+FP <- sum(
+  covid_test$prediccion == 1 &
+    covid_test$MURIO == 0
+)
+
+FN <- sum(
+  covid_test$prediccion == 0 &
+    covid_test$MURIO == 1
+)
+
+matriz_covid <- matrix(
+  c(VN, FP, FN, VP),
+  nrow = 2,
+  byrow = TRUE,
+  dimnames = list(
+    Real = c("Clase 0", "Clase 1"),
+    Predicha = c("Clase 0", "Clase 1")
+  )
+)
+
+matriz_covid
+```
+
+### Métricas
+
+```{r}
+#| label: covid-evaluacion-metricas
+
+exactitud <- (VP + VN) / (VP + VN + FP + FN)
+sensibilidad <- VP / (VP + FN)
+especificidad <- VN / (VN + FP)
+precision <- VP / (VP + FP)
+f1 <- 2 * precision * sensibilidad /
+  (precision + sensibilidad)
+balanced_accuracy <- (
+  sensibilidad + especificidad
+) / 2
+
+data.frame(
+  exactitud,
+  sensibilidad,
+  especificidad,
+  precision,
+  f1,
+  balanced_accuracy
+)
+```
+
+### Comparación de umbrales
+
+```{r}
+#| label: covid-evaluacion-umbrales
+#| message: false
+#| warning: false
+
+evaluar_umbral <- function(umbral) {
+  pred <- ifelse(
+    covid_test$probabilidad >= umbral,
+    1,
+    0
+  )
+
+  vp <- sum(pred == 1 & covid_test$MURIO == 1)
+  vn <- sum(pred == 0 & covid_test$MURIO == 0)
+  fp <- sum(pred == 1 & covid_test$MURIO == 0)
+  fn <- sum(pred == 0 & covid_test$MURIO == 1)
+
+  data.frame(
+    umbral = umbral,
+    sensibilidad = vp / (vp + fn),
+    especificidad = vn / (vn + fp),
+    precision = vp / (vp + fp)
+  )
+}
+
+resultados_umbrales <- do.call(
+  rbind,
+  lapply(
+    seq(0.10, 0.90, by = 0.05),
+    evaluar_umbral
+  )
+)
+
+resultados_umbrales
+```
+
+::: {.callout-tip}
+
+En un problema de detección de riesgo, disminuir el umbral suele aumentar la
+sensibilidad, pero también puede generar más falsos positivos. El umbral no es
+una constante universal: depende del objetivo y del costo de cada error.
+
+:::

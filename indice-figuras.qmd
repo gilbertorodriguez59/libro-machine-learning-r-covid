@@ -1,0 +1,29 @@
+# Índice de figuras {.unnumbered}
+
+La versión PDF genera automáticamente una **lista de figuras** a partir de los
+títulos definidos en los bloques gráficos. En la versión web, las figuras
+pueden localizarse mediante el índice del capítulo y los enlaces siguientes.
+
+## Figuras por tema {.unnumbered}
+
+- [Introducción al aprendizaje automático](01-introduccion.qmd)
+- [Preparación de datos reales](02-preparacion-datos.qmd)
+- [Análisis exploratorio de datos](03-analisis-exploratorio.qmd)
+- [Regresión lineal simple y múltiple](04-regresion-lineal-multiple.qmd)
+- [Regresión logística](04-regresion-logistica.qmd)
+- [Vecinos más cercanos, k-NN](05-knn.qmd)
+- [Árboles de decisión](06-arboles-decision.qmd)
+- [Random Forest](07-random-forest.qmd)
+- [Evaluación y validación](08-evaluacion-modelos.qmd)
+- [Máquinas de vectores de soporte](09-svm.qmd)
+- [Naive Bayes](10-naive-bayes.qmd)
+- [Redes neuronales artificiales](11-redes-neuronales.qmd)
+- [Agrupamiento con k-means](12-kmeans.qmd)
+
+::: {.callout-note title="Figuras y laboratorios interactivos"}
+
+Algunos recursos de la edición web son laboratorios interactivos y no figuras
+estáticas. En la edición PDF se incluye su explicación y, cuando corresponde,
+una representación estática o una indicación para consultarlos en línea.
+
+:::

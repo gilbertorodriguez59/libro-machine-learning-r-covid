@@ -1,0 +1,4 @@
+﻿CORRECCIÓN COVID v0.14.0.1
+
+Corrige el error: objeto covid_test no encontrado.
+El capítulo 9 ahora carga los datos, crea entrenamiento/prueba, ajusta el modelo y calcula probabilidades antes de evaluarlo.

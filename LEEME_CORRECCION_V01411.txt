@@ -1,0 +1,15 @@
+﻿CORRECCION EDITORIAL v0.14.1.1
+
+Corrige:
+- comandos mutilados chcp/title del BAT anterior;
+- error MissingEqualsInHashLiteral de PowerShell;
+- bloque de conexiones con el volumen teorico.
+
+PASOS
+
+1. Descomprima este ZIP.
+2. Ejecute:
+   INSTALAR_ACTUALIZACION_EDITORIAL_V01411.bat
+
+3. Despues ejecute:
+   RENDERIZAR_REVISION_EDITORIAL_V01411.bat

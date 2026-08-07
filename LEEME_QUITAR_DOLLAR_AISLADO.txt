@@ -1,0 +1,26 @@
+﻿CORRECCIÓN DEL SIGNO $ AISLADO
+
+Error observado:
+
+Display math should end with $$.
+l.7218 $
+
+Causa:
+Existe una línea que contiene un solo signo $ fuera de un bloque de código.
+Los bloques matemáticos deben abrir y cerrar con $$.
+
+Qué hace el reparador:
+1. Crea un respaldo de 11-redes-neuronales.qmd.
+2. Elimina únicamente líneas cuyo contenido completo sea $.
+3. Conserva los delimitadores válidos $$.
+4. Verifica que el número de delimitadores $$ sea par.
+5. Borra archivos LaTeX temporales.
+6. Genera el PDF completo una sola vez.
+
+Uso:
+1. Copie los tres archivos en:
+   C:\libro-machine-learning-r-dev
+2. Ejecute:
+   QUITAR_DOLLAR_AISLADO_Y_GENERAR_PDF.bat
+3. Si aparece "PDF GENERADO CORRECTAMENTE", ejecute:
+   PREPARAR_SHINYLIVE_Y_PUBLICAR_V0121.bat

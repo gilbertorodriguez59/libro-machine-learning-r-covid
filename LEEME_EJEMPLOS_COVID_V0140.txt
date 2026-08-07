@@ -1,0 +1,30 @@
+﻿ACTUALIZACIÓN DEL LIBRO COVID v0.14.0
+
+Agrega el caso aplicado COVID-19 a:
+
+- Capítulo 2: preparación de datos.
+- Capítulo 3: análisis exploratorio.
+- Capítulo 5: regresión logística.
+- Capítulo 9: evaluación del modelo.
+
+También incluye:
+
+- base ML de 50,000 registros de 2022;
+- conteo histórico 2020-2025;
+- diccionario reducido;
+- simulador Shinylive de regresión logística;
+- advertencias éticas y epidemiológicas.
+
+INSTALACIÓN
+
+1. Descomprima este ZIP.
+2. Ejecute:
+   INSTALAR_EJEMPLOS_COVID_V0140.bat
+
+3. Abra una terminal en:
+   C:\libro-machine-learning-r-covid-dev
+
+4. Genere primero la versión web:
+   quarto render --to html
+
+No publique todavía en estable.

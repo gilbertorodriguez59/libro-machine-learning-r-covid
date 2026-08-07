@@ -1,0 +1,556 @@
+# Regresión lineal simple y múltiple
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **regresión lineal simple y múltiple** se desarrolla con mayor profundidad
+en los capítulos 9 y 10 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al terminar este capítulo, el lector podrá:
+
+- distinguir entre regresión y clasificación;
+- interpretar una relación lineal entre una variable respuesta y una variable explicativa;
+- ajustar una regresión lineal simple en R;
+- construir e interpretar un modelo de regresión lineal múltiple;
+- evaluar el ajuste mediante $R^2$, $R^2$ ajustado, RMSE y análisis de residuos;
+- reconocer cuándo la regresión lineal no es apropiada.
+
+## ¿Por qué estudiar regresión lineal en un libro de clasificación?
+
+La regresión lineal no es un algoritmo de clasificación: su respuesta es numérica y continua. Sin embargo, es una base fundamental del aprendizaje supervisado porque introduce ideas que reaparecen en otros modelos: función de predicción, coeficientes, error, ajuste, generalización y evaluación fuera de muestra.
+
+Además, permite comprender mejor la regresión logística del capítulo siguiente. Ambos modelos construyen una combinación de variables explicativas, aunque difieren en la naturaleza de la respuesta y en la función utilizada para obtener la predicción [@james2021islr].
+
+::: {.callout-note title="Idea central"}
+En regresión lineal se predice una cantidad, por ejemplo el número mensual de accidentes. En clasificación se predice una categoría, por ejemplo si un accidente tuvo víctimas o solo daños.
+:::
+
+## Regresión lineal simple
+
+La regresión lineal simple relaciona una variable respuesta $Y$ con una sola variable explicativa $X$:
+
+$$
+Y_i = \beta_0 + \beta_1 X_i + \varepsilon_i.
+$$
+
+Donde:
+
+- $\beta_0$ es la ordenada al origen;
+- $\beta_1$ representa el cambio promedio esperado en $Y$ cuando $X$ aumenta una unidad;
+- $\varepsilon_i$ representa la parte no explicada por el modelo.
+
+Los coeficientes se estiman normalmente mediante mínimos cuadrados, buscando minimizar la suma de los errores al cuadrado [@montgomery2021introduction].
+
+## Primer ejemplo didáctico
+
+Supongamos que se desea relacionar el número de horas de estudio con la calificación obtenida.
+
+```{r datos-regresion-simple}
+horas <- c(2, 3, 4, 5, 6, 7, 8, 9)
+calificacion <- c(55, 60, 64, 70, 75, 79, 86, 90)
+
+datos_estudio <- data.frame(
+  horas = horas,
+  calificacion = calificacion
+)
+
+datos_estudio
+```
+
+## Visualizar la relación
+
+```{r grafica-regresion-simple}
+library(ggplot2)
+source("util_graficas.R")
+
+ggplot(datos_estudio, aes(x = horas, y = calificacion)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Horas de estudio y calificación",
+    subtitle = "Ejemplo de una relación aproximadamente lineal",
+    x = "Horas de estudio",
+    y = "Calificación"
+  ) +
+  tema_libro()
+```
+
+## Ajustar el modelo simple
+
+```{r ajustar-modelo-simple}
+modelo_simple <- lm(
+  calificacion ~ horas,
+  data = datos_estudio
+)
+
+summary(modelo_simple)
+```
+
+## Interpretar los coeficientes
+
+```{r coeficientes-modelo-simple}
+coeficientes_simple <- coef(modelo_simple)
+coeficientes_simple
+```
+
+El modelo estimado tiene la forma:
+
+$$
+\widehat{Y} = \widehat{\beta}_0 + \widehat{\beta}_1 X.
+$$
+
+La pendiente indica cuántos puntos cambia, en promedio, la calificación por cada hora adicional de estudio. La ordenada al origen es necesaria matemáticamente, aunque no siempre tenga una interpretación práctica dentro del rango observado.
+
+## Realizar una predicción
+
+```{r prediccion-modelo-simple}
+nuevo_estudiante <- data.frame(horas = 6.5)
+
+predict(
+  modelo_simple,
+  newdata = nuevo_estudiante,
+  interval = "prediction",
+  level = 0.95
+)
+```
+
+El intervalo de predicción es más amplio que un intervalo para la media porque considera tanto la incertidumbre del modelo como la variabilidad individual.
+
+## Residuos
+
+El residuo de la observación $i$ es:
+
+$$
+e_i = y_i - \widehat{y}_i.
+$$
+
+```{r residuos-modelo-simple}
+diagnostico_simple <- data.frame(
+  observado = datos_estudio$calificacion,
+  predicho = fitted(modelo_simple),
+  residuo = residuals(modelo_simple)
+)
+
+diagnostico_simple
+```
+
+## Visualizar los residuos
+
+```{r grafica-residuos-simple}
+ggplot(diagnostico_simple, aes(x = predicho, y = residuo)) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_point(size = 3) +
+  labs(
+    title = "Residuos frente a valores predichos",
+    x = "Valor predicho",
+    y = "Residuo"
+  ) +
+  tema_libro()
+```
+
+Una nube sin patrón claro alrededor de cero es compatible con una relación lineal razonable. Curvaturas, forma de embudo o puntos extremos sugieren revisar el modelo.
+
+## Regresión lineal múltiple
+
+La regresión múltiple incorpora varias variables explicativas:
+
+$$
+Y_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} + \varepsilon_i.
+$$
+
+Cada coeficiente representa el cambio esperado en la respuesta cuando la variable correspondiente aumenta una unidad, **manteniendo constantes las demás variables**.
+
+## Preparar un ejemplo múltiple
+
+```{r datos-regresion-multiple}
+set.seed(2026)
+
+n <- 80
+
+datos_ambientales <- data.frame(
+  temperatura = runif(n, 12, 35),
+  velocidad_viento = runif(n, 0.5, 8),
+  trafico = runif(n, 100, 900)
+)
+
+datos_ambientales$pm10 <-
+  18 +
+  0.9 * datos_ambientales$temperatura -
+  2.1 * datos_ambientales$velocidad_viento +
+  0.045 * datos_ambientales$trafico +
+  rnorm(n, mean = 0, sd = 6)
+
+head(datos_ambientales)
+```
+
+## Ajustar el modelo múltiple
+
+```{r ajustar-modelo-multiple}
+modelo_multiple <- lm(
+  pm10 ~ temperatura + velocidad_viento + trafico,
+  data = datos_ambientales
+)
+
+summary(modelo_multiple)
+```
+
+## Interpretar los coeficientes múltiples
+
+```{r tabla-coeficientes-multiple}
+tabla_coeficientes <- data.frame(
+  termino = names(coef(modelo_multiple)),
+  estimacion = as.numeric(coef(modelo_multiple))
+)
+
+tabla_coeficientes
+```
+
+Por ejemplo, el coeficiente de `velocidad_viento` estima el cambio promedio de PM10 asociado con un aumento de una unidad en la velocidad del viento, manteniendo constantes la temperatura y el tráfico.
+
+::: {.callout-warning title="Asociación no significa causalidad"}
+Un coeficiente estadísticamente significativo no demuestra por sí solo una relación causal. La causalidad requiere diseño, conocimiento sustantivo y control adecuado de variables de confusión.
+:::
+
+## Separar entrenamiento y prueba
+
+Evaluar el modelo con los mismos datos usados para ajustarlo produce una visión demasiado optimista. Por ello se separan datos de entrenamiento y prueba.
+
+```{r dividir-regresion-multiple}
+set.seed(2026)
+
+indices_entrenamiento <- sample(
+  seq_len(nrow(datos_ambientales)),
+  size = floor(0.8 * nrow(datos_ambientales))
+)
+
+entrenamiento_reg <- datos_ambientales[indices_entrenamiento, ]
+prueba_reg <- datos_ambientales[-indices_entrenamiento, ]
+
+modelo_multiple_prueba <- lm(
+  pm10 ~ temperatura + velocidad_viento + trafico,
+  data = entrenamiento_reg
+)
+
+prediccion_reg <- predict(
+  modelo_multiple_prueba,
+  newdata = prueba_reg
+)
+```
+
+## Métricas de evaluación
+
+El error cuadrático medio y su raíz se calculan como:
+
+$$
+RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\widehat{y}_i)^2}.
+$$
+
+```{r metricas-regresion}
+rmse <- sqrt(mean((prueba_reg$pm10 - prediccion_reg)^2))
+mae <- mean(abs(prueba_reg$pm10 - prediccion_reg))
+
+metricas_regresion <- data.frame(
+  metrica = c("RMSE", "MAE"),
+  valor = c(rmse, mae)
+)
+
+metricas_regresion
+```
+
+## Observado frente a predicho
+
+```{r observado-predicho-regresion}
+comparacion_regresion <- data.frame(
+  observado = prueba_reg$pm10,
+  predicho = prediccion_reg
+)
+
+ggplot(comparacion_regresion, aes(x = observado, y = predicho)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2) +
+  labs(
+    title = "Valores observados y predichos",
+    subtitle = "La línea diagonal representa predicción perfecta",
+    x = "PM10 observado",
+    y = "PM10 predicho"
+  ) +
+  tema_libro()
+```
+
+## Aplicación con datos ATUS agregados
+
+En ATUS cada fila corresponde a un accidente. La base preparada del libro conserva las variables necesarias para los algoritmos de clasificación, pero no incluye entidad ni municipio. Por ello, en este ejemplo los registros se agregan por mes y se modela el número mensual de accidentes registrados.
+
+```{r preparar-atus-regresion}
+library(readr)
+library(dplyr)
+
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (!file.exists(ruta_atus_ml)) {
+  stop(
+    paste(
+      "No se encontró datos/atus_ml_preparado.csv.",
+      "Ejecute primero la celda de preparación automática."
+    )
+  )
+}
+
+atus_reg <- read_csv(
+  ruta_atus_ml,
+  show_col_types = FALSE
+)
+
+names(atus_reg)
+```
+
+## Construir una base mensual
+
+```{r base-mensual-atus-regresion}
+variables_necesarias <- c(
+  "MES", "ID_HORA", "DIASEMANA", "TIPACCID",
+  "accidente_con_victimas"
+)
+
+faltantes <- setdiff(variables_necesarias, names(atus_reg))
+
+if (length(faltantes) > 0) {
+  stop(
+    paste(
+      "Faltan variables para el ejemplo:",
+      paste(faltantes, collapse = ", ")
+    )
+  )
+}
+
+atus_mensual <- atus_reg |>
+  mutate(
+    ID_HORA = as.numeric(ID_HORA),
+    MES = as.numeric(MES),
+    fin_semana = DIASEMANA %in% c(
+      "sábado", "sabado", "domingo",
+      "Sábado", "Sabado", "Domingo"
+    ),
+    con_victimas = accidente_con_victimas == "Con víctimas"
+  ) |>
+  group_by(MES) |>
+  summarise(
+    accidentes = n(),
+    tipos_accidente = n_distinct(TIPACCID, na.rm = TRUE),
+    hora_promedio = mean(ID_HORA, na.rm = TRUE),
+    proporcion_fin_semana = mean(fin_semana, na.rm = TRUE),
+    proporcion_con_victimas = mean(con_victimas, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(
+    is.finite(accidentes),
+    is.finite(tipos_accidente),
+    is.finite(hora_promedio),
+    is.finite(proporcion_fin_semana),
+    is.finite(proporcion_con_victimas)
+  )
+
+atus_mensual
+```
+
+## Ajustar la regresión múltiple con ATUS
+
+```{r modelo-atus-regresion}
+modelo_atus_reg <- lm(
+  accidentes ~ MES + tipos_accidente +
+    hora_promedio + proporcion_fin_semana,
+  data = atus_mensual
+)
+
+summary(modelo_atus_reg)
+```
+
+::: {.callout-warning title="Limitación del ejemplo"}
+El número de accidentes es una variable de conteo. La regresión lineal se utiliza aquí con fines didácticos; en un estudio formal podrían ser más apropiados modelos de Poisson o binomial negativa. Esta comparación ayuda a comprender que la elección del algoritmo depende de la naturaleza de la respuesta.
+:::
+
+## Supuestos principales
+
+La interpretación inferencial tradicional de la regresión lineal se apoya en varios supuestos:
+
+1. relación aproximadamente lineal;
+2. errores independientes;
+3. varianza aproximadamente constante;
+4. ausencia de colinealidad extrema;
+5. normalidad aproximada de los errores cuando se construyen pruebas e intervalos.
+
+Los supuestos deben analizarse mediante gráficas, conocimiento del problema y medidas diagnósticas; no deben tratarse como una lista mecánica.
+
+## Diferencias entre regresión lineal y logística
+
+| Característica | Regresión lineal | Regresión logística |
+|---|---|---|
+| Respuesta | Numérica continua | Categórica binaria |
+| Salida directa | Cualquier número real | Probabilidad entre 0 y 1 |
+| Función usual | Identidad | Logística |
+| Evaluación | RMSE, MAE, $R^2$ | Matriz de confusión, sensibilidad, especificidad, AUC |
+| Ejemplo | Predecir PM10 | Clasificar accidente con víctimas |
+
+## Laboratorio interactivo: regresión lineal
+
+::: {.content-visible when-format="html"}
+
+Modifica el intercepto, la pendiente y el nivel de ruido para observar cómo cambia la nube de puntos y la recta de regresión.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 700
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Laboratorio de regresión lineal"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("b0", "Intercepto", -10, 10, 2, 0.5),
+      sliderInput("b1", "Pendiente", -5, 5, 1.5, 0.1),
+      sliderInput("ruido", "Desviación del ruido", 0, 8, 2, 0.25),
+      sliderInput("n", "Número de observaciones", 20, 200, 60, 10),
+      numericInput("semilla", "Semilla", 123, min = 1)
+    ),
+
+    mainPanel(
+      plotOutput("grafica", height = "450px"),
+      verbatimTextOutput("modelo"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+
+  datos <- reactive({
+    set.seed(input$semilla)
+    x <- runif(input$n, 0, 10)
+    y <- input$b0 + input$b1 * x +
+      rnorm(input$n, 0, input$ruido)
+    data.frame(x = x, y = y)
+  })
+
+  ajuste <- reactive({
+    lm(y ~ x, data = datos())
+  })
+
+  output$grafica <- renderPlot({
+    d <- datos()
+
+    plot(
+      d$x, d$y,
+      pch = 19,
+      xlab = "Variable x",
+      ylab = "Variable y",
+      main = "Datos simulados y recta estimada"
+    )
+
+    abline(ajuste(), lwd = 3)
+    abline(
+      a = input$b0,
+      b = input$b1,
+      lty = 2,
+      lwd = 2
+    )
+
+    legend(
+      "topleft",
+      legend = c("Recta estimada", "Recta verdadera"),
+      lty = c(1, 2),
+      lwd = c(3, 2),
+      bty = "n"
+    )
+  })
+
+  output$modelo <- renderPrint({
+    coeficientes <- coef(ajuste())
+    r2 <- summary(ajuste())$r.squared
+
+    cat("Modelo estimado:\n")
+    cat(
+      "y =",
+      round(coeficientes[1], 3),
+      "+",
+      round(coeficientes[2], 3),
+      "x\n\n"
+    )
+    cat("R² =", round(r2, 4))
+  })
+
+  output$interpretacion <- renderText({
+    if (input$ruido < 1) {
+      "Con poco ruido, la recta estimada suele aproximarse mucho a la relación verdadera."
+    } else if (input$ruido < 4) {
+      "El ruido genera dispersión y reduce la precisión del ajuste."
+    } else {
+      "Con ruido alto, la relación es más difícil de identificar y el R² suele disminuir."
+    }
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+El laboratorio permite modificar intercepto, pendiente, ruido, tamaño de muestra y semilla, y comparar la recta verdadera con la estimada.
+
+:::
+
+## Actividades para el lector
+
+1. Modifique el ejemplo simple y prediga la calificación para 7.5 horas de estudio.
+2. Retire una variable del modelo ambiental y compare el $R^2$ ajustado y el RMSE.
+3. Añada una interacción entre temperatura y velocidad del viento.
+4. Analice los residuos del modelo múltiple.
+5. Explique por qué no sería correcto utilizar regresión lineal ordinaria para predecir directamente una categoría como `Con víctimas` o `Solo daños`.
+6. Compare conceptualmente el modelo ATUS de este capítulo con la regresión logística del capítulo siguiente.
+
+## Conclusiones
+
+La regresión lineal simple explica una respuesta cuantitativa mediante una variable y la regresión múltiple permite considerar varios factores simultáneamente. Su valor en este libro no se limita a la predicción numérica: proporciona el lenguaje básico para comprender coeficientes, errores, validación y generalización, conceptos que continuarán apareciendo en los algoritmos de clasificación.
+
+
+## Materiales complementarios del capítulo
+
+| Recurso | Utilidad | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Video explicativo | Explicación audiovisual de la regresión lineal simple y múltiple. | [Ver en YouTube](https://www.youtube.com/watch?v=SE6DCeU9h1w){target="_blank"} | — |
+| Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pdf){download="capitulo-04-regresion-lineal-simple-multiple.pdf"} |
+| Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pptx) | [Descargar PPTX](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pptx){download="capitulo-04-regresion-lineal-simple-multiple.pptx"} |
+| Infografía | Síntesis visual de conceptos, fórmulas e interpretación. | [Ver infografía](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png){download="capitulo-04-regresion-lineal-simple-multiple-infografia.png"} |
+
+::: {.content-visible when-format="html"}
+### Video explicativo
+
+<div class="video-responsive">
+  <iframe src="https://www.youtube.com/embed/SE6DCeU9h1w" title="Capítulo 4. Regresión lineal simple y múltiple" frameborder="0" allowfullscreen></iframe>
+</div>
+
+### Vista previa de la infografía
+
+[![Infografía del capítulo 4](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png)](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png)
+:::
+
+::: {.content-visible when-format="pdf"}
+**Video del capítulo:** <https://www.youtube.com/watch?v=SE6DCeU9h1w>
+
+**Curso completo en YouTube:** <https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
+:::
+
+::: {.callout-tip title="Curso completo en YouTube"}
+[Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::

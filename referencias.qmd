@@ -1,0 +1,10 @@
+# Referencias {.unnumbered}
+
+::: {#refs}
+:::
+
+## Reconocimiento de la fuente de datos {.unnumbered}
+
+Los datos de accidentes empleados en este libro proceden de la **Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS)** del Instituto Nacional de Estadística y Geografía [@inegi_atus_2024].
+
+Los datos originales pertenecen al INEGI. La limpieza, transformación, selección de variables, gráficas, modelos de aprendizaje automático e interpretaciones son elaboración del autor y no constituyen resultados oficiales ni implican el aval del Instituto.

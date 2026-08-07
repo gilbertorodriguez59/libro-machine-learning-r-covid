@@ -1,0 +1,272 @@
+# ¿Qué es el aprendizaje automático?
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **Formulación del aprendizaje supervisado y teoría de clasificación** se desarrolla con mayor profundidad
+en los capítulos 5 y 6 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de explicar qué es el aprendizaje automático, diferenciarlo de la programación tradicional e identificar problemas de clasificación, regresión y agrupamiento.
+
+## Introducción
+
+El aprendizaje automático, también conocido como *Machine Learning*, permite construir modelos capaces de aprender patrones a partir de datos.
+
+En la programación tradicional, una persona define reglas. En aprendizaje automático, proporcionamos ejemplos para que un algoritmo aprenda una relación entre variables de entrada y una salida esperada.
+
+## Programación tradicional contra aprendizaje automático
+
+```{r regla-programacion-tradicional}
+pm10 <- 85
+
+if (pm10 > 75) {
+  print("Contaminación alta")
+} else {
+  print("Contaminación baja")
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+Se define un valor de PM10 y después se aplica una regla fija. Si el valor es mayor que 75, el programa clasifica el día como de contaminación alta.
+:::
+
+::: {.callout-tip}
+## Interpretación del resultado
+Este ejemplo representa programación tradicional: la decisión depende de una regla escrita manualmente. En aprendizaje automático, la regla se aprende a partir de ejemplos.
+:::
+
+```{r datos-ejemplo-introduccion}
+datos <- data.frame(
+  dia = 1:12,
+  pm10 = c(42, 88, 55, 120, 63, 95, 38, 110, 72, 130, 47, 99),
+  temperatura = c(25, 28, 22, 30, 24, 29, 21, 31, 27, 32, 23, 30),
+  humedad = c(40, 35, 60, 30, 55, 33, 65, 29, 42, 28, 62, 34),
+  clase = c("Baja", "Alta", "Baja", "Alta", "Baja", "Alta", "Baja", "Alta", "Baja", "Alta", "Baja", "Alta")
+)
+
+datos
+```
+
+::: {.callout-note}
+## Explicación del código
+Se construye una pequeña base de datos con 12 días. Cada fila contiene variables ambientales y una clase conocida.
+:::
+
+## Variables predictoras y variable respuesta
+
+La variable respuesta es la variable que queremos predecir. Las variables predictoras son las variables que usamos como entrada para el modelo.
+
+## Tipos principales de aprendizaje automático
+
+1. Aprendizaje supervisado.
+2. Aprendizaje no supervisado.
+3. Aprendizaje por refuerzo.
+
+## Notación básica
+
+Supongamos que tenemos $n$ observaciones y $p$ variables predictoras. Podemos representar los datos mediante una matriz $X$ y una variable respuesta $Y$.
+
+$$
+\hat{y} = f(x_1, x_2, \ldots, x_p)
+$$
+
+## Primer ejemplo visual en R
+
+```{r grafica-introduccion, fig.width=7, fig.height=4.5}
+library(ggplot2)
+source("util_graficas.R")
+
+ggplot(datos, aes(x = pm10, y = temperatura, color = clase)) +
+  geom_point(size = 4, alpha = 0.9) +
+  escala_clases_color() +
+  labs(
+    title = "Ejemplo inicial de clasificación",
+    subtitle = "Clasificación de contaminación alta o baja",
+    x = "PM10",
+    y = "Temperatura",
+    color = "Clase"
+  ) +
+  tema_libro()
+```
+
+::: {.callout-note}
+## Explicación del código
+La gráfica coloca PM10 en el eje horizontal, temperatura en el eje vertical y usa color para distinguir la clase.
+:::
+
+::: {.callout-tip}
+## Interpretación del resultado
+Los puntos permiten visualizar si las clases se separan. Esta es la idea básica detrás de muchos métodos de clasificación.
+:::
+
+## División entre entrenamiento y prueba
+
+```{r division-entrenamiento-prueba}
+set.seed(123)
+n <- nrow(datos)
+indices_entrenamiento <- sample(1:n, size = round(0.7 * n))
+
+entrenamiento <- datos[indices_entrenamiento, ]
+prueba <- datos[-indices_entrenamiento, ]
+
+entrenamiento
+prueba
+```
+
+::: {.callout-note}
+## Explicación del código
+Se divide la base en dos partes: una para entrenar el modelo y otra para evaluar cómo funciona con datos no usados durante el ajuste.
+:::
+
+## Primer clasificador basado en una regla
+
+```{r clasificador-regla}
+datos$prediccion_regla <- ifelse(datos$pm10 > 75, "Alta", "Baja")
+
+tabla_confusion <- table(
+  Real = datos$clase,
+  Predicho = datos$prediccion_regla
+)
+
+tabla_confusion
+mean(datos$clase == datos$prediccion_regla)
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+La matriz de confusión compara la clase real contra la clase predicha. La exactitud mide la proporción de aciertos.
+:::
+
+## Materiales complementarios del capítulo
+
+Estos recursos permiten repasar los conceptos principales del capítulo mediante distintos formatos. La presentación puede consultarse en PDF o modificarse en PowerPoint; la infografía ofrece una síntesis visual y el video explica los contenidos de manera audiovisual.
+
+| Recurso | Utilidad | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Video explicativo | Introducción audiovisual al aprendizaje automático y a los contenidos del capítulo. | [Ver en YouTube](https://www.youtube.com/watch?v=N2SkzjT2LpU){target="_blank"} | — |
+| Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pdf){download="capitulo-01-introduccion-aprendizaje-automatico.pdf"} |
+| Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pptx) | [Descargar PPTX](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pptx){download="capitulo-01-introduccion-aprendizaje-automatico.pptx"} |
+| Infografía | Resumen visual de las ideas fundamentales. | [Ver infografía](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png){download="capitulo-01-introduccion-aprendizaje-automatico-infografia.png"} |
+
+::: {.content-visible when-format="html"}
+### Video explicativo
+
+<div class="video-responsive">
+  <iframe
+    src="https://www.youtube.com/embed/N2SkzjT2LpU"
+    title="Capítulo 1. Introducción al aprendizaje automático"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+### Vista previa de la infografía
+
+[![Infografía del capítulo 1](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png)](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png)
+:::
+
+::: {.content-visible when-format="pdf"}
+**Video del capítulo:** <https://www.youtube.com/watch?v=xzTLERULM6s>
+
+La presentación PDF, el archivo editable y la infografía pueden descargarse desde la versión web del libro.
+:::
+
+::: {.callout-note title="Elaboración de los materiales"}
+Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor. El texto del libro y sus archivos fuente constituyen la referencia principal.
+:::
+
+::: {.callout-tip title="Curso completo en YouTube"}
+Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificación Automática con R**.
+
+[Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::
+
+## Laboratorio interactivo: una regla de clasificación
+
+::: {.content-visible when-format="html"}
+
+Este laboratorio muestra cómo una regla sencilla puede clasificar observaciones
+a partir de un umbral.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 680
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Clasificador basado en un umbral"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("umbral", "Umbral de clasificación", 0, 10, 5, step = 0.1),
+      sliderInput("ruido", "Nivel de ruido", 0, 3, 1, step = 0.1),
+      numericInput("semilla", "Semilla", 123, min = 1)
+    ),
+    mainPanel(
+      plotOutput("grafica", height = "400px"),
+      tableOutput("metricas"),
+      textOutput("regla")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  datos <- reactive({
+    set.seed(input$semilla)
+    x <- seq(0.5, 9.5, length.out = 80)
+    clase_real <- ifelse(x + rnorm(length(x), 0, input$ruido) >= 5, 1, 0)
+    pred <- ifelse(x >= input$umbral, 1, 0)
+    data.frame(x, clase_real, pred)
+  })
+
+  output$grafica <- renderPlot({
+    d <- datos()
+    plot(d$x, jitter(d$clase_real, amount = 0.08), pch = 19,
+         xlab = "Variable predictora x", ylab = "Clase real",
+         yaxt = "n", main = "Regla de clasificación")
+    axis(2, at = c(0, 1), labels = c("Clase 0", "Clase 1"))
+    abline(v = input$umbral, lwd = 3, lty = 2)
+    grid()
+  })
+
+  output$metricas <- renderTable({
+    d <- datos()
+    data.frame(
+      Observaciones = nrow(d),
+      Aciertos = sum(d$clase_real == d$pred),
+      Errores = sum(d$clase_real != d$pred),
+      Exactitud = round(mean(d$clase_real == d$pred), 4)
+    )
+  })
+
+  output$regla <- renderText({
+    paste0("Si x >= ", round(input$umbral, 2),
+           ", predecir Clase 1; en otro caso, Clase 0.")
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+Permite cambiar el umbral de una regla de clasificación y observar la exactitud.
+
+:::
+
+## Conclusión
+
+El aprendizaje automático permite construir modelos que aprenden patrones a partir de datos. En este capítulo vimos la diferencia entre reglas manuales y aprendizaje a partir de ejemplos.

@@ -1,0 +1,409 @@
+# Árboles de decisión para clasificación
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **entropía, impureza, particiones y árboles de decisión** se desarrolla con mayor profundidad
+en los capítulos 3, 6 y 13 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de explicar la idea básica de un árbol de decisión, entrenarlo en R y evaluar su desempeño.
+
+## Introducción
+
+Los árboles de decisión clasifican observaciones mediante una secuencia de preguntas. Son interpretables y pueden expresarse como reglas tipo si-entonces.
+
+## Fundamento matemático
+
+Una medida común de impureza es el índice de Gini:
+
+$$
+Gini = 1 - \sum_{k=1}^{K} p_k^2
+$$
+
+## Cargar paquetes y datos
+
+```{r cargar-arbol}
+library(readr)
+library(dplyr)
+library(rpart)
+source("util_graficas.R")
+
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (file.exists(ruta_atus_ml)) {
+  atus_ml <- read_csv(ruta_atus_ml, show_col_types = FALSE)
+  print("Base preparada cargada correctamente.")
+} else {
+  atus_ml <- NULL
+  print("No se encontró el archivo datos/atus_ml_preparado.csv. Ejecuta primero el capítulo 2.")
+}
+```
+
+## Usar la base completa
+
+```{r preparar-arbol}
+if (!is.null(atus_ml)) {
+  atus_arbol_base <- atus_ml |>
+    mutate(
+      accidente_con_victimas = factor(accidente_con_victimas, levels = c("Con víctimas", "Solo daños")),
+      MES = as.factor(MES),
+      ID_HORA = as.numeric(ID_HORA),
+      DIASEMANA = as.factor(DIASEMANA),
+      TIPACCID = as.factor(TIPACCID),
+      CAUSAACCI = as.factor(CAUSAACCI)
+    ) |>
+    na.omit()
+
+  data.frame(filas = nrow(atus_arbol_base), columnas = ncol(atus_arbol_base))
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+Se usa la base completa, pero el crecimiento del árbol se controla mediante parámetros del modelo.
+:::
+
+## División y entrenamiento
+
+```{r entrenar-arbol}
+if (exists("atus_arbol_base")) {
+  set.seed(123)
+  idx <- sample(1:nrow(atus_arbol_base), size = round(0.7 * nrow(atus_arbol_base)))
+  entrenamiento <- atus_arbol_base[idx, ]
+  prueba <- atus_arbol_base[-idx, ]
+
+  modelo_arbol <- rpart(
+    accidente_con_victimas ~ MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+    data = entrenamiento,
+    method = "class",
+    control = rpart.control(cp = 0.005, minsplit = 1000, minbucket = 300, maxdepth = 5)
+  )
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+Se ajusta un árbol de decisión controlado para evitar sobreajuste y salidas demasiado grandes.
+:::
+
+## Complejidad e importancia
+
+```{r complejidad-arbol}
+if (exists("modelo_arbol")) printcp(modelo_arbol)
+
+if (exists("modelo_arbol")) {
+  importancia <- modelo_arbol$variable.importance
+  if (!is.null(importancia)) {
+    importancia_df <- data.frame(variable = names(importancia), importancia = as.numeric(importancia), row.names = NULL)
+    importancia_df <- importancia_df[order(-importancia_df$importancia), ]
+    importancia_df
+  }
+}
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+La importancia de variables indica qué variables ayudan más a separar accidentes con víctimas de accidentes de solo daños.
+:::
+
+## Gráfica opcional del árbol
+
+La gráfica completa del árbol puede ser pesada en PDF. El lector puede ejecutarla manualmente en RStudio.
+
+```{r grafica-arbol-opcional, eval=FALSE}
+plot(modelo_arbol, uniform = TRUE, margin = 0.1)
+text(modelo_arbol, use.n = TRUE, cex = 0.7)
+```
+
+## Predicción y métricas
+
+```{r metricas-arbol}
+if (exists("modelo_arbol")) {
+  pred_arbol <- predict(modelo_arbol, newdata = prueba, type = "class")
+  real_arbol <- factor(prueba$accidente_con_victimas, levels = c("Con víctimas", "Solo daños"))
+  pred_arbol <- factor(pred_arbol, levels = c("Con víctimas", "Solo daños"))
+
+  matriz_confusion_arbol <- table(Real = real_arbol, Predicho = pred_arbol)
+  matriz_confusion_arbol
+}
+
+if (exists("matriz_confusion_arbol")) {
+  VP <- matriz_confusion_arbol["Con víctimas", "Con víctimas"]
+  FN <- matriz_confusion_arbol["Con víctimas", "Solo daños"]
+  FP <- matriz_confusion_arbol["Solo daños", "Con víctimas"]
+  VN <- matriz_confusion_arbol["Solo daños", "Solo daños"]
+
+  data.frame(exactitud=(VP+VN)/(VP+FN+FP+VN), sensibilidad=VP/(VP+FN), especificidad=VN/(VN+FP))
+}
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+La matriz de confusión y las métricas permiten evaluar el desempeño del árbol sobre datos de prueba.
+:::
+
+## Laboratorio interactivo: construye una división del árbol
+
+::: {.content-visible when-format="html"}
+
+Este laboratorio permite explorar cómo una regla del tipo
+`Petal.Length < punto de corte` divide los datos de `iris`. El usuario puede
+cambiar el punto de corte y comparar la impureza de Gini antes y después de la
+división.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+gini <- function(clase) {
+  if (length(clase) == 0) return(0)
+  p <- prop.table(table(clase))
+  1 - sum(p^2)
+}
+
+ui <- fluidPage(
+  titlePanel("Explorador interactivo de una división CART"),
+
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(
+        "variable",
+        "Variable para dividir",
+        choices = c(
+          "Longitud del pétalo" = "Petal.Length",
+          "Anchura del pétalo" = "Petal.Width",
+          "Longitud del sépalo" = "Sepal.Length",
+          "Anchura del sépalo" = "Sepal.Width"
+        ),
+        selected = "Petal.Length"
+      ),
+
+      uiOutput("control_corte"),
+
+      radioButtons(
+        "criterio",
+        "Regla del nodo izquierdo",
+        choices = c(
+          "Menor que" = "menor",
+          "Menor o igual que" = "menor_igual"
+        ),
+        selected = "menor_igual"
+      )
+    ),
+
+    mainPanel(
+      plotOutput("grafica", height = "420px"),
+      tableOutput("resumen"),
+      verbatimTextOutput("regla"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+
+  output$control_corte <- renderUI({
+    x <- iris[[input$variable]]
+
+    sliderInput(
+      "corte",
+      "Punto de corte",
+      min = floor(min(x) * 10) / 10,
+      max = ceiling(max(x) * 10) / 10,
+      value = median(x),
+      step = 0.1
+    )
+  })
+
+  division <- reactive({
+    req(input$corte)
+
+    x <- iris[[input$variable]]
+
+    izquierda <- if (input$criterio == "menor") {
+      x < input$corte
+    } else {
+      x <= input$corte
+    }
+
+    derecha <- !izquierda
+
+    gini_padre <- gini(iris$Species)
+    gini_izq <- gini(iris$Species[izquierda])
+    gini_der <- gini(iris$Species[derecha])
+
+    n <- nrow(iris)
+
+    gini_ponderado <-
+      sum(izquierda) / n * gini_izq +
+      sum(derecha) / n * gini_der
+
+    ganancia <- gini_padre - gini_ponderado
+
+    list(
+      x = x,
+      izquierda = izquierda,
+      derecha = derecha,
+      gini_padre = gini_padre,
+      gini_izq = gini_izq,
+      gini_der = gini_der,
+      gini_ponderado = gini_ponderado,
+      ganancia = ganancia
+    )
+  })
+
+  output$grafica <- renderPlot({
+    d <- division()
+    colores <- as.integer(iris$Species)
+
+    plot(
+      d$x,
+      jitter(as.integer(iris$Species), amount = 0.08),
+      pch = 19,
+      col = colores,
+      xlab = input$variable,
+      ylab = "Especie",
+      yaxt = "n",
+      main = "División propuesta"
+    )
+
+    axis(
+      2,
+      at = 1:3,
+      labels = levels(iris$Species)
+    )
+
+    abline(v = input$corte, lwd = 3, lty = 2)
+
+    legend(
+      "topright",
+      legend = levels(iris$Species),
+      col = 1:3,
+      pch = 19,
+      bty = "n"
+    )
+  })
+
+  output$resumen <- renderTable({
+    d <- division()
+
+    data.frame(
+      Nodo = c("Padre", "Izquierdo", "Derecho", "División ponderada"),
+      Observaciones = c(
+        nrow(iris),
+        sum(d$izquierda),
+        sum(d$derecha),
+        nrow(iris)
+      ),
+      Gini = round(
+        c(
+          d$gini_padre,
+          d$gini_izq,
+          d$gini_der,
+          d$gini_ponderado
+        ),
+        4
+      )
+    )
+  })
+
+  output$regla <- renderPrint({
+    operador <- if (input$criterio == "menor") "<" else "<="
+
+    cat(
+      "Nodo izquierdo:",
+      input$variable,
+      operador,
+      round(input$corte, 2),
+      "\n"
+    )
+
+    cat(
+      "Nodo derecho:",
+      input$variable,
+      ifelse(operador == "<", ">=", ">"),
+      round(input$corte, 2),
+      "\n"
+    )
+  })
+
+  output$interpretacion <- renderText({
+    d <- division()
+
+    paste0(
+      "La reducción de impureza es ",
+      round(d$ganancia, 4),
+      ". Una reducción mayor indica una división más útil para separar las clases."
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+La versión web permite cambiar la variable y el punto de corte, observar la
+división de las especies de `iris` y comparar la impureza de Gini de los nodos.
+
+:::
+
+## Materiales complementarios del capítulo
+
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<div class="video-responsive">
+<iframe src="https://www.youtube.com/embed/UperQjxBYEY"
+title="Capítulo 7. Árboles de decisión para clasificación"
+frameborder="0" allowfullscreen></iframe>
+</div>
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Video del capítulo
+
+Disponible en YouTube:
+
+<https://youtu.be/UperQjxBYEY>
+
+:::
+
+| Recurso | Descripción | Abrir o descargar |
+|---|---|---|
+| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-07/capitulo-07-arboles-presentacion.pdf){target="_blank"} |
+| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-07/capitulo-07-arboles-presentacion.pptx) |
+| Infografía | Resumen visual de árboles de decisión. | [Abrir infografía](recursos/capitulo-07/capitulo-07-arboles-infografia.png){target="_blank"} |
+
+::: {.content-visible when-format="html"}
+
+![Infografía del capítulo 7](recursos/capitulo-07/capitulo-07-arboles-infografia.png){fig-alt="Infografía sobre árboles de decisión" width="85%"}
+
+:::
+
+Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
+contenido del libro y revisados y adaptados por el autor.
+
+## Conclusión
+
+Los árboles de decisión son modelos intuitivos, visuales e interpretables. Este capítulo prepara el camino para modelos basados en muchos árboles, como Random Forest.
+
+
+## Referencias fundamentales de los árboles de decisión
+
+La metodología CART fue desarrollada sistemáticamente por @breiman1984classification. El algoritmo ID3 y la inducción de árboles mediante ganancia de información fueron presentados por @quinlan1986induction. Para una introducción contemporánea con ejemplos en R puede consultarse @james2021islr.

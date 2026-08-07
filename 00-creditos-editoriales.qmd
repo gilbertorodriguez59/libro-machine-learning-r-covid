@@ -1,0 +1,50 @@
+# Créditos editoriales {.unnumbered}
+
+**Título:** Aprendizaje y Clasificación Automática con R  
+**Subtítulo:** Un enfoque práctico con datos abiertos reales  
+**Autor:** Jesús Gilberto Rodríguez Escobedo  
+**Lugar de elaboración:** San Luis Potosí, México  
+**Edición:** Primera edición digital ampliada, 2026  
+**Formato:** Libro web, PDF y cuaderno de Google Colab  
+**Lenguaje principal de implementación:** R  
+**Tecnologías:** Quarto, Shinylive, GitHub Pages, Google Colab y YouTube  
+
+Esta obra fue concebida como un texto académico abierto orientado a
+estudiantes, docentes y profesionales de ingeniería, matemáticas, computación,
+estadística, ciencia de datos y ciencias aplicadas.
+
+Los nombres comerciales, marcas registradas, bibliotecas y plataformas
+mencionadas pertenecen a sus respectivos propietarios. Su inclusión tiene
+fines académicos, técnicos y descriptivos.
+
+## Cómo citar esta obra {.unnumbered}
+
+Rodríguez Escobedo, J. G. (2026). *Aprendizaje y Clasificación Automática con
+R: un enfoque práctico con datos abiertos reales*. Primera edición digital
+ampliada. San Luis Potosí, México.
+
+## Entrada BibTeX sugerida {.unnumbered}
+
+```bibtex
+@book{rodriguez2026aprendizajeR,
+  author    = {Rodríguez Escobedo, Jesús Gilberto},
+  title     = {Aprendizaje y Clasificación Automática con R},
+  subtitle  = {Un enfoque práctico con datos abiertos reales},
+  year      = {2026},
+  edition   = {Primera edición digital ampliada},
+  address   = {San Luis Potosí, México}
+}
+```
+
+## Volumen teórico complementario {.unnumbered}
+
+La formulación rigurosa de los métodos se desarrolla en
+*Fundamentos Matemáticos del Aprendizaje Automático*
+[@rodriguez2026fundamentos].
+
+## Nota sobre la edición {.unnumbered}
+
+La versión web permite navegación por capítulos, consulta de referencias,
+acceso a materiales y ejecución de laboratorios interactivos. La versión PDF
+conserva la estructura editorial para lectura, impresión y archivo. El
+cuaderno de Google Colab reúne explicaciones y código ejecutable.

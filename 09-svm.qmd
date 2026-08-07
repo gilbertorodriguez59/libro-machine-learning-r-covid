@@ -1,0 +1,785 @@
+# Máquinas de Vectores de Soporte (SVM)
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **margen, optimización convexa, condiciones KKT y kernels** se desarrolla con mayor profundidad
+en los capítulos 4 y 15 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de:
+
+- explicar la idea del hiperplano de separación y del margen máximo;
+- identificar los vectores de soporte;
+- distinguir entre una SVM lineal y una SVM con kernel;
+- comprender el papel de los parámetros `cost`, `gamma` y del tipo de kernel;
+- entrenar modelos SVM en R;
+- evaluar una SVM mediante una matriz de confusión y métricas de clasificación;
+- utilizar ponderación de clases cuando la variable respuesta está desbalanceada;
+- comparar una SVM lineal con una SVM de kernel radial.
+
+## Introducción
+
+Las **máquinas de vectores de soporte**, conocidas como **SVM** por *Support Vector Machines*, son métodos supervisados utilizados principalmente para clasificación. Su propósito es construir una frontera que separe las clases con el margen más amplio posible.
+
+La idea es sencilla de visualizar: si dos grupos pueden separarse mediante una línea, existen muchas líneas posibles, pero la SVM busca aquella que deja la mayor distancia entre la frontera y las observaciones más cercanas de cada clase.
+
+Esas observaciones cercanas reciben el nombre de **vectores de soporte**. Aunque el conjunto de datos contenga miles de registros, los vectores de soporte son los que determinan directamente la posición de la frontera.
+
+En este capítulo se emplean primero datos simulados para entender la geometría del método y después la base preparada de ATUS [@inegi_atus_2024].
+
+## Intuición geométrica
+
+Supongamos que cada observación tiene dos variables, $x_1$ y $x_2$. Una frontera lineal puede escribirse como:
+
+$$
+w_1x_1+w_2x_2+b=0
+$$
+
+donde:
+
+- $w_1$ y $w_2$ determinan la orientación de la frontera;
+- $b$ desplaza la frontera;
+- el signo de la expresión determina de qué lado queda cada observación.
+
+La SVM busca una frontera con **margen máximo**. En una separación ideal se desea que:
+
+$$
+y_i(\mathbf{w}^{T}\mathbf{x}_i+b)\geq 1
+$$
+
+para todas las observaciones, donde $y_i$ representa la clase codificada como $-1$ o $1$.
+
+El ancho del margen es proporcional a:
+
+$$
+\frac{2}{\lVert\mathbf{w}\rVert}
+$$
+
+Por ello, maximizar el margen equivale a minimizar la magnitud de $\mathbf{w}$.
+
+::: {.callout-tip title="Idea esencial"}
+Una SVM no busca solamente clasificar bien los datos de entrenamiento. Busca una frontera que conserve la mayor separación posible entre las clases, con la intención de generalizar mejor ante observaciones nuevas.
+:::
+
+## Crear un ejemplo didáctico
+
+```{r svm-datos-simulados}
+set.seed(123)
+
+n <- 120
+
+datos_svm <- data.frame(
+  x1 = c(rnorm(n / 2, mean = -1.5, sd = 0.8),
+         rnorm(n / 2, mean =  1.5, sd = 0.8)),
+  x2 = c(rnorm(n / 2, mean = -1.0, sd = 0.9),
+         rnorm(n / 2, mean =  1.0, sd = 0.9)),
+  clase = factor(rep(c("Clase A", "Clase B"), each = n / 2))
+)
+
+head(datos_svm)
+```
+
+::: {.callout-note title="Explicación del código"}
+Se generan dos grupos artificiales. El primero se concentra alrededor de valores negativos y el segundo alrededor de valores positivos. El ejemplo permite observar con claridad la frontera de clasificación.
+:::
+
+## Visualizar las clases
+
+```{r svm-grafica-datos, fig.width=7, fig.height=5}
+library(ggplot2)
+source("util_graficas.R")
+
+ggplot(datos_svm, aes(x = x1, y = x2, color = clase)) +
+  geom_point(size = 2.5, alpha = 0.8) +
+  labs(
+    title = "Datos simulados para clasificación",
+    subtitle = "Cada punto representa una observación",
+    x = "Variable x1",
+    y = "Variable x2",
+    color = "Clase"
+  ) +
+  tema_libro()
+```
+
+## Instalar y cargar el paquete `e1071`
+
+```{r svm-paquete}
+if (!requireNamespace("e1071", quietly = TRUE)) {
+  install.packages("e1071", repos = "https://cloud.r-project.org")
+}
+
+library(e1071)
+```
+
+El paquete `e1071` proporciona la función `svm()`, que permite entrenar modelos lineales y no lineales.
+
+## Entrenar una SVM lineal
+
+```{r svm-lineal-simulada}
+modelo_svm_lineal <- svm(
+  clase ~ x1 + x2,
+  data = datos_svm,
+  kernel = "linear",
+  cost = 1,
+  scale = TRUE
+)
+
+modelo_svm_lineal
+```
+
+Los argumentos principales son:
+
+- `kernel = "linear"`: utiliza una frontera lineal;
+- `cost = 1`: establece la penalización por errores;
+- `scale = TRUE`: estandariza las variables numéricas antes del ajuste.
+
+## Identificar los vectores de soporte
+
+```{r svm-vectores-soporte}
+indices_soporte <- modelo_svm_lineal$index
+vectores_soporte <- datos_svm[indices_soporte, ]
+
+nrow(vectores_soporte)
+head(vectores_soporte)
+```
+
+::: {.callout-tip title="Interpretación"}
+Los vectores de soporte son las observaciones más influyentes para establecer la frontera. Los puntos alejados del margen suelen tener poca o ninguna influencia directa sobre su posición.
+:::
+
+## Dibujar la frontera de decisión
+
+```{r svm-frontera-lineal, fig.width=7, fig.height=5}
+rejilla <- expand.grid(
+  x1 = seq(min(datos_svm$x1) - 0.5,
+           max(datos_svm$x1) + 0.5,
+           length.out = 180),
+  x2 = seq(min(datos_svm$x2) - 0.5,
+           max(datos_svm$x2) + 0.5,
+           length.out = 180)
+)
+
+rejilla$prediccion <- predict(modelo_svm_lineal, newdata = rejilla)
+
+ggplot() +
+  geom_tile(
+    data = rejilla,
+    aes(x = x1, y = x2, fill = prediccion),
+    alpha = 0.18
+  ) +
+  geom_point(
+    data = datos_svm,
+    aes(x = x1, y = x2, color = clase),
+    size = 2.2
+  ) +
+  geom_point(
+    data = vectores_soporte,
+    aes(x = x1, y = x2),
+    shape = 21,
+    size = 4,
+    stroke = 1.1,
+    fill = NA
+  ) +
+  labs(
+    title = "Frontera de decisión de una SVM lineal",
+    subtitle = "Los círculos grandes identifican los vectores de soporte",
+    x = "Variable x1",
+    y = "Variable x2",
+    fill = "Predicción",
+    color = "Clase real"
+  ) +
+  tema_libro()
+```
+
+## El parámetro de costo
+
+El parámetro `cost` controla la penalización asignada a las observaciones clasificadas incorrectamente.
+
+- Un costo pequeño permite más errores y favorece un margen amplio.
+- Un costo grande penaliza fuertemente los errores y puede producir una frontera más ajustada a los datos de entrenamiento.
+
+No existe un valor universalmente mejor. Debe seleccionarse con validación cruzada.
+
+```{r svm-comparar-costos}
+modelos_cost <- lapply(
+  c(0.1, 1, 10),
+  function(valor_cost) {
+    svm(
+      clase ~ x1 + x2,
+      data = datos_svm,
+      kernel = "linear",
+      cost = valor_cost,
+      scale = TRUE
+    )
+  }
+)
+
+resumen_cost <- data.frame(
+  cost = c(0.1, 1, 10),
+  vectores_soporte = vapply(
+    modelos_cost,
+    function(modelo) modelo$tot.nSV,
+    numeric(1)
+  )
+)
+
+resumen_cost
+```
+
+## Cuando una línea no es suficiente
+
+Algunos conjuntos de datos no pueden separarse adecuadamente mediante una línea o un hiperplano. En esos casos, una SVM puede utilizar una función denominada **kernel**.
+
+El kernel calcula similitudes entre observaciones y permite representar fronteras no lineales sin construir explícitamente todas las nuevas variables.
+
+Los kernels más utilizados son:
+
+| Kernel | Uso general |
+|---|---|
+| Lineal | Cuando la separación es aproximadamente lineal o existen muchas variables |
+| Polinomial | Cuando se esperan relaciones de tipo polinómico |
+| Radial | Cuando la frontera puede tener formas curvas y complejas |
+| Sigmoide | Menos frecuente; guarda relación con funciones de activación |
+
+## Kernel radial
+
+El kernel radial utiliza una función semejante a:
+
+$$
+K(\mathbf{x}_i,\mathbf{x}_j)=
+\exp\left(-\gamma\lVert\mathbf{x}_i-\mathbf{x}_j\rVert^2\right)
+$$
+
+El parámetro $\gamma$ controla el alcance de la influencia de cada observación:
+
+- valores pequeños producen fronteras más suaves;
+- valores grandes permiten fronteras más locales y complejas.
+
+::: {.callout-warning title="Riesgo de sobreajuste"}
+Una combinación de `cost` y `gamma` demasiado grande puede ajustar muy bien el entrenamiento, pero funcionar peor con datos nuevos. La validación cruzada ayuda a evitar esa elección.
+:::
+
+## Aplicación con los datos ATUS
+
+## Cargar la base preparada
+
+```{r svm-cargar-atus}
+library(readr)
+library(dplyr)
+
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (!file.exists(ruta_atus_ml)) {
+  stop(
+    paste(
+      "No se encontró datos/atus_ml_preparado.csv.",
+      "Renderice primero el capítulo de preparación de datos."
+    )
+  )
+}
+
+atus_ml <- read_csv(
+  ruta_atus_ml,
+  show_col_types = FALSE
+)
+```
+
+## Preparar una muestra reproducible
+
+Las SVM pueden requerir bastante memoria y tiempo cuando el conjunto es muy grande. Para fines didácticos se utiliza una muestra de hasta 6 000 accidentes.
+
+```{r svm-preparar-atus}
+set.seed(123)
+
+atus_svm <- atus_ml |>
+  sample_n(min(6000, nrow(atus_ml))) |>
+  transmute(
+    accidente_con_victimas = factor(
+      accidente_con_victimas,
+      levels = c("Solo daños", "Con víctimas")
+    ),
+    MES = factor(MES),
+    ID_HORA = as.numeric(ID_HORA),
+    DIASEMANA = factor(DIASEMANA),
+    TIPACCID = factor(TIPACCID),
+    CAUSAACCI = factor(CAUSAACCI)
+  ) |>
+  na.omit()
+
+prop.table(table(atus_svm$accidente_con_victimas))
+```
+
+::: {.callout-note title="Nota sobre la muestra"}
+La muestra reduce el tiempo de ejecución y hace posible repetir el ejercicio en computadoras personales y en Google Colab. Para un estudio definitivo se recomienda evaluar tamaños mayores y documentar los recursos computacionales utilizados.
+:::
+
+## Dividir los datos de forma estratificada
+
+```{r svm-division-atus}
+set.seed(123)
+
+indices_entrenamiento <- unlist(
+  lapply(
+    split(seq_len(nrow(atus_svm)), atus_svm$accidente_con_victimas),
+    function(indices) {
+      sample(indices, size = floor(0.70 * length(indices)))
+    }
+  )
+)
+
+entrenamiento_svm <- atus_svm[indices_entrenamiento, ]
+prueba_svm <- atus_svm[-indices_entrenamiento, ]
+
+prop.table(table(entrenamiento_svm$accidente_con_victimas))
+prop.table(table(prueba_svm$accidente_con_victimas))
+```
+
+## Calcular pesos para las clases
+
+Si una clase aparece con menor frecuencia, la SVM puede recibir pesos inversamente proporcionales a sus frecuencias.
+
+```{r svm-pesos-clases}
+frecuencias <- table(entrenamiento_svm$accidente_con_victimas)
+
+pesos_clase <- sum(frecuencias) /
+  (length(frecuencias) * frecuencias)
+
+pesos_clase <- as.numeric(pesos_clase)
+names(pesos_clase) <- names(frecuencias)
+
+pesos_clase
+```
+
+La clase menos frecuente recibe un peso mayor, de modo que sus errores tengan más influencia durante el entrenamiento.
+
+## Ajustar una SVM lineal
+
+```{r svm-lineal-atus}
+set.seed(123)
+
+modelo_svm_atus_lineal <- svm(
+  accidente_con_victimas ~
+    MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+  data = entrenamiento_svm,
+  kernel = "linear",
+  cost = 1,
+  class.weights = pesos_clase,
+  scale = TRUE
+)
+
+modelo_svm_atus_lineal
+```
+
+## Realizar predicciones
+
+```{r svm-prediccion-lineal-atus}
+prediccion_svm_lineal <- predict(
+  modelo_svm_atus_lineal,
+  newdata = prueba_svm
+)
+
+matriz_svm_lineal <- table(
+  Real = prueba_svm$accidente_con_victimas,
+  Predicho = prediccion_svm_lineal
+)
+
+matriz_svm_lineal
+```
+
+## Función segura para calcular métricas
+
+```{r svm-funcion-metricas}
+metricas_clasificacion <- function(
+  real,
+  predicho,
+  positiva = "Con víctimas"
+) {
+  real <- factor(real)
+  predicho <- factor(predicho, levels = levels(real))
+
+  negativa <- setdiff(levels(real), positiva)
+
+  if (length(negativa) != 1) {
+    stop("La función requiere exactamente dos clases.")
+  }
+
+  negativa <- negativa[1]
+  matriz <- table(Real = real, Predicho = predicho)
+
+  VP <- matriz[positiva, positiva]
+  FN <- matriz[positiva, negativa]
+  FP <- matriz[negativa, positiva]
+  VN <- matriz[negativa, negativa]
+
+  dividir <- function(a, b) {
+    if (is.na(a) || is.na(b) || b == 0) {
+      return(NA_real_)
+    }
+    as.numeric(a / b)
+  }
+
+  exactitud <- dividir(VP + VN, VP + FN + FP + VN)
+  sensibilidad <- dividir(VP, VP + FN)
+  especificidad <- dividir(VN, VN + FP)
+  precision <- dividir(VP, VP + FP)
+  f1 <- dividir(
+    2 * precision * sensibilidad,
+    precision + sensibilidad
+  )
+
+  data.frame(
+    exactitud = exactitud,
+    sensibilidad = sensibilidad,
+    especificidad = especificidad,
+    precision = precision,
+    f1 = f1
+  )
+}
+```
+
+## Evaluar la SVM lineal
+
+```{r svm-metricas-lineal}
+metricas_svm_lineal <- metricas_clasificacion(
+  real = prueba_svm$accidente_con_victimas,
+  predicho = prediccion_svm_lineal
+)
+
+metricas_svm_lineal
+```
+
+::: {.callout-tip title="Interpretación"}
+La sensibilidad indica la proporción de accidentes con víctimas detectada por el modelo. La especificidad indica la proporción de accidentes de solo daños reconocida correctamente. Cuando las clases están desbalanceadas, estas métricas suelen ser más informativas que la exactitud aislada.
+:::
+
+## Ajustar una SVM con kernel radial
+
+```{r svm-radial-atus}
+set.seed(123)
+
+modelo_svm_atus_radial <- svm(
+  accidente_con_victimas ~
+    MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+  data = entrenamiento_svm,
+  kernel = "radial",
+  cost = 1,
+  gamma = 0.03,
+  class.weights = pesos_clase,
+  scale = TRUE
+)
+
+modelo_svm_atus_radial
+```
+
+## Evaluar la SVM radial
+
+```{r svm-prediccion-radial-atus}
+prediccion_svm_radial <- predict(
+  modelo_svm_atus_radial,
+  newdata = prueba_svm
+)
+
+matriz_svm_radial <- table(
+  Real = prueba_svm$accidente_con_victimas,
+  Predicho = prediccion_svm_radial
+)
+
+matriz_svm_radial
+```
+
+```{r svm-metricas-radial}
+metricas_svm_radial <- metricas_clasificacion(
+  real = prueba_svm$accidente_con_victimas,
+  predicho = prediccion_svm_radial
+)
+
+metricas_svm_radial
+```
+
+## Comparar los dos modelos
+
+```{r svm-comparacion-modelos}
+comparacion_svm <- bind_rows(
+  transform(metricas_svm_lineal, modelo = "SVM lineal"),
+  transform(metricas_svm_radial, modelo = "SVM radial")
+) |>
+  select(modelo, everything())
+
+comparacion_svm
+```
+
+```{r svm-grafica-comparacion, fig.width=7, fig.height=5}
+comparacion_larga <- comparacion_svm |>
+  tidyr::pivot_longer(
+    cols = -modelo,
+    names_to = "metrica",
+    values_to = "valor"
+  )
+
+ggplot(
+  comparacion_larga,
+  aes(x = metrica, y = valor, fill = modelo)
+) +
+  geom_col(position = "dodge") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    title = "Comparación de modelos SVM",
+    subtitle = "Resultados sobre el conjunto de prueba",
+    x = "Métrica",
+    y = "Valor",
+    fill = "Modelo"
+  ) +
+  tema_libro()
+```
+
+## Selección de hiperparámetros con validación cruzada
+
+La función `tune.svm()` permite probar diferentes combinaciones de hiperparámetros. Para mantener un tiempo razonable se usa una cuadrícula pequeña.
+
+```{r svm-ajuste-hiperparametros}
+set.seed(123)
+
+muestra_ajuste <- entrenamiento_svm |>
+  sample_n(min(3000, nrow(entrenamiento_svm)))
+
+ajuste_svm <- tune.svm(
+  accidente_con_victimas ~
+    MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+  data = muestra_ajuste,
+  kernel = "radial",
+  cost = c(0.5, 1, 2),
+  gamma = c(0.01, 0.03, 0.05),
+  tunecontrol = tune.control(cross = 5),
+  scale = TRUE
+)
+
+ajuste_svm$best.parameters
+```
+
+```{r svm-mejor-modelo}
+mejor_modelo_svm <- ajuste_svm$best.model
+
+prediccion_mejor_svm <- predict(
+  mejor_modelo_svm,
+  newdata = prueba_svm
+)
+
+metricas_mejor_svm <- metricas_clasificacion(
+  real = prueba_svm$accidente_con_victimas,
+  predicho = prediccion_mejor_svm
+)
+
+metricas_mejor_svm
+```
+
+::: {.callout-warning title="Validación sin fuga de información"}
+Los hiperparámetros deben seleccionarse usando exclusivamente los datos de entrenamiento. El conjunto de prueba se reserva para la evaluación final.
+:::
+
+## Ventajas y limitaciones
+
+### Ventajas
+
+- puede construir fronteras lineales y no lineales;
+- funciona bien en espacios con muchas variables;
+- el margen máximo favorece la generalización;
+- utiliza principalmente los vectores de soporte para definir la frontera;
+- permite ponderar clases desbalanceadas.
+
+### Limitaciones
+
+- puede ser lenta con conjuntos de datos muy grandes;
+- requiere elegir kernel e hiperparámetros;
+- sus resultados son menos interpretables que los de una regresión logística o un árbol pequeño;
+- la estandarización de variables numéricas es importante;
+- una búsqueda extensa de hiperparámetros puede consumir muchos recursos.
+
+## Recomendaciones prácticas
+
+1. Comience con una SVM lineal como referencia.
+2. Estandarice las variables numéricas.
+3. Use validación cruzada para seleccionar `cost` y `gamma`.
+4. Revise sensibilidad, especificidad, precisión y F1, no solo exactitud.
+5. Utilice pesos de clase cuando exista desbalance.
+6. Trabaje inicialmente con una muestra si el conjunto es muy grande.
+7. Evalúe el modelo final una sola vez sobre datos de prueba no utilizados durante el ajuste.
+
+## Actividad guiada
+
+Modifique el código para comparar:
+
+- `cost = 0.1`, `1` y `10` en la SVM lineal;
+- `gamma = 0.01`, `0.05` y `0.10` en la SVM radial;
+- modelos con y sin `class.weights`;
+- muestras de 3 000 y 6 000 accidentes.
+
+Registre para cada modelo:
+
+- número de vectores de soporte;
+- tiempo de entrenamiento;
+- exactitud;
+- sensibilidad;
+- especificidad;
+- precisión;
+- valor F1.
+
+## Ejercicios
+
+1. Explique con sus propias palabras qué es un vector de soporte.
+2. ¿Qué diferencia existe entre una frontera lineal y una frontera construida con kernel radial?
+3. ¿Qué ocurre generalmente cuando `cost` es demasiado grande?
+4. ¿Por qué es importante estandarizar variables numéricas?
+5. Entrene una SVM lineal sin pesos de clase y compare su sensibilidad con el modelo ponderado.
+6. Amplíe la cuadrícula de validación cruzada y explique si el mejor modelo cambia.
+7. Compare la mejor SVM con la regresión logística y Random Forest estudiados anteriormente.
+8. Analice si una mejora pequeña en exactitud justifica una pérdida importante de interpretabilidad.
+
+## Conclusiones
+
+Las máquinas de vectores de soporte buscan una frontera con margen amplio y se apoyan en un subconjunto de observaciones denominado vectores de soporte. Mediante kernels pueden representar relaciones no lineales y producir modelos predictivos potentes.
+
+Sin embargo, una SVM requiere seleccionar cuidadosamente sus hiperparámetros y evaluar su desempeño con datos no utilizados durante el entrenamiento. En problemas con clases desbalanceadas, la ponderación de clases y el análisis conjunto de sensibilidad, especificidad, precisión y F1 son fundamentales.
+
+**Fuente de los datos de aplicación:** elaboración propia con datos del INEGI, Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS), 2024.
+
+
+## Referencias fundamentales de SVM
+
+Las máquinas de vectores de soporte fueron presentadas formalmente por @cortes1995support. El tutorial de @burges1998tutorial desarrolla la intuición geométrica, los márgenes y el uso de kernels. Una introducción aplicada en R puede consultarse en @james2021islr.
+
+
+## Laboratorio interactivo: margen e hiperplano
+
+::: {.content-visible when-format="html"}
+
+Explora una frontera lineal de la forma
+\(w_1x_1+w_2x_2+b=0\), sus márgenes y la clasificación de un punto nuevo.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Explorador interactivo de una SVM lineal"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("w1", "Peso w1", -3, 3, 1, step = 0.1),
+      sliderInput("w2", "Peso w2", -3, 3, -1, step = 0.1),
+      sliderInput("b", "Sesgo b", -3, 3, 0, step = 0.1),
+      sliderInput("x1", "Punto nuevo: x1", -4, 4, 1, step = 0.1),
+      sliderInput("x2", "Punto nuevo: x2", -4, 4, 1, step = 0.1)
+    ),
+    mainPanel(
+      plotOutput("plano", height = "440px"),
+      verbatimTextOutput("resultado"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  valor <- reactive({
+    input$w1 * input$x1 + input$w2 * input$x2 + input$b
+  })
+
+  output$plano <- renderPlot({
+    plot(
+      NA, xlim = c(-4, 4), ylim = c(-4, 4),
+      xlab = "x1", ylab = "x2",
+      main = "Hiperplano y márgenes"
+    )
+    grid()
+
+    if (abs(input$w2) > 1e-8) {
+      abline(a = -input$b / input$w2,
+             b = -input$w1 / input$w2,
+             lwd = 3)
+      abline(a = -(input$b - 1) / input$w2,
+             b = -input$w1 / input$w2,
+             lty = 2)
+      abline(a = -(input$b + 1) / input$w2,
+             b = -input$w1 / input$w2,
+             lty = 2)
+    } else if (abs(input$w1) > 1e-8) {
+      abline(v = -input$b / input$w1, lwd = 3)
+      abline(v = -(input$b - 1) / input$w1, lty = 2)
+      abline(v = -(input$b + 1) / input$w1, lty = 2)
+    }
+
+    points(input$x1, input$x2, pch = 19, cex = 2)
+  })
+
+  output$resultado <- renderPrint({
+    cat("Valor de decisión:", round(valor(), 4), "\n")
+    cat("Clase predicha:", ifelse(valor() >= 0, "Clase +1", "Clase -1"))
+  })
+
+  output$interpretacion <- renderText({
+    paste0(
+      "La distancia funcional del punto al hiperplano es ",
+      round(valor(), 4),
+      ". El signo determina la clase predicha."
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+La versión web permite cambiar los pesos, el sesgo y un punto nuevo para
+observar el hiperplano, los márgenes y la clase predicha.
+
+:::
+
+## Materiales complementarios del capítulo
+
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<iframe width="100%" height="420"
+src="https://www.youtube.com/embed/upiQi4xIBrQ"
+title="Capítulo 10. Máquinas de vectores de soporte"
+frameborder="0"
+allowfullscreen></iframe>
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Video del capítulo
+
+Disponible en YouTube:
+
+<https://youtu.be/upiQi4xIBrQ>
+
+:::
+
+| Recurso | Descripción | Abrir o descargar |
+|---|---|---|
+| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-10/capitulo-10-svm-presentacion.pdf){target="_blank"} |
+| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-10/capitulo-10-svm-presentacion.pptx) |
+| Infografía | Resumen visual del capítulo. | [Abrir infografía](recursos/capitulo-10/capitulo-10-svm-infografia.png){target="_blank"} |
+
+::: {.content-visible when-format="html"}
+
+![Infografía del capítulo 10](recursos/capitulo-10/capitulo-10-svm-infografia.png){fig-alt="Capítulo 10. Máquinas de vectores de soporte" width="85%"}
+
+:::
+
+Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
+contenido del libro y revisados y adaptados por el autor.

@@ -1,0 +1,43 @@
+# Bienvenida {.unnumbered}
+
+Este libro presenta el aprendizaje automático mediante una ruta práctica,
+reproducible e interactiva. Su propósito es acompañar al lector desde la
+preparación de datos hasta la construcción, evaluación e interpretación de
+modelos utilizando **R**, datos abiertos reales y laboratorios ejecutables.
+
+La obra está dirigida a estudiantes, profesores y profesionales de ingeniería,
+matemáticas, computación, estadística, ciencia de datos y áreas afines que
+deseen aprender los principales métodos de regresión, clasificación y
+agrupamiento mediante ejemplos desarrollados paso a paso.
+
+Este volumen práctico complementa el libro
+*Fundamentos Matemáticos del Aprendizaje Automático*. Ambos pueden estudiarse
+de manera independiente, aunque su lectura conjunta permite relacionar:
+
+1. la formulación matemática del problema;
+2. el procedimiento algorítmico;
+3. la implementación computacional;
+4. la evaluación del modelo;
+5. la interpretación de resultados.
+
+## Objetivos generales {.unnumbered}
+
+Al finalizar el libro, el lector podrá:
+
+- preparar y explorar conjuntos de datos abiertos reales;
+- formular problemas de regresión, clasificación y agrupamiento;
+- implementar algoritmos de aprendizaje automático en R;
+- evaluar modelos mediante métricas apropiadas;
+- interpretar resultados, supuestos y limitaciones;
+- utilizar laboratorios interactivos para experimentar con parámetros;
+- relacionar la implementación práctica con sus fundamentos matemáticos.
+
+::: {.callout-note title="Dos volúmenes complementarios"}
+
+El presente libro se concentra en **aprender haciendo**. Para estudiar con
+mayor profundidad las definiciones, derivaciones, funciones de pérdida,
+optimización, regularización y teoría de generalización, consulte
+*Fundamentos Matemáticos del Aprendizaje Automático*
+[@rodriguez2026fundamentos].
+
+:::

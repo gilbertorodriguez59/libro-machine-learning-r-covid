@@ -1,0 +1,26 @@
+PILOTO SHINYLIVE — VERSION 0.12.1
+
+1. Copie todo el contenido de esta version sobre:
+   C:\libro-machine-learning-r-dev
+   No elimine la carpeta .git.
+
+2. Para la primera publicacion ejecute:
+   PREPARAR_SHINYLIVE_Y_PUBLICAR_V0121.bat
+
+El proceso instala o verifica:
+- el paquete R shinylive;
+- los recursos web necesarios;
+- la extension Quarto quarto-ext/shinylive;
+- la publicacion normal del sitio de desarrollo.
+
+La configuracion ya incluye:
+- filters: shinylive;
+- embed-resources: false para HTML.
+
+El laboratorio esta dentro del capitulo 12, despues de la explicacion manual de una neurona.
+
+IMPORTANTE:
+- La primera instalacion y el primer renderizado pueden tardar.
+- Shinylive funciona en HTML; el PDF muestra una nota que dirige a la version web.
+- No cierre la ventana mientras se instalan el paquete y la extension.
+- En publicaciones posteriores puede utilizar el publicador habitual.

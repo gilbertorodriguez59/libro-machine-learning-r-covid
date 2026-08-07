@@ -1,0 +1,25 @@
+﻿CORRECCIÓN COVID v0.14.0.1
+
+El primer script intentaba descubrir los archivos anuales leyendo la página
+de gob.mx. Esa página utiliza una estructura dinámica y R no recibió los
+enlaces de descarga.
+
+Esta corrección:
+
+- descarga directamente el ZIP nacional oficial;
+- utiliza un respaldo público únicamente si el servidor oficial no responde;
+- separa los casos por FECHA_SINTOMAS;
+- compara 2020, 2021 y 2022;
+- selecciona el año con más casos confirmados;
+- genera la muestra y la base para Machine Learning.
+
+PASOS
+
+1. Descomprima el ZIP.
+2. Ejecute:
+   INSTALAR_CORRECCION_COVID_V01401.bat
+
+3. Después vuelva a ejecutar:
+   C:\libro-machine-learning-r-covid-dev\EJECUTAR_DESCARGA_COVID19.bat
+
+La descarga puede tardar varios minutos.

@@ -1,0 +1,13 @@
+﻿PUBLICAR DIRECTAMENTE v0.13.1
+
+El probador anterior ejecutaba todo el libro aunque decía que probaría solo
+el capítulo 12. Esto ocurre porque el archivo pertenece a un proyecto Quarto
+tipo book.
+
+Uso:
+1. Si el proceso anterior sigue detenido, presione Ctrl + C.
+2. Copie PUBLICAR_DIRECTAMENTE_V0131.bat dentro de:
+   C:\libro-machine-learning-r-dev
+3. Ejecute PUBLICAR_DIRECTAMENTE_V0131.bat
+
+Este archivo llama directamente al publicador completo una sola vez.

@@ -1,0 +1,559 @@
+# Preparación de datos reales
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **representación matemática de datos, probabilidad y estadística** se desarrolla con mayor profundidad
+en los capítulos 1, 2 y 3 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de:
+
+- localizar y descargar la base ATUS desde el portal oficial del INEGI;
+- organizar los archivos dentro del proyecto Quarto;
+- leer y revisar una base real en R;
+- seleccionar y transformar variables;
+- construir una variable respuesta binaria;
+- guardar una base preparada para los capítulos de modelado;
+- citar correctamente la fuente de los datos.
+
+## Introducción
+
+En la práctica profesional, los datos casi nunca llegan preparados para aplicar un algoritmo. Antes de modelar debemos conocer su procedencia, revisar su estructura, limpiar valores, transformar variables y documentar cada decisión.
+
+En este libro utilizamos la **Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS)** del Instituto Nacional de Estadística y Geografía [@inegi_atus_2024]. Su objetivo es producir información anual sobre la siniestralidad del transporte terrestre en zonas de jurisdicción no federal, con desglose nacional, estatal y municipal.
+
+::: {.callout-important title="Uso responsable de la información"}
+Los datos originales son del INEGI. La limpieza, transformación, selección de variables, gráficas, modelos e interpretaciones de este libro son elaboración del autor. No constituyen resultados oficiales ni implican el aval del Instituto.
+:::
+
+## Descargar la base ATUS desde el INEGI
+
+La descarga debe realizarse desde el sitio oficial para conservar la procedencia y los metadatos del archivo.
+
+1. Abra en su navegador el portal de **Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS)**:
+
+   <https://www.inegi.org.mx/programas/accidentes/>
+
+2. Localice el apartado **Datos abiertos** o la opción de descarga correspondiente.
+3. Seleccione el periodo anual que desea utilizar. Para reproducir los ejemplos de esta versión, elija **2024**.
+4. Descargue el archivo en formato CSV. Es posible que el portal entregue un archivo comprimido en formato ZIP.
+5. Descomprima el archivo descargado.
+6. Identifique el CSV anual y cópielo en la carpeta `datos` del proyecto.
+7. Para seguir exactamente los ejemplos, renómbrelo como:
+
+```text
+atus_2024.csv
+```
+
+La estructura mínima del proyecto debe quedar así:
+
+```text
+libro-machine-learning-r/
+├── _quarto.yml
+├── index.qmd
+├── 02-preparacion-datos.qmd
+├── datos/
+│   └── atus_2024.csv
+└── referencias.bib
+```
+
+::: {.callout-tip title="Otro año de información"}
+Puede utilizar un año diferente. En ese caso, cambie el nombre del archivo o modifique la ruta utilizada en el código. Conviene anotar siempre el año de referencia porque los resultados pueden cambiar entre periodos.
+:::
+
+## Cómo citar los datos
+
+Los términos de libre uso del INEGI permiten utilizar, adaptar y publicar su información, pero requieren citar la fuente de origen [@inegi_terminos_libre_uso].
+
+En el texto puede utilizarse una cita como esta:
+
+> Los datos proceden de la Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas del INEGI [@inegi_atus_2024].
+
+Debajo de una tabla o gráfica sin transformaciones importantes:
+
+> **Fuente:** INEGI, Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS), 2024.
+
+Cuando exista procesamiento, agrupación, modelado o visualización propia:
+
+> **Fuente:** Elaboración propia con datos del INEGI, Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS), 2024.
+
+## Cargar paquetes
+
+```{r cargar-paquetes-preparacion}
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+source("util_graficas.R")
+```
+
+::: {.callout-note title="Explicación del código"}
+Se cargan paquetes para leer archivos CSV, transformar datos, trabajar con texto y crear gráficas. El archivo `util_graficas.R` contiene funciones visuales comunes para mantener un estilo uniforme en todo el libro.
+:::
+
+## Localizar el archivo
+
+En lugar de depender únicamente de un nombre fijo, el siguiente código busca archivos cuyo nombre comience con `atus` y termine en `.csv`.
+
+```{r localizar-atus}
+
+archivos_atus <- list.files(
+  path = "datos",
+  pattern = "^atus.*\\.csv$",
+  full.names = TRUE,
+  ignore.case = TRUE
+)
+
+archivos_atus
+```
+
+::: {.callout-tip title="Interpretación"}
+Si aparece al menos una ruta, R encontró un archivo ATUS. Si el resultado es `character(0)`, revise que el archivo esté descomprimido y guardado dentro de la carpeta `datos`.
+:::
+
+## Leer el archivo CSV
+
+```{r leer-atus}
+
+if (length(archivos_atus) == 0) {
+  stop(
+    paste(
+      "No se encontró un archivo ATUS en la carpeta datos.",
+      "Descárguelo desde el portal oficial del INEGI y descomprímalo."
+    )
+  )
+}
+
+ruta_atus <- archivos_atus[1]
+
+atus <- read_csv(
+  file = ruta_atus,
+  show_col_types = FALSE,
+  locale = locale(encoding = "UTF-8")
+)
+
+message("Archivo leído: ", ruta_atus)
+```
+
+::: {.callout-note title="Explicación del código"}
+Se selecciona el primer archivo localizado y se lee con `read_csv()`. El argumento `show_col_types = FALSE` evita imprimir mensajes técnicos que distraen de los resultados principales.
+:::
+
+## Primer vistazo a los datos
+
+```{r vistazo-atus}
+
+resumen_dimensiones <- data.frame(
+  filas = nrow(atus),
+  columnas = ncol(atus)
+)
+
+resumen_dimensiones
+head(atus)
+```
+
+::: {.callout-tip title="Interpretación"}
+Las filas representan registros de accidentes y las columnas describen sus características temporales, geográficas y operativas. Antes de modelar es indispensable confirmar que las variables esperadas estén disponibles.
+:::
+
+## Normalizar los nombres de variables
+
+```{r normalizar-nombres}
+
+names(atus) <- toupper(names(atus))
+names(atus)
+```
+
+Se convierten los nombres a mayúsculas para evitar errores por diferencias como `Mes`, `MES` o `mes`.
+
+## Seleccionar variables de interés
+
+```{r variables-interes}
+
+variables_interes <- c(
+  "ANIO", "MES", "ID_ENTIDAD", "ID_MUNICIPIO",
+  "ID_HORA", "ID_DIA", "DIASEMANA", "TIPACCID",
+  "CAUSAACCI", "CLASACC"
+)
+
+variables_existentes <- intersect(
+  variables_interes,
+  names(atus)
+)
+
+variables_faltantes <- setdiff(
+  variables_interes,
+  names(atus)
+)
+
+atus_base <- atus |>
+  select(all_of(variables_existentes))
+
+variables_existentes
+variables_faltantes
+```
+
+::: {.callout-warning title="Compruebe el diccionario de datos"}
+Los nombres y categorías pueden variar entre versiones. Si aparece una variable faltante, consulte los metadatos y el diccionario de datos descargados junto con la base antes de sustituirla.
+:::
+
+## Crear la variable respuesta
+
+El primer problema de clasificación distinguirá entre:
+
+- **Con víctimas:** accidentes fatales o no fatales con personas lesionadas o fallecidas.
+- **Solo daños:** accidentes con daños materiales sin víctimas registradas.
+
+```{r crear-respuesta}
+
+atus_modelo <- atus_base |>
+  mutate(
+    CLASACC_TXT = str_to_lower(as.character(CLASACC)),
+    accidente_con_victimas = case_when(
+      str_detect(CLASACC_TXT, "sólo daños") ~ "Solo daños",
+      str_detect(CLASACC_TXT, "solo daños") ~ "Solo daños",
+      str_detect(CLASACC_TXT, "daños") ~ "Solo daños",
+      str_detect(CLASACC_TXT, "no fatal") ~ "Con víctimas",
+      str_detect(CLASACC_TXT, "fatal") ~ "Con víctimas",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(accidente_con_victimas))
+
+table(atus_modelo$accidente_con_victimas)
+```
+
+::: {.callout-note title="Explicación del código"}
+La variable `CLASACC` se transforma en una respuesta binaria. `case_when()` asigna una nueva categoría según el texto encontrado y los registros que no pueden clasificarse se excluyen temporalmente.
+:::
+
+## Preparar las variables finales
+
+```{r preparar-variables-finales}
+
+atus_ml <- atus_modelo |>
+  mutate(
+    MES = as.factor(MES),
+    ID_HORA = as.character(ID_HORA),
+    DIASEMANA = as.factor(DIASEMANA),
+    TIPACCID = as.factor(TIPACCID),
+    CAUSAACCI = as.factor(CAUSAACCI),
+    accidente_con_victimas = factor(
+      accidente_con_victimas,
+      levels = c("Con víctimas", "Solo daños")
+    )
+  ) |>
+  select(
+    accidente_con_victimas,
+    MES,
+    ID_HORA,
+    DIASEMANA,
+    TIPACCID,
+    CAUSAACCI
+  ) |>
+  na.omit()
+
+data.frame(
+  filas = nrow(atus_ml),
+  columnas = ncol(atus_ml)
+)
+```
+
+::: {.callout-tip title="Interpretación"}
+La base final queda lista para el análisis exploratorio y el modelado. Cada fila representa un accidente y cada columna una variable predictora o la respuesta que se desea clasificar.
+:::
+
+## Guardar la base preparada
+
+```{r guardar-base-preparada}
+
+if (!dir.exists("datos")) {
+  dir.create("datos")
+}
+
+write_csv(
+  atus_ml,
+  "datos/atus_ml_preparado.csv"
+)
+```
+
+::: {.callout-note title="Explicación del código"}
+Guardar la base preparada evita repetir toda la limpieza en los capítulos siguientes y ayuda a mantener reproducible el flujo de trabajo.
+:::
+
+## Lista de comprobación
+
+Antes de continuar, verifique que:
+
+- el archivo proviene del portal oficial del INEGI;
+- el año de los datos está documentado;
+- el CSV se encuentra dentro de `datos`;
+- las variables usadas existen en la versión descargada;
+- la transformación de `CLASACC` corresponde con su diccionario;
+- las tablas y gráficas incluyen la fuente;
+- el archivo `atus_ml_preparado.csv` se creó correctamente.
+
+## Resumen del capítulo
+
+En este capítulo descargamos y documentamos una base real del INEGI, verificamos su ubicación, seleccionamos variables, construimos una respuesta binaria y guardamos una base preparada para aprendizaje automático.
+
+
+## Materiales complementarios del capítulo
+
+Estos recursos permiten repasar la preparación de datos reales mediante una presentación, una infografía y un video explicativo.
+
+| Recurso | Utilidad | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Video explicativo | Explicación audiovisual del proceso de descarga, revisión, limpieza y preparación de datos. | [Ver en YouTube](https://www.youtube.com/watch?v=bmv-tDPZGjQ){target="_blank"} | — |
+| Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pdf){download="capitulo-02-preparacion-datos-reales.pdf"} |
+| Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pptx) | [Descargar PPTX](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pptx){download="capitulo-02-preparacion-datos-reales.pptx"} |
+| Infografía | Resumen visual de las etapas de preparación de datos. | [Ver infografía](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png){download="capitulo-02-preparacion-datos-reales-infografia.png"} |
+
+::: {.content-visible when-format="html"}
+### Video explicativo
+
+<div class="video-responsive">
+  <iframe
+    src="https://www.youtube.com/embed/bmv-tDPZGjQ"
+    title="Capítulo 2. Preparación de datos reales"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+### Vista previa de la infografía
+
+[![Infografía del capítulo 2](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png)](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png)
+:::
+
+::: {.content-visible when-format="pdf"}
+**Video del capítulo:** <https://www.youtube.com/watch?v=bmv-tDPZGjQ>
+
+La presentación PDF, el archivo editable y la infografía pueden descargarse desde la versión web del libro.
+:::
+
+::: {.callout-note title="Elaboración de los materiales"}
+Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor. El texto del libro y sus archivos fuente constituyen la referencia principal.
+:::
+
+
+::: {.callout-tip title="Curso completo en YouTube"}
+Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificación Automática con R**.
+
+[Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::
+
+
+## Laboratorio interactivo: preparar datos
+
+::: {.content-visible when-format="html"}
+
+Explora valores faltantes, imputación y estandarización.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Preparación interactiva de datos"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("faltantes", "Porcentaje de valores faltantes",
+                  0, 40, 15, step = 5),
+      selectInput("imputacion", "Método de imputación",
+                  choices = c("Media" = "media", "Mediana" = "mediana")),
+      checkboxInput("escalar", "Estandarizar variables", TRUE),
+      numericInput("semilla", "Semilla", 123, min = 1)
+    ),
+    mainPanel(
+      h4("Datos con valores faltantes"),
+      tableOutput("antes"),
+      h4("Datos preparados"),
+      tableOutput("despues"),
+      tableOutput("resumen")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  datos <- reactive({
+    set.seed(input$semilla)
+    d <- data.frame(
+      temperatura = round(rnorm(12, 25, 4), 1),
+      humedad = round(rnorm(12, 55, 12), 1),
+      contaminacion = round(rnorm(12, 40, 10), 1)
+    )
+    n_na <- round(length(as.matrix(d)) * input$faltantes / 100)
+    if (n_na > 0) {
+      m <- as.matrix(d)
+      m[sample(seq_len(length(m)), n_na)] <- NA
+      d <- as.data.frame(m)
+    }
+    d
+  })
+
+  preparados <- reactive({
+    d <- datos()
+    for (j in seq_along(d)) {
+      valor <- if (input$imputacion == "media") {
+        mean(d[[j]], na.rm = TRUE)
+      } else {
+        median(d[[j]], na.rm = TRUE)
+      }
+      d[[j]][is.na(d[[j]])] <- valor
+    }
+    if (input$escalar) d <- as.data.frame(scale(d))
+    d
+  })
+
+  output$antes <- renderTable(datos(), digits = 2)
+  output$despues <- renderTable(preparados(), digits = 3)
+
+  output$resumen <- renderTable({
+    data.frame(
+      Etapa = c("Antes", "Después"),
+      Valores_faltantes = c(sum(is.na(datos())), sum(is.na(preparados()))),
+      Media_variable_1 = round(c(mean(datos()[[1]], na.rm = TRUE),
+                                 mean(preparados()[[1]])), 3),
+      Desviacion_variable_1 = round(c(sd(datos()[[1]], na.rm = TRUE),
+                                      sd(preparados()[[1]])), 3)
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+Permite introducir valores faltantes, imputarlos y estandarizar las variables.
+
+:::
+
+## Caso aplicado B: preparación de datos COVID-19
+
+En esta segunda ruta aplicada utilizamos una muestra nacional de **50 000
+registros confirmados de COVID-19 en México durante 2022**. El año fue
+seleccionado después de comparar los cierres históricos que conservan un
+esquema homologable.
+
+La base preparada se encuentra en:
+
+```text
+datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz
+```
+
+### Lectura de la base
+
+```{r}
+#| label: covid-lectura-preparacion
+#| message: false
+#| warning: false
+
+library(readr)
+library(dplyr)
+
+covid <- read_csv(
+  "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz",
+  show_col_types = FALSE
+)
+
+dim(covid)
+names(covid)
+```
+
+### Variables binarias y códigos especiales
+
+En la base preparada, las variables clínicas de tipo sí/no fueron
+recodificadas así:
+
+| Valor | Interpretación |
+|---:|---|
+| 0 | No |
+| 1 | Sí |
+| `NA` | No especificado, se ignora o no aplica |
+
+La variable `TIPO_PACIENTE` quedó codificada como:
+
+| Valor | Interpretación |
+|---:|---|
+| 0 | Ambulatorio |
+| 1 | Hospitalizado |
+
+La variable objetivo `MURIO` se derivó de `FECHA_DEF`:
+
+| Valor | Interpretación |
+|---:|---|
+| 0 | Sin defunción registrada |
+| 1 | Defunción registrada |
+
+### Revisión de valores faltantes
+
+```{r}
+#| label: covid-faltantes
+#| message: false
+#| warning: false
+
+faltantes_covid <- covid |>
+  summarise(
+    across(
+      everything(),
+      ~ sum(is.na(.x))
+    )
+  ) |>
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "faltantes"
+  ) |>
+  arrange(desc(faltantes))
+
+head(faltantes_covid, 10)
+```
+
+### Número de comorbilidades
+
+La variable `NUM_COMORBILIDADES` resume la presencia de:
+
+- diabetes;
+- EPOC;
+- asma;
+- inmunosupresión;
+- hipertensión;
+- enfermedad cardiovascular;
+- obesidad;
+- enfermedad renal crónica;
+- tabaquismo.
+
+```{r}
+#| label: covid-comorbilidades
+#| message: false
+#| warning: false
+
+covid |>
+  count(NUM_COMORBILIDADES) |>
+  arrange(NUM_COMORBILIDADES)
+```
+
+::: {.callout-warning}
+
+Estos datos se emplean con fines educativos. Los registros administrativos
+pueden contener sesgos, valores desconocidos y diferencias de cobertura. Los
+modelos construidos con esta base no sustituyen una valoración médica.
+
+:::

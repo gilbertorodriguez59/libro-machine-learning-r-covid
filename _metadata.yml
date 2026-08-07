@@ -1,0 +1,7 @@
+embed-resources: false
+self-contained: false
+
+format:
+  html:
+    embed-resources: false
+    self-contained: false

@@ -1,0 +1,27 @@
+﻿REPARACIÓN INTEGRAL SHINYLIVE COVID
+
+Esta reparación corrige tres posibles causas:
+
+1. _quarto.yml tenía una lista de resources con indentación inconsistente.
+2. Quedaban archivos HTML y caché de renderizados anteriores.
+3. El comando usado forzaba "--to html" y podía perder opciones del formato.
+
+PASOS
+
+1. Descomprima este ZIP.
+2. Ejecute:
+   REPARAR_Y_RENDERIZAR_SHINYLIVE_COVID.bat
+
+El programa:
+- instala una configuración _quarto.yml limpia;
+- elimina _metadata.yml redundante;
+- limpia .quarto y docs;
+- verifica el paquete R shinylive;
+- instala la extensión Quarto Shinylive;
+- renderiza con "quarto render" sin "--to html".
+
+Al terminar abra:
+
+C:\libro-machine-learning-r-covid-dev\docs\04-regresion-logistica.html
+
+Después presione Ctrl + F5 para evitar que el navegador muestre la copia anterior.

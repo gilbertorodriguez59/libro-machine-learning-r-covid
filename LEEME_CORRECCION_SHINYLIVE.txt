@@ -1,0 +1,21 @@
+﻿CORRECCIÓN SHINYLIVE COVID v0.14.0.2
+
+Problema corregido:
+Shinylive no funciona en documentos HTML autocontenidos.
+
+La corrección:
+- fuerza embed-resources: false;
+- añade _metadata.yml;
+- corrige _quarto.yml cuando sea necesario;
+- añade un renderizador específico para el libro COVID.
+
+PASOS
+
+1. Ejecute:
+   INSTALAR_CORRECCION_SHINYLIVE_COVID_V01402.bat
+
+2. Después ejecute, dentro del proyecto:
+   RENDERIZAR_COVID_CON_SHINYLIVE.bat
+
+3. Abra:
+   C:\libro-machine-learning-r-covid-dev\docs\index.html

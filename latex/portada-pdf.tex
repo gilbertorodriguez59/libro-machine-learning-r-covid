@@ -1,0 +1,10 @@
+% Portada gráfica del libro para la salida PDF
+\usepackage{pdfpages}
+\renewcommand{\maketitle}{%
+  \includepdf[
+    pages=1,
+    fitpaper=true,
+    pagecommand={\thispagestyle{empty}}
+  ]{imagenes/portada-libro-carta.pdf}%
+  \cleardoublepage
+}

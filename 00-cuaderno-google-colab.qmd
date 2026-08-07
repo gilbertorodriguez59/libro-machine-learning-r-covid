@@ -1,0 +1,94 @@
+# Cuaderno completo para Google Colab {.unnumbered}
+
+Además de la versión web y del documento PDF, el libro cuenta con un **cuaderno completo de Google Colab**. En él, las explicaciones aparecen en celdas de texto y cada bloque de código R se encuentra en una celda independiente para que pueda ejecutarse paso a paso.
+
+::: {.callout-tip title="Abrir o descargar el cuaderno"}
+
+**Abrir directamente en Google Colab:**  
+[Ejecutar el libro completo en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-dev/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+
+**Descargar el archivo `.ipynb`:**  
+[Descargar el cuaderno completo](Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+
+:::
+
+
+
+
+## ¿Qué contiene el cuaderno? {.unnumbered}
+
+El cuaderno reproduce el contenido del libro y contiene:
+
+- un índice navegable con todos los capítulos y secciones;
+- explicaciones conceptuales en celdas de texto;
+- fórmulas matemáticas;
+- códigos R separados en celdas independientes;
+- instalación y carga de los paquetes necesarios;
+- preparación y lectura de los datos ATUS;
+- análisis exploratorio;
+- regresión logística;
+- k vecinos más cercanos;
+- árboles de decisión;
+- Random Forest;
+- evaluación y comparación de modelos;
+- ejercicios, interpretaciones y referencias.
+
+## Cómo utilizarlo {.unnumbered}
+
+1. Abra el enlace **Ejecutar el libro completo en Google Colab**.
+2. Inicie sesión con una cuenta de Google, si Colab lo solicita.
+3. Seleccione **Archivo → Guardar una copia en Drive** para conservar una copia editable.
+4. Compruebe que el entorno de ejecución utilice **R**.
+5. Ejecute primero las celdas de preparación e instalación de paquetes.
+6. Continúe en orden, ejecutando cada celda con el botón de reproducción o con `Shift + Enter`.
+
+::: {.callout-warning title="Ejecución en orden"}
+Algunos capítulos utilizan objetos creados en capítulos anteriores. Durante la primera ejecución se recomienda avanzar en el orden establecido y no saltar las celdas de preparación de datos.
+:::
+
+## Diferencias entre el libro web y el cuaderno {.unnumbered}
+
+La versión web es la opción más cómoda para leer y consultar el contenido. El cuaderno de Colab está pensado para experimentar: permite modificar valores, ejecutar nuevamente los modelos y observar cómo cambian los resultados sin instalar R ni RStudio en la computadora.
+
+::: {.callout-note title="Datos y acceso a internet"}
+El cuaderno necesita conexión a internet para instalar paquetes y descargar los archivos de datos cuando no estén disponibles en la sesión. La descarga de ATUS puede tardar debido al tamaño de la base.
+:::
+
+
+## Ejecución autónoma en Google Colab
+
+El cuaderno incluye una celda inicial de **preparación automática** que:
+
+- instala los paquetes de R que hagan falta;
+- define dentro del propio cuaderno todas las funciones gráficas;
+- crea la carpeta `datos`;
+- descarga las bases ATUS desde el repositorio estable cuando no estén presentes;
+- comprueba que los recursos necesarios estén disponibles.
+
+Por esta razón, el usuario no necesita descargar manualmente `util_graficas.R` ni subir archivos auxiliares a Colab.
+
+
+## Instalación automática de paquetes
+
+El cuaderno utiliza la función `cargar_paquete()`. Antes de cargar un paquete, comprueba si está instalado y, cuando hace falta, lo instala automáticamente desde CRAN. Esto evita errores como `there is no package called 'ranger'`.
+
+## Referencias bibliográficas en Colab
+
+En los capítulos Quarto se conservan claves como `@breiman1984classification`, porque Quarto las transforma al generar el libro. En Google Colab esas claves se sustituyen por citas legibles como **Breiman et al. (1984)**, y la bibliografía completa aparece al final del cuaderno.
+
+
+## Descarga automática de los datos
+
+Para evitar archivos demasiado grandes dentro del cuaderno, las bases ATUS se publican en formato comprimido `.csv.gz`. La primera celda de Colab:
+
+1. descarga los archivos comprimidos desde GitHub Pages;
+2. los descomprime automáticamente;
+3. guarda los CSV en la carpeta `datos`;
+4. comprueba que quedaron disponibles antes de continuar.
+
+Los archivos publicados son:
+
+- `recursos_colab/atus_ml_preparado.csv.gz`;
+- `recursos_colab/atus_2024.csv.gz`.
+
+Si la celda informa un error 404, primero debe publicarse esta versión del sitio para que esos recursos estén disponibles.

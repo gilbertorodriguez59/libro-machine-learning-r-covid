@@ -1,0 +1,41 @@
+﻿CORRECCIÓN COVID v0.14.0.2
+
+CAUSA DEL ERROR
+
+El servidor de datos abiertos rechazó la conexión SSL realizada desde R.
+El respaldo descargado desde GitHub pesaba solamente 750 KB y no era la base
+histórica nacional.
+
+Esta versión elimina las descargas automáticas poco confiables.
+
+PASOS
+
+1. Ejecute:
+   INSTALAR_CORRECCION_COVID_V01402.bat
+
+2. En la carpeta del libro ejecute:
+   ABRIR_DESCARGAS_OFICIALES_COVID19.bat
+
+3. En la página oficial descargue los cierres:
+   - 2020
+   - 2021
+   - 2022
+
+4. Guárdelos en:
+   C:\libro-machine-learning-r-covid-dev\datos\covid19\originales
+
+5. Verifique que cada nombre incluya su año, por ejemplo:
+   COVID19_2020.zip
+   COVID19_2021.zip
+   COVID19_2022.zip
+
+6. Ejecute:
+   PROCESAR_CIERRES_COVID19.bat
+
+El procesamiento automático:
+- detecta los tres archivos;
+- extrae los CSV;
+- identifica casos confirmados;
+- compara los años;
+- selecciona el año con más casos;
+- genera la muestra y la base ML.

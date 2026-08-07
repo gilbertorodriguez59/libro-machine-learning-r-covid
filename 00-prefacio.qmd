@@ -1,0 +1,54 @@
+# Prefacio {.unnumbered}
+
+Este libro nace de una idea sencilla: los métodos de aprendizaje automático se
+comprenden mejor cuando el lector puede recorrer el proceso completo, desde la
+pregunta inicial y la preparación de los datos hasta el entrenamiento, la
+evaluación y la interpretación del modelo.
+
+Mi formación en Física y Matemáticas me llevó a valorar el rigor, la notación y
+la necesidad de comprender por qué funciona un procedimiento. Mis estudios y
+experiencia en Ciencias de la Computación, Inteligencia Artificial e
+Ingeniería de la Computación ampliaron esa perspectiva hacia los algoritmos,
+los sistemas inteligentes y la solución computacional de problemas reales.
+
+A lo largo de varias décadas de docencia universitaria en México y Chile he
+observado dos dificultades frecuentes. La primera aparece cuando el estudiante
+conoce fórmulas, pero no logra conectarlas con datos y decisiones concretas. La
+segunda surge cuando puede ejecutar una función de software, pero desconoce los
+supuestos, la lógica y las limitaciones del método.
+
+Por ello, *Aprendizaje y Clasificación Automática con R* busca construir un
+puente entre teoría y práctica. Cada capítulo procura conservar cuatro
+principios:
+
+1. **Aprender haciendo.** Los conceptos se relacionan con datos, código,
+   gráficas y resultados.
+2. **Explicar antes de automatizar.** El código debe responder una pregunta
+   claramente formulada.
+3. **Interpretar con sentido crítico.** Ninguna métrica ni algoritmo debe
+   utilizarse fuera de contexto.
+4. **Relacionar práctica y fundamento.** Los desarrollos matemáticos se
+   conectan con el volumen teórico complementario.
+
+Los datos ATUS permiten estudiar problemas de movilidad y seguridad vial. La
+incorporación de registros abiertos de COVID-19 amplía el libro hacia un
+dominio biomédico y de salud pública, mostrando que los mismos principios de
+preparación, clasificación y evaluación pueden aplicarse en contextos muy
+distintos.
+
+Los laboratorios interactivos, el cuaderno de Google Colab, los videos, las
+presentaciones y las infografías buscan ofrecer distintas puertas de entrada
+al aprendizaje. La tecnología alcanza su mayor valor cuando ayuda a construir
+comprensión y no solamente a repetir instrucciones.
+
+Este volumen dialoga con *Fundamentos Matemáticos del Aprendizaje Automático*.
+El libro práctico enfatiza la implementación y el análisis aplicado; el
+volumen teórico profundiza en álgebra lineal, probabilidad, optimización,
+riesgo, regularización, generalización y formulación matemática de los
+algoritmos [@rodriguez2026fundamentos].
+
+Espero que estas páginas ayuden al lector a experimentar, cuestionar,
+interpretar y continuar aprendiendo con autonomía.
+
+**Jesús Gilberto Rodríguez Escobedo**  
+San Luis Potosí, México

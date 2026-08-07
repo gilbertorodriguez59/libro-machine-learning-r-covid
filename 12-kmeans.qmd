@@ -1,0 +1,352 @@
+# Agrupamiento con k-means
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **distancias, función objetivo, centroides y agrupamiento k-means** se desarrolla con mayor profundidad
+en los capítulos 2 y 18 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos de aprendizaje
+
+Al finalizar este capítulo podrás:
+
+- distinguir aprendizaje supervisado y no supervisado;
+- explicar intuitivamente el algoritmo k-means;
+- calcular centroides y asignar observaciones a grupos;
+- implementar k-means manualmente y con `kmeans()`;
+- seleccionar el número de grupos mediante el método del codo y silhouette;
+- interpretar centroides y perfiles de los grupos;
+- reconocer las limitaciones y los errores frecuentes;
+- aplicar el algoritmo a datos reales.
+
+## Del aprendizaje supervisado al no supervisado
+
+En los capítulos anteriores conocíamos la variable de respuesta. En el aprendizaje no supervisado no existe una etiqueta conocida que indique el grupo correcto. El objetivo es descubrir estructura en los datos.
+
+El **agrupamiento** o *clustering* reúne observaciones similares y separa observaciones diferentes.
+
+## Idea intuitiva de k-means
+
+k-means busca dividir las observaciones en $k$ grupos. Cada grupo se representa mediante un **centroide**, que es el promedio de sus observaciones.
+
+El algoritmo repite dos operaciones:
+
+1. asignar cada observación al centroide más cercano;
+2. recalcular los centroides.
+
+El proceso termina cuando las asignaciones dejan de cambiar o la mejora es muy pequeña.
+
+## Función objetivo
+
+k-means minimiza la suma de cuadrados dentro de los grupos:
+
+$$
+WSS=\sum_{j=1}^{k}\sum_{\mathbf{x}_i\in C_j}\|\mathbf{x}_i-\boldsymbol{\mu}_j\|^2
+$$
+
+Aquí, $C_j$ es el grupo $j$ y $\boldsymbol{\mu}_j$ es su centroide.
+
+## Ejemplo manual
+
+Considera seis puntos:
+
+| Punto | x | y |
+|---|---:|---:|
+| A | 1 | 1 |
+| B | 1.5 | 2 |
+| C | 3 | 4 |
+| D | 5 | 7 |
+| E | 3.5 | 5 |
+| F | 4.5 | 5 |
+
+Si fijamos $k=2$, elegimos dos centroides iniciales, asignamos cada punto al más cercano y recalculamos los promedios de ambos grupos. Repetimos hasta estabilizar.
+
+## Implementación básica en R
+
+```{r}
+datos <- data.frame(
+  x = c(1, 1.5, 3, 5, 3.5, 4.5),
+  y = c(1, 2, 4, 7, 5, 5)
+)
+
+datos
+```
+
+```{r}
+set.seed(123)
+modelo_km <- kmeans(datos, centers = 2, nstart = 25)
+modelo_km
+```
+
+```{r}
+datos$cluster <- factor(modelo_km$cluster)
+plot(
+  datos$x, datos$y,
+  col = datos$cluster,
+  pch = 19,
+  xlab = "x", ylab = "y",
+  main = "Agrupamiento k-means"
+)
+points(modelo_km$centers, pch = 8, cex = 2, lwd = 2)
+```
+
+## ¿Por qué usar `nstart`?
+
+k-means depende de los centroides iniciales. `nstart = 25` ejecuta el algoritmo varias veces y conserva la solución con menor variación interna.
+
+## Escalamiento de variables
+
+Si una variable está medida en miles y otra entre 0 y 10, la primera dominará las distancias. Por ello suele ser necesario estandarizar:
+
+$$
+z=\frac{x-\bar{x}}{s}
+$$
+
+```{r}
+X <- scale(iris[, 1:4])
+head(X)
+```
+
+## Aplicación con `iris`
+
+```{r}
+set.seed(2026)
+km_iris <- kmeans(X, centers = 3, nstart = 50)
+
+table(
+  Cluster = km_iris$cluster,
+  Especie = iris$Species
+)
+```
+
+Los números de los clusters no tienen significado previo. El grupo 1 no es mejor ni peor que el grupo 2.
+
+## Interpretación de centroides
+
+```{r}
+km_iris$centers
+```
+
+Cada fila representa un perfil promedio estandarizado. Valores positivos indican niveles superiores a la media; valores negativos, inferiores.
+
+## Método del codo
+
+El método del codo compara la suma de cuadrados interna para distintos valores de $k$.
+
+```{r}
+valores_k <- 1:10
+wss <- numeric(length(valores_k))
+
+for (i in seq_along(valores_k)) {
+  set.seed(123)
+  ajuste <- kmeans(X, centers = valores_k[i], nstart = 25)
+  wss[i] <- ajuste$tot.withinss
+}
+
+plot(
+  valores_k, wss,
+  type = "b",
+  xlab = "Número de clusters k",
+  ylab = "Suma de cuadrados interna",
+  main = "Método del codo"
+)
+```
+
+Se busca un punto a partir del cual añadir grupos produce mejoras pequeñas.
+
+## Coeficiente silhouette
+
+Silhouette compara cohesión interna y separación externa. Sus valores se encuentran entre -1 y 1:
+
+- cerca de 1: agrupamiento claro;
+- cerca de 0: observación fronteriza;
+- negativo: posible asignación incorrecta.
+
+```{r}
+#| eval: false
+if (!requireNamespace("cluster", quietly = TRUE)) {
+  install.packages("cluster", repos = "https://cloud.r-project.org")
+}
+
+sil <- cluster::silhouette(km_iris$cluster, dist(X))
+mean(sil[, "sil_width"])
+plot(sil)
+```
+
+## Laboratorio interactivo k-means
+
+::: {.content-visible when-format="html"}
+
+Modifica el número de grupos y observa cómo cambian los centroides y la separación.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 690
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Laboratorio interactivo: k-means"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("k", "Número de grupos", 2, 6, 3, 1),
+      sliderInput("n", "Número de observaciones", 30, 200, 90, 10),
+      sliderInput("disp", "Dispersión", 0.2, 2.0, 0.7, 0.1),
+      numericInput("semilla", "Semilla", 123, 1),
+      actionButton("actualizar", "Generar y agrupar")
+    ),
+    mainPanel(
+      plotOutput("grafica", height = "450px"),
+      tableOutput("resumen")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  datos <- eventReactive(input$actualizar, {
+    set.seed(input$semilla)
+    centros <- matrix(c(-3,-2, 0,3, 3,-1, -2,4, 4,4, 0,-4), ncol=2, byrow=TRUE)
+    g <- sample(seq_len(input$k), input$n, replace=TRUE)
+    data.frame(
+      x = centros[g,1] + rnorm(input$n, sd=input$disp),
+      y = centros[g,2] + rnorm(input$n, sd=input$disp)
+    )
+  }, ignoreNULL=FALSE)
+
+  ajuste <- reactive({
+    set.seed(input$semilla)
+    kmeans(datos(), centers=input$k, nstart=25)
+  })
+
+  output$grafica <- renderPlot({
+    d <- datos(); km <- ajuste()
+    plot(d$x, d$y, col=km$cluster, pch=19,
+         xlab="Variable 1", ylab="Variable 2",
+         main=paste("k-means con k =", input$k))
+    points(km$centers, pch=8, cex=2.2, lwd=3)
+    grid()
+  })
+
+  output$resumen <- renderTable({
+    km <- ajuste()
+    data.frame(
+      Cluster=seq_len(input$k),
+      Tamaño=as.integer(km$size),
+      Centro_X=round(km$centers[,1],2),
+      Centro_Y=round(km$centers[,2],2)
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+El laboratorio interactivo de k-means está disponible en la versión web del capítulo. Permite modificar $k$, el tamaño de la muestra y la dispersión de los grupos.
+:::
+
+## Ventajas
+
+- sencillo e intuitivo;
+- rápido en conjuntos medianos y grandes;
+- fácil de visualizar;
+- útil para segmentación y exploración;
+- disponible en R base.
+
+## Limitaciones
+
+- requiere fijar $k$;
+- depende de la inicialización;
+- es sensible a escalas y valores atípicos;
+- favorece grupos aproximadamente esféricos;
+- no maneja bien clusters con densidades muy diferentes;
+- solo trabaja naturalmente con variables numéricas.
+
+## Errores frecuentes
+
+1. No estandarizar variables.
+2. Elegir $k$ únicamente porque coincide con una expectativa previa.
+3. Ejecutar una sola inicialización.
+4. Interpretar los números de cluster como categorías ordenadas.
+5. Incluir identificadores.
+6. Ignorar valores atípicos.
+7. Confundir clusters con clases verdaderas.
+8. Describir grupos sin revisar sus centroides.
+
+## Aplicación con datos reales
+
+En accidentes de tránsito pueden agruparse municipios, horarios o tipos de accidente usando variables como número de víctimas, frecuencia, hora, zona y severidad. El objetivo no es predecir una etiqueta, sino descubrir perfiles semejantes.
+
+## Actividad guiada
+
+1. Selecciona cuatro variables numéricas de un conjunto real.
+2. Trata valores faltantes.
+3. Estandariza los datos.
+4. Evalúa valores de $k$ entre 2 y 10.
+5. Usa el método del codo.
+6. Calcula silhouette.
+7. Entrena el modelo final con `nstart = 50`.
+8. Interpreta los centroides.
+9. Asigna nombres descriptivos a los perfiles.
+10. Explica las limitaciones del análisis.
+
+## Ejercicios
+
+1. Implementa una iteración manual de k-means.
+2. Compara resultados con y sin estandarización.
+3. Cambia la semilla y analiza la estabilidad.
+4. Agrega valores atípicos.
+5. Compara $k=2$, $k=3$ y $k=5$.
+6. Contrasta el método del codo y silhouette.
+7. Aplica k-means a datos ambientales o de accidentes.
+
+## Materiales complementarios del capítulo
+
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<iframe width="100%" height="420"
+src="https://www.youtube.com/embed/mZgUlnSxrgA"
+title="Capítulo 13. Agrupamiento con k-means"
+frameborder="0"
+allowfullscreen></iframe>
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Video del capítulo
+
+Disponible en YouTube:
+
+<https://youtu.be/mZgUlnSxrgA>
+
+:::
+
+| Recurso | Descripción | Abrir o descargar |
+|---|---|---|
+| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-13/capitulo-13-kmeans-presentacion.pdf){target="_blank"} |
+| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-13/capitulo-13-kmeans-presentacion.pptx) |
+| Infografía | Resumen visual del capítulo. | [Abrir infografía](recursos/capitulo-13/capitulo-13-kmeans-infografia.png){target="_blank"} |
+
+::: {.content-visible when-format="html"}
+
+![Infografía del capítulo 13](recursos/capitulo-13/capitulo-13-kmeans-infografia.png){fig-alt="Capítulo 13. Agrupamiento con k-means" width="85%"}
+
+:::
+
+Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
+contenido del libro y revisados y adaptados por el autor.
+
+## Conclusión
+
+k-means descubre grupos mediante distancias y centroides. Su utilidad depende de una preparación adecuada, una selección razonada de $k$ y una interpretación basada en los perfiles de cada cluster.
+
+En el siguiente capítulo estudiaremos el **Análisis de Componentes Principales (PCA)** como técnica de reducción de dimensión.

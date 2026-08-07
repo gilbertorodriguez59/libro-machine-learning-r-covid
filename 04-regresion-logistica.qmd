@@ -1,0 +1,563 @@
+# Regresión logística para clasificación
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **regresión logística, máxima verosimilitud y clasificación probabilística** se desarrolla con mayor profundidad
+en los capítulos 3, 6 y 11 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de ajustar una regresión logística, predecir probabilidades y evaluar el desempeño.
+
+## Fundamento matemático
+
+La regresión logística utiliza la función:
+
+$$
+p = \frac{1}{1 + e^{-z}}
+$$
+
+donde $z = \beta_0 + \beta_1x_1 + \cdots + \beta_px_p$.
+
+## Visualización de la función logística
+
+```{r grafica-logistica, fig.width=7, fig.height=4.5}
+library(ggplot2)
+source("util_graficas.R")
+
+z <- seq(-10, 10, length.out = 200)
+datos_logistica <- data.frame(z = z, p = 1 / (1 + exp(-z)))
+
+ggplot(datos_logistica, aes(x = z, y = p)) +
+  geom_line(linewidth = 1.2, color = col_azul) +
+  labs(
+    title = "Función logística",
+    subtitle = "Transforma valores reales en probabilidades",
+    x = "z",
+    y = "Probabilidad"
+  ) +
+  tema_libro()
+```
+
+::: {.callout-note}
+## Explicación del código
+Se genera una secuencia de valores para $z$ y se calcula su probabilidad usando la función logística.
+:::
+
+::: {.callout-tip}
+## Interpretación del resultado
+La curva tiene forma de S. Valores negativos producen probabilidades cercanas a cero y valores positivos probabilidades cercanas a uno.
+:::
+
+## Cargar paquetes y datos
+
+```{r cargar-logistica}
+library(readr)
+library(dplyr)
+source("util_graficas.R")
+
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (file.exists(ruta_atus_ml)) {
+  atus_ml <- read_csv(ruta_atus_ml, show_col_types = FALSE)
+  print("Base preparada cargada correctamente.")
+} else {
+  atus_ml <- NULL
+  print("No se encontró el archivo datos/atus_ml_preparado.csv. Ejecuta primero el capítulo 2.")
+}
+```
+
+## Preparar y dividir datos
+
+```{r preparar-logistica}
+if (!is.null(atus_ml)) {
+  atus_modelo <- atus_ml |>
+    mutate(
+      victimas_binaria = ifelse(accidente_con_victimas == "Con víctimas", 1, 0),
+      MES = as.factor(MES),
+      ID_HORA = as.numeric(ID_HORA),
+      DIASEMANA = as.factor(DIASEMANA),
+      TIPACCID = as.factor(TIPACCID),
+      CAUSAACCI = as.factor(CAUSAACCI),
+      accidente_con_victimas = factor(accidente_con_victimas, levels = c("Con víctimas", "Solo daños"))
+    )
+
+  set.seed(123)
+  idx <- sample(1:nrow(atus_modelo), size = round(0.7 * nrow(atus_modelo)))
+  entrenamiento <- atus_modelo[idx, ]
+  prueba <- atus_modelo[-idx, ]
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+La variable respuesta se transforma a binaria y la base se divide en entrenamiento y prueba.
+:::
+
+## Ajustar modelo
+
+```{r ajustar-logistica}
+if (exists("entrenamiento")) {
+  modelo_logistico <- glm(
+    victimas_binaria ~ MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+    data = entrenamiento,
+    family = binomial
+  )
+
+  head(summary(modelo_logistico)$coefficients, 12)
+}
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+Los coeficientes estiman el efecto de cada variable sobre el logit de la probabilidad de accidente con víctimas.
+:::
+
+## Predicción y matriz de confusión
+
+```{r prediccion-logistica}
+if (exists("modelo_logistico")) {
+  prueba$probabilidad_victimas <- predict(modelo_logistico, newdata = prueba, type = "response")
+  prueba$prediccion_03 <- factor(
+    ifelse(prueba$probabilidad_victimas >= 0.3, "Con víctimas", "Solo daños"),
+    levels = c("Con víctimas", "Solo daños")
+  )
+
+  matriz_confusion_03 <- table(
+    Real = prueba$accidente_con_victimas,
+    Predicho = prueba$prediccion_03
+  )
+
+  matriz_confusion_03
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+Las probabilidades se convierten en clases usando un punto de corte de 0.3.
+:::
+
+## Métricas
+
+```{r metricas-logistica}
+if (exists("matriz_confusion_03")) {
+  VP <- matriz_confusion_03["Con víctimas", "Con víctimas"]
+  FN <- matriz_confusion_03["Con víctimas", "Solo daños"]
+  FP <- matriz_confusion_03["Solo daños", "Con víctimas"]
+  VN <- matriz_confusion_03["Solo daños", "Solo daños"]
+
+  data.frame(
+    exactitud = (VP + VN) / (VP + FN + FP + VN),
+    sensibilidad = VP / (VP + FN),
+    especificidad = VN / (VN + FP)
+  )
+}
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+La sensibilidad mide la capacidad para detectar accidentes con víctimas; la especificidad mide la capacidad para detectar accidentes de solo daños.
+:::
+
+## Distribución de probabilidades
+
+```{r histograma-logistica, fig.width=7, fig.height=4.5}
+if (exists("prueba")) {
+  ggplot(prueba, aes(x = probabilidad_victimas, fill = accidente_con_victimas)) +
+    geom_histogram(bins = 30, alpha = 0.75, position = "identity") +
+    escala_clases_fill(name = "Clase real") +
+    labs(
+      title = "Distribución de probabilidades predichas",
+      subtitle = "Regresión logística",
+      x = "Probabilidad predicha de accidente con víctimas",
+      y = "Frecuencia"
+    ) +
+    tema_libro()
+}
+```
+
+## Materiales complementarios del capítulo
+
+Estos recursos permiten estudiar la regresión logística desde una perspectiva audiovisual, gráfica y práctica.
+
+| Recurso | Utilidad | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Video explicativo | Explicación audiovisual de la regresión logística aplicada a problemas de clasificación. | [Ver en YouTube](https://www.youtube.com/watch?v=7CwP40QDeys){target="_blank"} | — |
+| Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pdf){download="capitulo-05-regresion-logistica-clasificacion.pdf"} |
+| Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pptx) | [Descargar PPTX](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pptx){download="capitulo-05-regresion-logistica-clasificacion.pptx"} |
+| Infografía | Síntesis visual de los conceptos, la función logística y el proceso de clasificación. | [Ver infografía](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png){download="capitulo-05-regresion-logistica-clasificacion-infografia.png"} |
+
+::: {.content-visible when-format="html"}
+### Video explicativo
+
+<div class="video-responsive">
+  <iframe
+    src="https://www.youtube.com/embed/7CwP40QDeys"
+    title="Capítulo 5. Regresión logística para clasificación"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+### Vista previa de la infografía
+
+[![Infografía del capítulo 5](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png)](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png)
+:::
+
+::: {.content-visible when-format="pdf"}
+**Video del capítulo:** <https://www.youtube.com/watch?v=7CwP40QDeys>
+
+**Curso completo en YouTube:** <https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
+
+La presentación PDF, el archivo PowerPoint y la infografía pueden descargarse desde la versión web del libro.
+:::
+
+::: {.callout-tip title="Curso completo en YouTube"}
+Este video forma parte de la lista oficial del curso.
+
+[Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::
+
+::: {.callout-note title="Elaboración de los materiales"}
+Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor.
+:::
+
+## Laboratorio interactivo: regresión logística
+
+::: {.content-visible when-format="html"}
+
+Explora cómo el intercepto, la pendiente y el umbral cambian la probabilidad estimada y la clasificación final.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+sigmoide <- function(z) {
+  1 / (1 + exp(-z))
+}
+
+ui <- fluidPage(
+  titlePanel("Laboratorio de regresión logística"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("b0", "Intercepto", -10, 10, -3, 0.25),
+      sliderInput("b1", "Pendiente", -5, 5, 1.2, 0.1),
+      sliderInput("umbral", "Umbral de clasificación", 0.05, 0.95, 0.5, 0.05),
+      sliderInput("xnew", "Valor nuevo de x", -5, 10, 2.5, 0.1)
+    ),
+
+    mainPanel(
+      plotOutput("curva", height = "440px"),
+      verbatimTextOutput("resultado"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+
+  prob_nueva <- reactive({
+    sigmoide(input$b0 + input$b1 * input$xnew)
+  })
+
+  output$curva <- renderPlot({
+    x <- seq(-5, 10, length.out = 400)
+    p <- sigmoide(input$b0 + input$b1 * x)
+
+    plot(
+      x, p,
+      type = "l",
+      lwd = 3,
+      ylim = c(0, 1),
+      xlab = "Variable x",
+      ylab = "Probabilidad estimada",
+      main = "Curva logística y umbral"
+    )
+
+    abline(h = input$umbral, lty = 2)
+    abline(v = input$xnew, lty = 3)
+
+    points(
+      input$xnew,
+      prob_nueva(),
+      pch = 19,
+      cex = 1.8
+    )
+
+    text(
+      input$xnew,
+      prob_nueva(),
+      labels = paste0("  p = ", round(prob_nueva(), 3)),
+      pos = 4
+    )
+  })
+
+  output$resultado <- renderPrint({
+    clase <- ifelse(
+      prob_nueva() >= input$umbral,
+      1,
+      0
+    )
+
+    cat("Logit =", round(input$b0 + input$b1 * input$xnew, 4), "\n")
+    cat("Probabilidad =", round(prob_nueva(), 4), "\n")
+    cat("Umbral =", input$umbral, "\n")
+    cat("Clase predicha =", clase)
+  })
+
+  output$interpretacion <- renderText({
+    if (prob_nueva() >= input$umbral) {
+      "La probabilidad supera el umbral, por lo que la observación se asigna a la clase 1."
+    } else {
+      "La probabilidad no alcanza el umbral, por lo que la observación se asigna a la clase 0."
+    }
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+El laboratorio permite cambiar los coeficientes, el umbral y el valor de una observación nueva para estudiar la curva logística y la clase predicha.
+
+:::
+
+## Caso aplicado B: regresión logística con COVID-19
+
+Construiremos un modelo para estimar la probabilidad de una **defunción
+registrada** a partir de variables demográficas y clínicas.
+
+```{r}
+#| label: covid-logit-modelo
+#| message: false
+#| warning: false
+
+library(readr)
+library(dplyr)
+
+covid <- read_csv(
+  "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz",
+  show_col_types = FALSE
+)
+
+covid_modelo <- covid |>
+  select(
+    MURIO,
+    EDAD,
+    NEUMONIA,
+    DIABETES,
+    HIPERTENSION,
+    OBESIDAD,
+    RENAL_CRONICA
+  ) |>
+  tidyr::drop_na()
+
+set.seed(2026)
+
+indice_entrenamiento <- sample(
+  seq_len(nrow(covid_modelo)),
+  size = floor(0.80 * nrow(covid_modelo))
+)
+
+covid_train <- covid_modelo[indice_entrenamiento, ]
+covid_test <- covid_modelo[-indice_entrenamiento, ]
+
+modelo_covid <- glm(
+  MURIO ~ EDAD + NEUMONIA + DIABETES +
+    HIPERTENSION + OBESIDAD + RENAL_CRONICA,
+  data = covid_train,
+  family = binomial()
+)
+
+summary(modelo_covid)
+```
+
+### Razones de momios
+
+```{r}
+#| label: covid-logit-odds-ratios
+#| message: false
+#| warning: false
+
+odds_ratios <- data.frame(
+  variable = names(coef(modelo_covid)),
+  coeficiente = coef(modelo_covid),
+  odds_ratio = exp(coef(modelo_covid))
+)
+
+odds_ratios
+```
+
+Un `odds_ratio` mayor que uno indica que, manteniendo constantes las demás
+variables, el predictor se asocia con un aumento de los momios del desenlace.
+Esto **no demuestra causalidad**.
+
+### Probabilidades para la base de prueba
+
+```{r}
+#| label: covid-logit-probabilidades
+#| message: false
+#| warning: false
+
+covid_test$probabilidad <- predict(
+  modelo_covid,
+  newdata = covid_test,
+  type = "response"
+)
+
+head(
+  covid_test |>
+    arrange(desc(probabilidad)),
+  10
+)
+```
+
+## Laboratorio interactivo: probabilidad estimada COVID-19
+
+::: {.content-visible when-format="html"}
+
+El simulador usa coeficientes estimados previamente con la muestra educativa.
+Su propósito es mostrar el funcionamiento matemático de una regresión
+logística; **no es una calculadora clínica ni un instrumento de diagnóstico**.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 760
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Simulador educativo de regresión logística COVID-19"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("edad", "Edad", 0, 100, 50, step = 1),
+      checkboxInput("neumonia", "Neumonía registrada", FALSE),
+      checkboxInput("diabetes", "Diabetes", FALSE),
+      checkboxInput("hipertension", "Hipertensión", FALSE),
+      checkboxInput("obesidad", "Obesidad", FALSE),
+      checkboxInput("renal", "Enfermedad renal crónica", FALSE),
+      sliderInput(
+        "umbral",
+        "Umbral de clasificación",
+        0.05, 0.95, 0.50, step = 0.05
+      )
+    ),
+
+    mainPanel(
+      h3(textOutput("probabilidad")),
+      textOutput("clasificacion"),
+      plotOutput("grafica", height = "360px"),
+      helpText(
+        "Resultado exclusivamente educativo. No usar para decisiones médicas."
+      )
+    )
+  )
+)
+
+server <- function(input, output, session) {
+
+  prob <- reactive({
+    eta <-
+      -6.6586 +
+      0.0856 * input$edad +
+      4.6571 * as.numeric(input$neumonia) +
+      0.7185 * as.numeric(input$diabetes) +
+      0.3992 * as.numeric(input$hipertension) -
+      0.0422 * as.numeric(input$obesidad) +
+      2.6948 * as.numeric(input$renal)
+
+    1 / (1 + exp(-eta))
+  })
+
+  output$probabilidad <- renderText({
+    paste0(
+      "Probabilidad estimada en la muestra: ",
+      round(100 * prob(), 1),
+      "%"
+    )
+  })
+
+  output$clasificacion <- renderText({
+    clase <- ifelse(
+      prob() >= input$umbral,
+      "Clase 1: defunción registrada",
+      "Clase 0: sin defunción registrada"
+    )
+
+    paste(
+      clase,
+      "con umbral",
+      round(input$umbral, 2)
+    )
+  })
+
+  output$grafica <- renderPlot({
+    edades <- 0:100
+
+    eta <-
+      -6.6586 +
+      0.0856 * edades +
+      4.6571 * as.numeric(input$neumonia) +
+      0.7185 * as.numeric(input$diabetes) +
+      0.3992 * as.numeric(input$hipertension) -
+      0.0422 * as.numeric(input$obesidad) +
+      2.6948 * as.numeric(input$renal)
+
+    probabilidades <- 1 / (1 + exp(-eta))
+
+    plot(
+      edades,
+      probabilidades,
+      type = "l",
+      lwd = 3,
+      ylim = c(0, 1),
+      xlab = "Edad",
+      ylab = "Probabilidad estimada",
+      main = "Curva logística según las características elegidas"
+    )
+
+    abline(h = input$umbral, lty = 2)
+    points(input$edad, prob(), pch = 19, cex = 1.8)
+    grid()
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+El lector puede modificar edad, neumonía y comorbilidades, además del umbral
+de clasificación, para observar cómo cambia la probabilidad estimada.
+
+:::
+
+## Conclusión
+
+La regresión logística es un modelo interpretable para clasificación binaria. El punto de corte permite ajustar el balance entre sensibilidad y especificidad.
+
+
+## Referencias fundamentales de la regresión logística
+
+La formulación moderna de la regresión para respuestas binarias se relaciona con el trabajo de Cox [@cox1958regression]. Para profundizar en ajuste, interpretación, diagnóstico y aplicaciones del modelo logístico puede consultarse a @hosmer2013applied. Una presentación orientada al aprendizaje estadístico y a su implementación en R aparece en @james2021islr.

@@ -1,0 +1,344 @@
+# k vecinos más cercanos, k-NN
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **distancias, escalamiento y vecinos más cercanos** se desarrolla con mayor profundidad
+en los capítulos 2 y 12 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de explicar k-NN, preparar datos para este método, estandarizar variables y evaluar el desempeño.
+
+## Idea intuitiva
+
+k-NN clasifica una nueva observación según la clase más común entre sus vecinos más cercanos.
+
+```{r ejemplo-knn, fig.width=7, fig.height=4.5}
+library(ggplot2)
+library(class)
+library(dplyr)
+library(tidyr)
+library(readr)
+source("util_graficas.R")
+
+datos_ejemplo <- data.frame(
+  hora = c(8, 9, 10, 18, 19, 20, 22, 23),
+  mes = c(1, 1, 2, 6, 6, 7, 12, 12),
+  clase = c("Solo daños", "Solo daños", "Solo daños", "Con víctimas", "Con víctimas", "Con víctimas", "Con víctimas", "Con víctimas")
+)
+
+ggplot(datos_ejemplo, aes(x = hora, y = mes, color = clase)) +
+  geom_point(size = 4) +
+  escala_clases_color() +
+  labs(title = "Ejemplo intuitivo de k-NN", x = "Hora", y = "Mes", color = "Clase") +
+  tema_libro()
+```
+
+::: {.callout-note}
+## Explicación del código
+Se construyen puntos artificiales para visualizar la idea de vecinos cercanos.
+:::
+
+## Distancia euclidiana
+
+$$
+d(A,B) = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
+$$
+
+```{r distancia-knn}
+sqrt((8 - 10)^2 + (1 - 2)^2)
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+Una distancia menor indica mayor similitud entre dos observaciones.
+:::
+
+## Cargar y preparar datos
+
+```{r cargar-preparar-knn}
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (file.exists(ruta_atus_ml)) {
+  atus_ml <- read_csv(ruta_atus_ml, show_col_types = FALSE)
+  set.seed(123)
+  atus_knn_base <- atus_ml |>
+    sample_n(min(12000, nrow(atus_ml))) |>
+    mutate(
+      accidente_con_victimas = factor(accidente_con_victimas, levels = c("Con víctimas", "Solo daños")),
+      MES = as.factor(MES),
+      ID_HORA = as.numeric(ID_HORA),
+      DIASEMANA = as.factor(DIASEMANA),
+      TIPACCID = as.factor(TIPACCID),
+      CAUSAACCI = as.factor(CAUSAACCI)
+    ) |>
+    na.omit()
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+Se toma una muestra para que k-NN sea rápido y reproducible. Este método puede ser costoso en bases grandes.
+:::
+
+## Modelo k-NN
+
+```{r modelo-knn}
+if (exists("atus_knn_base")) {
+  matriz_predictoras <- model.matrix(~ ID_HORA + MES + DIASEMANA + TIPACCID + CAUSAACCI - 1, data = atus_knn_base)
+  y <- atus_knn_base$accidente_con_victimas
+
+  set.seed(123)
+  idx <- sample(1:nrow(matriz_predictoras), size = round(0.7 * nrow(matriz_predictoras)))
+  x_entrenamiento <- matriz_predictoras[idx, ]
+  x_prueba <- matriz_predictoras[-idx, ]
+  y_entrenamiento <- y[idx]
+  y_prueba <- y[-idx]
+
+  medias <- apply(x_entrenamiento, 2, mean)
+  desviaciones <- apply(x_entrenamiento, 2, sd)
+  desviaciones[desviaciones == 0] <- 1
+
+  x_entrenamiento_esc <- scale(x_entrenamiento, center = medias, scale = desviaciones)
+  x_prueba_esc <- scale(x_prueba, center = medias, scale = desviaciones)
+
+  pred_knn_5 <- knn(x_entrenamiento_esc, x_prueba_esc, y_entrenamiento, k = 5)
+  table(Real = y_prueba, Predicho = pred_knn_5)
+}
+```
+
+::: {.callout-note}
+## Explicación del código
+Se crean variables dummy, se estandarizan las columnas y se clasifica con k igual a 5.
+:::
+
+## Comparación de valores de k
+
+```{r comparacion-knn, fig.width=7, fig.height=4.5}
+calcular_metricas <- function(real, predicho) {
+  real <- factor(real, levels = c("Con víctimas", "Solo daños"))
+  predicho <- factor(predicho, levels = c("Con víctimas", "Solo daños"))
+  m <- table(Real = real, Predicho = predicho)
+  VP <- m["Con víctimas", "Con víctimas"]
+  FN <- m["Con víctimas", "Solo daños"]
+  FP <- m["Solo daños", "Con víctimas"]
+  VN <- m["Solo daños", "Solo daños"]
+  data.frame(exactitud=(VP+VN)/(VP+FN+FP+VN), sensibilidad=VP/(VP+FN), especificidad=VN/(VN+FP))
+}
+
+if (exists("x_entrenamiento_esc")) {
+  valores_k <- c(3, 5, 11)
+  resultados_knn <- data.frame()
+
+  for (k_actual in valores_k) {
+    pred_actual <- knn(x_entrenamiento_esc, x_prueba_esc, y_entrenamiento, k = k_actual)
+    tmp <- calcular_metricas(y_prueba, pred_actual)
+    tmp$k <- k_actual
+    resultados_knn <- rbind(resultados_knn, tmp)
+  }
+
+  resultados_knn <- resultados_knn |> select(k, exactitud, sensibilidad, especificidad)
+  resultados_knn
+}
+
+if (exists("resultados_knn")) {
+  resultados_largos <- resultados_knn |>
+    pivot_longer(cols = c(exactitud, sensibilidad, especificidad), names_to = "metrica", values_to = "valor")
+
+  ggplot(resultados_largos, aes(x = k, y = valor, color = metrica, group = metrica)) +
+    geom_line(linewidth = 1.1) +
+    geom_point(size = 3) +
+    scale_color_manual(values = c(exactitud = col_azul, sensibilidad = col_coral, especificidad = col_turquesa)) +
+    labs(title = "Comparación de métricas para distintos valores de k", x = "Valor de k", y = "Valor") +
+    tema_libro()
+}
+```
+
+::: {.callout-tip}
+## Interpretación del resultado
+Cambiar k modifica el balance entre exactitud, sensibilidad y especificidad. No existe un k universalmente mejor.
+:::
+
+## Laboratorio interactivo: k-NN
+
+::: {.content-visible when-format="html"}
+
+Selecciona el número de vecinos y mueve un punto nuevo. El laboratorio identifica sus vecinos más cercanos y muestra la clase predicha.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 760
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Laboratorio de clasificación k-NN"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("k", "Número de vecinos k", 1, 15, 5, 2),
+      sliderInput("xnew", "Longitud del sépalo", 4, 8, 5.8, 0.1),
+      sliderInput("ynew", "Anchura del sépalo", 2, 4.5, 3.0, 0.1)
+    ),
+
+    mainPanel(
+      plotOutput("grafica", height = "500px"),
+      verbatimTextOutput("resultado"),
+      textOutput("explicacion")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+
+  resultado <- reactive({
+    X <- as.matrix(iris[, c("Sepal.Length", "Sepal.Width")])
+    nuevo <- c(input$xnew, input$ynew)
+
+    distancias <- sqrt(
+      rowSums(
+        sweep(X, 2, nuevo, "-")^2
+      )
+    )
+
+    indices <- order(distancias)[seq_len(input$k)]
+    votos <- table(iris$Species[indices])
+    clase <- names(which.max(votos))
+
+    list(
+      indices = indices,
+      distancias = distancias,
+      votos = votos,
+      clase = clase
+    )
+  })
+
+  output$grafica <- renderPlot({
+    especies <- as.integer(iris$Species)
+    r <- resultado()
+
+    plot(
+      iris$Sepal.Length,
+      iris$Sepal.Width,
+      pch = 19,
+      col = especies,
+      xlab = "Longitud del sépalo",
+      ylab = "Anchura del sépalo",
+      main = paste("Predicción:", r$clase)
+    )
+
+    points(
+      iris$Sepal.Length[r$indices],
+      iris$Sepal.Width[r$indices],
+      pch = 1,
+      cex = 2.1,
+      lwd = 2
+    )
+
+    points(
+      input$xnew,
+      input$ynew,
+      pch = 8,
+      cex = 2.2,
+      lwd = 3
+    )
+
+    segments(
+      input$xnew,
+      input$ynew,
+      iris$Sepal.Length[r$indices],
+      iris$Sepal.Width[r$indices],
+      lty = 3
+    )
+
+    legend(
+      "topright",
+      legend = levels(iris$Species),
+      col = seq_along(levels(iris$Species)),
+      pch = 19,
+      bty = "n"
+    )
+  })
+
+  output$resultado <- renderPrint({
+    r <- resultado()
+
+    cat("Clase predicha:", r$clase, "\n\n")
+    cat("Votos de los vecinos:\n")
+    print(r$votos)
+  })
+
+  output$explicacion <- renderText({
+    paste0(
+      "Los círculos grandes indican los ",
+      input$k,
+      " vecinos utilizados. La estrella representa la observación nueva."
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+El lector puede cambiar el valor de $k$, mover una observación nueva y visualizar sus vecinos, distancias y clase predicha.
+
+:::
+
+## Materiales complementarios del capítulo
+
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<div class="video-responsive">
+<iframe src="https://www.youtube.com/embed/NLJj0QAWomU"
+title="Capítulo 6. k vecinos más cercanos, k-NN"
+frameborder="0" allowfullscreen></iframe>
+</div>
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Video del capítulo
+
+Disponible en YouTube:
+
+<https://youtu.be/NLJj0QAWomU>
+
+:::
+
+| Recurso | Descripción | Abrir o descargar |
+|---|---|---|
+| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-06/capitulo-06-knn-presentacion.pdf){target="_blank"} |
+| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-06/capitulo-06-knn-presentacion.pptx) |
+| Infografía | Resumen visual del algoritmo k-NN. | [Abrir infografía](recursos/capitulo-06/capitulo-06-knn-infografia.png){target="_blank"} |
+
+::: {.content-visible when-format="html"}
+
+![Infografía del capítulo 6](recursos/capitulo-06/capitulo-06-knn-infografia.png){fig-alt="Infografía sobre k vecinos más cercanos" width="85%"}
+
+:::
+
+Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
+contenido del libro y revisados y adaptados por el autor.
+
+## Conclusión
+
+k-NN es un método intuitivo basado en similitud. Su desempeño depende del valor de $k$, del escalamiento y de la calidad de las variables predictoras.
+
+
+## Referencias fundamentales de k-NN
+
+El método de los vecinos más cercanos tiene como antecedente clásico el informe de @fix1951discriminatory. Sus propiedades de clasificación y cotas de error fueron estudiadas por @cover1967nearest. Una exposición moderna, acompañada de aplicaciones en R, puede consultarse en @james2021islr.

@@ -1,0 +1,22 @@
+# Licencia, autoría y forma de citar {.unnumbered}
+
+## Autor {.unnumbered}
+
+**Jesús Gilberto Rodríguez Escobedo**
+
+## Licencia {.unnumbered}
+
+Este libro se distribuye bajo la licencia **Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0)**.
+
+Esto significa que el material puede compartirse y adaptarse con fines educativos y no comerciales, siempre que se otorgue el crédito correspondiente al autor y las obras derivadas se compartan bajo una licencia compatible.
+
+## Cita sugerida {.unnumbered}
+
+Rodríguez Escobedo, J. G. (2026). *Aprendizaje y Clasificación Automática con R: Un enfoque práctico con datos abiertos reales*. Libro web publicado con Quarto y GitHub Pages.
+
+## Uso educativo {.unnumbered}
+
+El propósito de este libro es apoyar la enseñanza y el aprendizaje de técnicas de aprendizaje automático con R, usando datos reales y un enfoque didáctico, reproducible y aplicado.
+
+
+

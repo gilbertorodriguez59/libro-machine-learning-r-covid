@@ -1,0 +1,25 @@
+﻿CORRECCIÓN DEL LANZADOR DE PUBLICACIÓN
+
+El capítulo 12 ya se generó correctamente.
+
+El error se debía a esta instrucción de PowerShell:
+
+call PREPARAR_SHINYLIVE_Y_PUBLICAR_V0121.bat
+
+"call" es un comando de archivos .bat y PowerShell no lo reconoce.
+
+La versión corregida utiliza el operador de ejecución de PowerShell:
+
+& $Publisher
+
+Pasos:
+1. Copie estos archivos en:
+   C:\libro-machine-learning-r-dev
+
+2. Ejecute:
+   PROBAR_CAPITULO_12_Y_PUBLICAR_CORREGIDO.bat
+
+El proceso:
+- prueba nuevamente el capítulo 12;
+- si funciona, ejecuta PREPARAR_SHINYLIVE_Y_PUBLICAR_V0121.bat;
+- continúa con la publicación completa.

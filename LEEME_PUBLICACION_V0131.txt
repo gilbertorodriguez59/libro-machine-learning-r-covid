@@ -1,0 +1,25 @@
+﻿PUBLICACIÓN v0.13.1 SIN PRUEBAS REPETIDAS
+
+El archivo anterior parecía detenerse porque intentaba generar cada capítulo
+interactivo por separado en PDF.
+
+En un proyecto Quarto tipo book, al renderizar uno de sus capítulos Quarto
+puede volver a procesar el libro completo. Repetirlo para cinco capítulos
+provoca mucho trabajo y puede parecer que el proceso se congeló.
+
+Pasos:
+
+1. Si el proceso anterior sigue abierto y no avanza, presione Ctrl + C.
+2. Copie estos archivos dentro de:
+   C:\libro-machine-learning-r-dev
+3. Ejecute:
+   PUBLICAR_V0131_SIN_PRUEBAS_REPETIDAS.bat
+
+El nuevo lanzador:
+- no prueba los cinco capítulos uno por uno;
+- ejecuta el publicador completo una sola vez;
+- conserva PDF, HTML, Shinylive y publicación en GitHub.
+
+Durante el PDF es normal que un porcentaje permanezca varios minutos mientras
+R ejecuta gráficas y ejemplos. Solo debe interrumpirse si no hay ningún avance
+durante un periodo prolongado, por ejemplo más de 10 a 15 minutos.

@@ -1,0 +1,1518 @@
+# Redes neuronales artificiales
+
+## Objetivos de aprendizaje
+
+Al finalizar este capítulo podrás:
+
+- explicar la estructura básica de una neurona artificial;
+- interpretar entradas, pesos, sesgo y funciones de activación;
+- describir el funcionamiento de una red neuronal multicapa;
+- comprender la propagación hacia adelante y la retropropagación;
+- distinguir entre clasificación binaria y multiclase;
+- preparar correctamente los datos para una red neuronal;
+- implementar una red sencilla desde cero en R;
+- entrenar modelos con `neuralnet`;
+- construir una red moderna con `keras`;
+- evaluar el desempeño mediante matriz de confusión y métricas;
+- reconocer sobreajuste, regularización y errores frecuentes.
+
+## 1. Introducción
+
+Las **redes neuronales artificiales** son modelos computacionales inspirados, de forma muy simplificada, en la manera en que las neuronas biológicas reciben, transforman y transmiten señales.
+
+Una red neuronal puede aprender relaciones complejas entre variables de entrada y una variable de respuesta. Esto la hace útil para:
+
+- clasificación;
+- regresión;
+- reconocimiento de imágenes;
+- procesamiento de señales;
+- detección de patrones;
+- predicción de series;
+- aplicaciones biomédicas y ambientales.
+
+La idea central es construir muchas unidades simples, llamadas **neuronas artificiales**, conectadas entre sí mediante pesos ajustables.
+
+## 2. La neurona artificial
+
+Una neurona recibe varias entradas:
+
+$$
+x_1,x_2,\ldots,x_p
+$$
+
+Cada entrada tiene un peso:
+
+$$
+w_1,w_2,\ldots,w_p
+$$
+
+La neurona calcula una combinación lineal:
+
+$$
+z=w_1x_1+w_2x_2+\cdots+w_px_p+b
+$$
+
+donde $b$ es el **sesgo**.
+
+Después aplica una función de activación:
+
+$$
+a=f(z)
+$$
+
+El resultado $a$ se transmite a otras neuronas o se utiliza como salida.
+
+### Interpretación
+
+- Las entradas son las características del problema.
+- Los pesos indican la importancia de cada entrada.
+- El sesgo permite desplazar la frontera de decisión.
+- La función de activación introduce no linealidad.
+- La salida representa una predicción o una señal intermedia.
+
+## 3. Ejemplo manual de una neurona
+
+Supongamos que las entradas, los pesos y el sesgo son:
+
+$$
+\begin{aligned}
+x_1 &= 0.8, & x_2 &= 0.4,\\
+w_1 &= 1.2, & w_2 &= -0.7, & b &= 0.1.
+\end{aligned}
+$$
+
+La combinación lineal se obtiene sustituyendo los valores:
+
+$$
+\begin{aligned}
+z &= w_1x_1+w_2x_2+b\\
+  &= (1.2)(0.8)+(-0.7)(0.4)+0.1\\
+  &= 0.96-0.28+0.1\\
+  &= 0.78.
+\end{aligned}
+$$
+
+Si usamos la función sigmoide:
+
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}
+$$
+
+obtenemos:
+
+$$
+\sigma(0.78)\approx0.686
+$$
+
+La neurona produce una salida cercana a 0.686.
+
+## 4. Funciones de activación
+
+Las funciones de activación permiten que la red represente relaciones no lineales.
+
+### 4.1 Función escalón
+
+$$
+f(z)=
+\begin{cases}
+1, & z\geq0\\
+0, & z<0
+\end{cases}
+$$
+
+Fue utilizada en los primeros perceptrones.
+
+### 4.2 Función sigmoide
+
+$$
+\sigma(z)=\frac{1}{1+e^{-z}}
+$$
+
+Características:
+
+- produce valores entre 0 y 1;
+- es útil en clasificación binaria;
+- puede interpretarse como probabilidad;
+- puede saturarse para valores grandes.
+
+### 4.3 Tangente hiperbólica
+
+$$
+\tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}
+$$
+
+Produce valores entre -1 y 1.
+
+### 4.4 ReLU
+
+$$
+\operatorname{ReLU}(z)=\max(0,z)
+$$
+
+Es una de las activaciones más utilizadas en capas ocultas.
+
+### 4.5 Softmax
+
+Para clasificación multiclase:
+
+$$
+P(y=k)=\frac{e^{z_k}}{\sum_{j=1}^{K}e^{z_j}}
+$$
+
+Convierte las salidas en probabilidades que suman 1.
+
+## 5. El perceptrón
+
+El perceptrón es uno de los modelos neuronales más sencillos.
+
+Calcula:
+
+$$
+\widehat{y}=f(\mathbf{w}^{T}\mathbf{x}+b)
+$$
+
+y actualiza los pesos cuando comete errores.
+
+La regla básica de actualización es:
+
+$$
+w_j^{nuevo}=w_j^{anterior}+\eta(y-\widehat{y})x_j
+$$
+
+donde:
+
+- $\eta$ es la tasa de aprendizaje;
+- $y$ es la clase real;
+- $\widehat{y}$ es la predicción.
+
+### Limitación
+
+Un perceptrón simple solo resuelve problemas linealmente separables. El problema XOR es el ejemplo clásico que requiere una capa oculta.
+
+## 6. Estructura de una red multicapa
+
+Una red neuronal multicapa suele tener:
+
+1. capa de entrada;
+2. una o más capas ocultas;
+3. capa de salida.
+
+Cada neurona de una capa puede conectarse con las neuronas de la siguiente.
+
+### Capa de entrada
+
+Recibe las variables predictoras.
+
+### Capas ocultas
+
+Aprenden combinaciones intermedias de las características.
+
+### Capa de salida
+
+Produce la predicción final.
+
+Ejemplos:
+
+- una neurona sigmoide para clasificación binaria;
+- varias neuronas softmax para clasificación multiclase;
+- una neurona lineal para regresión.
+
+## 7. Propagación hacia adelante
+
+La **propagación hacia adelante** calcula la salida de la red a partir de las entradas.
+
+Para una capa oculta:
+
+$$
+\mathbf{h}=f(\mathbf{W}^{(1)}\mathbf{x}+\mathbf{b}^{(1)})
+$$
+
+Para la salida:
+
+$$
+\widehat{\mathbf{y}}=g(\mathbf{W}^{(2)}\mathbf{h}+\mathbf{b}^{(2)})
+$$
+
+La red transforma sucesivamente la información hasta producir una predicción.
+
+## 8. Función de pérdida
+
+La función de pérdida mide qué tan lejos está la predicción del valor real.
+
+### 8.1 Error cuadrático medio
+
+$$
+MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\widehat{y}_i)^2
+$$
+
+Se usa principalmente en regresión.
+
+### 8.2 Entropía cruzada binaria
+
+$$
+L=-\frac{1}{n}\sum_{i=1}^{n}
+\left[
+y_i\log(\widehat{p}_i)
++(1-y_i)\log(1-\widehat{p}_i)
+\right]
+$$
+
+Se utiliza en clasificación binaria.
+
+### 8.3 Entropía cruzada categórica
+
+$$
+L=-\frac{1}{n}\sum_{i=1}^{n}\sum_{k=1}^{K}
+y_{ik}\log(\widehat{p}_{ik})
+$$
+
+Se utiliza en clasificación multiclase.
+
+## 9. Descenso de gradiente
+
+El entrenamiento busca valores de los pesos que minimicen la pérdida.
+
+La actualización general es:
+
+$$
+w^{\mathrm{nuevo}}
+=
+w^{\mathrm{anterior}}
+-
+\eta\frac{\partial L}{\partial w}
+$$
+
+donde $\eta$ es la tasa de aprendizaje.
+
+### Tasa demasiado pequeña
+
+- aprendizaje lento;
+- muchas iteraciones.
+
+### Tasa demasiado grande
+
+- oscilaciones;
+- divergencia;
+- pérdida inestable.
+
+## 10. Retropropagación
+
+La **retropropagación** calcula cómo contribuye cada peso al error.
+
+El proceso es:
+
+1. realizar propagación hacia adelante;
+2. calcular la pérdida;
+3. obtener derivadas mediante la regla de la cadena;
+4. propagar el error hacia atrás;
+5. actualizar pesos y sesgos;
+6. repetir.
+
+La retropropagación no es un modelo distinto, sino el mecanismo principal para entrenar redes multicapa.
+
+## 11. Implementación manual de una neurona en R
+
+```{r}
+sigmoide <- function(z) {
+  1 / (1 + exp(-z))
+}
+
+x <- c(0.8, 0.4)
+w <- c(1.2, -0.7)
+b <- 0.1
+
+z <- sum(x * w) + b
+salida <- sigmoide(z)
+
+z
+salida
+```
+
+## Laboratorio interactivo: construye una neurona artificial
+
+::: {.content-visible when-format="html"}
+
+El siguiente laboratorio se ejecuta directamente en tu navegador mediante **Shinylive**. No requiere un servidor Shiny externo.
+
+Puedes modificar las entradas, los pesos, el sesgo, la función de activación y el umbral de clasificación.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+sigmoide <- function(z) 1 / (1 + exp(-z))
+relu <- function(z) pmax(0, z)
+
+app_ui <- fluidPage(
+  tags$style(HTML("\n    body { background-color: #f7f9fc; }\n    .well { background-color: white; border-radius: 12px; border: 1px solid #d9e2ef; }\n    .resultado-grande { font-size: 1.25rem; font-weight: 700; padding: 12px; border-radius: 10px; background: #eef5ff; margin-bottom: 10px; }\n  ")),
+  titlePanel("Laboratorio interactivo: neurona artificial"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("x1", "Entrada x1", -5, 5, 0.8, 0.1),
+      sliderInput("x2", "Entrada x2", -5, 5, 0.4, 0.1),
+      sliderInput("w1", "Peso w1", -5, 5, 1.2, 0.1),
+      sliderInput("w2", "Peso w2", -5, 5, -0.7, 0.1),
+      sliderInput("b", "Sesgo b", -5, 5, 0.1, 0.1),
+      selectInput(
+        "activacion",
+        "Función de activación",
+        choices = c(
+          "Sigmoide" = "sigmoide",
+          "Tangente hiperbólica" = "tanh",
+          "ReLU" = "relu",
+          "Escalón" = "escalon",
+          "Lineal" = "lineal"
+        )
+      ),
+      sliderInput("umbral", "Umbral de clasificación", 0, 1, 0.5, 0.05)
+    ),
+    mainPanel(
+      div(class = "resultado-grande", textOutput("formula")),
+      fluidRow(
+        column(4, h4("Combinación lineal"), verbatimTextOutput("z")),
+        column(4, h4("Salida activada"), verbatimTextOutput("salida")),
+        column(4, h4("Clase predicha"), verbatimTextOutput("clase"))
+      ),
+      hr(),
+      plotOutput("grafica", height = "340px"),
+      hr(),
+      h4("Interpretación"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  z_reactivo <- reactive({
+    input$w1 * input$x1 + input$w2 * input$x2 + input$b
+  })
+
+  salida_reactiva <- reactive({
+    z <- z_reactivo()
+    switch(
+      input$activacion,
+      sigmoide = sigmoide(z),
+      tanh = tanh(z),
+      relu = relu(z),
+      escalon = ifelse(z >= 0, 1, 0),
+      lineal = z
+    )
+  })
+
+  output$formula <- renderText({
+    paste0(
+      "z = (", round(input$w1, 2), ")(", round(input$x1, 2), ") + (",
+      round(input$w2, 2), ")(", round(input$x2, 2), ") + ", round(input$b, 2)
+    )
+  })
+
+  output$z <- renderText(round(z_reactivo(), 5))
+  output$salida <- renderText(round(salida_reactiva(), 5))
+
+  output$clase <- renderText({
+    salida <- salida_reactiva()
+    if (input$activacion %in% c("sigmoide", "escalon")) {
+      ifelse(salida >= input$umbral, "Clase 1", "Clase 0")
+    } else {
+      ifelse(salida >= 0, "Clase positiva", "Clase negativa")
+    }
+  })
+
+  output$grafica <- renderPlot({
+    valores_z <- seq(-6, 6, length.out = 400)
+    valores_y <- switch(
+      input$activacion,
+      sigmoide = sigmoide(valores_z),
+      tanh = tanh(valores_z),
+      relu = relu(valores_z),
+      escalon = ifelse(valores_z >= 0, 1, 0),
+      lineal = valores_z
+    )
+    plot(
+      valores_z, valores_y, type = "l", lwd = 3,
+      xlab = "Valor de z", ylab = "Salida de la activación",
+      main = paste("Función de activación:", input$activacion)
+    )
+    grid()
+    points(z_reactivo(), salida_reactiva(), pch = 19, cex = 1.8)
+    abline(v = z_reactivo(), lty = 2)
+  })
+
+  output$interpretacion <- renderText({
+    paste0(
+      "Con los valores actuales, la neurona calcula z = ",
+      round(z_reactivo(), 4),
+      " y produce una salida de ",
+      round(salida_reactiva(), 4),
+      ". Cambia un peso, una entrada o el sesgo para observar la respuesta."
+    )
+  })
+}
+
+shinyApp(app_ui, server)
+```
+
+::: {.callout-tip title="Actividad de exploración"}
+
+1. Mantén las entradas fijas y cambia solamente el sesgo.
+2. Cambia el signo de uno de los pesos.
+3. Compara sigmoide, ReLU y tangente hiperbólica.
+4. Coloca ambos pesos en cero.
+5. Modifica el umbral y observa si cambia la clase.
+
+:::
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio interactivo disponible en la versión web
+
+La versión web del capítulo incluye un laboratorio donde pueden modificarse las entradas, los pesos, el sesgo, la función de activación y el umbral de clasificación de una neurona artificial.
+
+:::
+
+## 12. Perceptrón desde cero en R
+
+```{r}
+entrenar_perceptron <- function(X, y,
+                               eta = 0.1,
+                               epocas = 100) {
+
+  X <- as.matrix(X)
+  y <- as.numeric(y)
+
+  pesos <- rep(0, ncol(X))
+  sesgo <- 0
+
+  for (epoca in seq_len(epocas)) {
+
+    for (i in seq_len(nrow(X))) {
+
+      z <- sum(X[i, ] * pesos) + sesgo
+      pred <- ifelse(z >= 0, 1, 0)
+      error <- y[i] - pred
+
+      pesos <- pesos + eta * error * X[i, ]
+      sesgo <- sesgo + eta * error
+    }
+  }
+
+  list(
+    pesos = pesos,
+    sesgo = sesgo
+  )
+}
+```
+
+Ejemplo con la compuerta AND:
+
+```{r}
+X_and <- data.frame(
+  x1 = c(0, 0, 1, 1),
+  x2 = c(0, 1, 0, 1)
+)
+
+y_and <- c(0, 0, 0, 1)
+
+modelo_and <- entrenar_perceptron(
+  X_and,
+  y_and,
+  eta = 0.1,
+  epocas = 20
+)
+
+modelo_and
+```
+
+Función de predicción:
+
+```{r}
+predecir_perceptron <- function(modelo, X) {
+
+  X <- as.matrix(X)
+
+  z <- as.numeric(
+    X %*% modelo$pesos +
+      modelo$sesgo
+  )
+
+  ifelse(z >= 0, 1, 0)
+}
+
+predecir_perceptron(
+  modelo_and,
+  X_and
+)
+```
+
+## 13. Ejemplo de XOR
+
+La compuerta XOR produce:
+
+| $x_1$ | $x_2$ | XOR |
+|---:|---:|---:|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
+| 1 | 1 | 0 |
+
+No puede resolverse mediante una sola frontera lineal. Una capa oculta permite construir regiones más complejas.
+
+## 14. Preparación de los datos
+
+Antes de entrenar una red neuronal es recomendable:
+
+- tratar valores faltantes;
+- convertir categorías;
+- separar entrenamiento, validación y prueba;
+- normalizar variables numéricas;
+- revisar desbalance;
+- eliminar identificadores;
+- evitar fuga de información.
+
+## 15. Normalización
+
+Las redes suelen entrenarse mejor cuando las variables tienen escalas comparables.
+
+### Estandarización
+
+$$
+z=\frac{x-\bar{x}}{s}
+$$
+
+### Mínimo-máximo
+
+$$
+x^\ast=\frac{x-\min(x)}{\max(x)-\min(x)}
+$$
+
+Los parámetros deben calcularse solo con entrenamiento.
+
+```{r}
+set.seed(123)
+
+indice <- sample(
+  seq_len(nrow(iris)),
+  size = round(0.70 * nrow(iris))
+)
+
+train <- iris[indice, ]
+test <- iris[-indice, ]
+
+medias <- sapply(train[, 1:4], mean)
+desvios <- sapply(train[, 1:4], sd)
+
+x_train <- scale(
+  train[, 1:4],
+  center = medias,
+  scale = desvios
+)
+
+x_test <- scale(
+  test[, 1:4],
+  center = medias,
+  scale = desvios
+)
+```
+
+## 16. Clasificación binaria con neuralnet
+
+::: {.callout-note title="Ejecución de los ejemplos con neuralnet"}
+Para que la generación del libro sea estable, los bloques que entrenan la red con `neuralnet` se muestran, pero no se ejecutan automáticamente durante el renderizado. Puedes ejecutarlos en RStudio después de instalar el paquete con `PREPARAR_PAQUETES_RED_NEURONAL.bat`.
+:::
+
+
+Crearemos un problema con dos especies de `iris`.
+
+```{r}
+iris_bin <- subset(
+  iris,
+  Species != "setosa"
+)
+
+iris_bin$clase <- ifelse(
+  iris_bin$Species == "virginica",
+  1,
+  0
+)
+
+iris_bin$Species <- NULL
+```
+
+División:
+
+```{r}
+set.seed(321)
+
+idx <- sample(
+  seq_len(nrow(iris_bin)),
+  size = round(0.70 * nrow(iris_bin))
+)
+
+train_bin <- iris_bin[idx, ]
+test_bin <- iris_bin[-idx, ]
+```
+
+Normalización segura:
+
+```{r}
+variables <- setdiff(
+  names(train_bin),
+  "clase"
+)
+
+medias_bin <- sapply(
+  train_bin[, variables],
+  mean
+)
+
+desvios_bin <- sapply(
+  train_bin[, variables],
+  sd
+)
+
+train_bin[, variables] <- scale(
+  train_bin[, variables],
+  center = medias_bin,
+  scale = desvios_bin
+)
+
+test_bin[, variables] <- scale(
+  test_bin[, variables],
+  center = medias_bin,
+  scale = desvios_bin
+)
+```
+
+Entrenamiento:
+
+```{r}
+#| eval: false
+# Instalar una sola vez fuera del renderizado:
+# install.packages("neuralnet", repos = "https://cloud.r-project.org")
+
+if (!requireNamespace("neuralnet", quietly = TRUE)) {
+  stop(
+    "El paquete 'neuralnet' no está instalado. ",
+    "Ejecute PREPARAR_PAQUETES_RED_NEURONAL.bat."
+  )
+}
+
+formula_rna <- clase ~ .
+
+modelo_rna <- neuralnet::neuralnet(
+  formula = formula_rna,
+  data = train_bin,
+  hidden = c(5, 3),
+  linear.output = FALSE,
+  lifesign = "minimal",
+  stepmax = 1e6
+)
+
+modelo_rna
+```
+
+## 17. Predicción con neuralnet
+
+```{r}
+#| eval: false
+probabilidades <- neuralnet::compute(
+  modelo_rna,
+  test_bin[, variables]
+)$net.result
+
+prediccion <- ifelse(
+  probabilidades >= 0.5,
+  1,
+  0
+)
+
+matriz <- table(
+  Real = test_bin$clase,
+  Predicho = prediccion
+)
+
+matriz
+```
+
+## 18. Métricas binarias
+
+```{r}
+#| eval: false
+metricas_binarias <- function(real, predicho) {
+
+  vp <- sum(real == 1 & predicho == 1)
+  vn <- sum(real == 0 & predicho == 0)
+  fp <- sum(real == 0 & predicho == 1)
+  fn <- sum(real == 1 & predicho == 0)
+
+  data.frame(
+    exactitud = (vp + vn) /
+      (vp + vn + fp + fn),
+
+    sensibilidad = ifelse(
+      vp + fn == 0,
+      NA,
+      vp / (vp + fn)
+    ),
+
+    especificidad = ifelse(
+      vn + fp == 0,
+      NA,
+      vn / (vn + fp)
+    ),
+
+    precision = ifelse(
+      vp + fp == 0,
+      NA,
+      vp / (vp + fp)
+    )
+  )
+}
+
+metricas_binarias(
+  test_bin$clase,
+  prediccion
+)
+```
+
+## 19. Selección del umbral
+
+El umbral 0.5 no siempre es el mejor.
+
+```{r}
+#| eval: false
+umbrales <- seq(0.10, 0.90, by = 0.05)
+
+resultados_umbral <- data.frame(
+  umbral = umbrales,
+  exactitud = NA_real_,
+  sensibilidad = NA_real_,
+  especificidad = NA_real_
+)
+
+for (i in seq_along(umbrales)) {
+
+  pred_i <- ifelse(
+    probabilidades >= umbrales[i],
+    1,
+    0
+  )
+
+  met <- metricas_binarias(
+    test_bin$clase,
+    pred_i
+  )
+
+  resultados_umbral[i, 2:4] <- met[
+    c(
+      "exactitud",
+      "sensibilidad",
+      "especificidad"
+    )
+  ]
+}
+
+resultados_umbral
+```
+
+## Visualizador interactivo de una red neuronal
+
+::: {.content-visible when-format="html"}
+
+Este laboratorio representa gráficamente una arquitectura similar a la que se especifica con el argumento `hidden` de `neuralnet`. Modifica el número de neuronas de las capas ocultas y observa cómo cambian la topología y el número de conexiones.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 760
+#| components: [viewer]
+
+library(shiny)
+
+dibujar_red <- function(n_entrada, h1, h2, n_salida) {
+
+  capas <- c(n_entrada, h1)
+  nombres <- c("Entrada", "Oculta 1")
+
+  if (h2 > 0) {
+    capas <- c(capas, h2)
+    nombres <- c(nombres, "Oculta 2")
+  }
+
+  capas <- c(capas, n_salida)
+  nombres <- c(nombres, "Salida")
+
+  xcapas <- seq(0.08, 0.92, length.out = length(capas))
+  posiciones <- vector("list", length(capas))
+
+  plot(
+    0, 0,
+    type = "n",
+    xlim = c(0, 1),
+    ylim = c(0, 1),
+    axes = FALSE,
+    xlab = "",
+    ylab = "",
+    main = "Arquitectura de la red neuronal"
+  )
+
+  for (j in seq_along(capas)) {
+    y <- seq(0.15, 0.85, length.out = capas[j])
+    posiciones[[j]] <- cbind(xcapas[j], y)
+  }
+
+  for (j in seq_len(length(capas) - 1)) {
+    desde <- posiciones[[j]]
+    hacia <- posiciones[[j + 1]]
+
+    for (a in seq_len(nrow(desde))) {
+      for (b in seq_len(nrow(hacia))) {
+        segments(
+          desde[a, 1], desde[a, 2],
+          hacia[b, 1], hacia[b, 2],
+          col = "gray70"
+        )
+      }
+    }
+  }
+
+  for (j in seq_along(posiciones)) {
+    puntos <- posiciones[[j]]
+
+    symbols(
+      puntos[, 1],
+      puntos[, 2],
+      circles = rep(0.025, nrow(puntos)),
+      inches = FALSE,
+      add = TRUE,
+      bg = "white",
+      fg = "black"
+    )
+
+    text(
+      xcapas[j],
+      0.96,
+      nombres[j],
+      font = 2
+    )
+  }
+}
+
+ui <- fluidPage(
+  titlePanel("Visualizador interactivo de una red neuronal"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        "entradas",
+        "Número de variables de entrada",
+        min = 2,
+        max = 6,
+        value = 4,
+        step = 1
+      ),
+
+      sliderInput(
+        "h1",
+        "Neuronas en la primera capa oculta",
+        min = 1,
+        max = 10,
+        value = 5,
+        step = 1
+      ),
+
+      sliderInput(
+        "h2",
+        "Neuronas en la segunda capa oculta",
+        min = 0,
+        max = 8,
+        value = 3,
+        step = 1
+      ),
+
+      sliderInput(
+        "salidas",
+        "Neuronas de salida",
+        min = 1,
+        max = 4,
+        value = 1,
+        step = 1
+      )
+    ),
+
+    mainPanel(
+      plotOutput("red", height = "520px"),
+      h4("Configuración equivalente en neuralnet"),
+      verbatimTextOutput("codigo"),
+      h4("Resumen"),
+      textOutput("resumen")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+
+  output$red <- renderPlot({
+    dibujar_red(
+      input$entradas,
+      input$h1,
+      input$h2,
+      input$salidas
+    )
+  })
+
+  output$codigo <- renderText({
+    hidden <- if (input$h2 == 0) {
+      as.character(input$h1)
+    } else {
+      paste0("c(", input$h1, ", ", input$h2, ")")
+    }
+
+    paste0(
+      "modelo <- neuralnet(\n",
+      "  formula = clase ~ .,\n",
+      "  data = train,\n",
+      "  hidden = ", hidden, ",\n",
+      "  linear.output = FALSE\n",
+      ")\n\n",
+      "plot(modelo)"
+    )
+  })
+
+  output$resumen <- renderText({
+    capas <- if (input$h2 == 0) 3 else 4
+
+    conexiones <- input$entradas * input$h1
+
+    if (input$h2 == 0) {
+      conexiones <- conexiones +
+        input$h1 * input$salidas
+    } else {
+      conexiones <- conexiones +
+        input$h1 * input$h2 +
+        input$h2 * input$salidas
+    }
+
+    paste0(
+      "La arquitectura tiene ",
+      capas,
+      " capas y aproximadamente ",
+      conexiones,
+      " conexiones entre neuronas, sin contar los sesgos."
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+::: {.callout-note title="Relación con neuralnet"}
+El visualizador no entrena el modelo dentro del navegador. Su propósito es mostrar la arquitectura definida mediante `hidden`. Cuando ejecutes `plot(modelo_rna)` en RStudio, `neuralnet` dibujará además los pesos y sesgos aprendidos.
+:::
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Visualizador disponible en la versión web
+
+La versión web permite modificar el número de entradas, neuronas ocultas y salidas, y genera dinámicamente el dibujo de la red y el código equivalente para `neuralnet`.
+
+:::
+
+## 20. Arquitectura de la red
+
+Una arquitectura se define por:
+
+- número de capas ocultas;
+- neuronas por capa;
+- activaciones;
+- conexiones;
+- regularización.
+
+No existe una arquitectura universal.
+
+### Red muy pequeña
+
+Puede producir subajuste.
+
+### Red demasiado grande
+
+Puede memorizar entrenamiento y sobreajustar.
+
+Una estrategia razonable es comenzar con una red pequeña y aumentar complejidad gradualmente.
+
+## 21. Épocas, lotes y optimizadores
+
+### Época
+
+Una época representa una pasada completa por entrenamiento.
+
+### Lote
+
+Un lote es un subconjunto utilizado para calcular una actualización.
+
+### Descenso por lotes
+
+Usa todo el conjunto.
+
+### Descenso estocástico
+
+Actualiza con una observación.
+
+### Mini-batch
+
+Usa pequeños grupos y es la opción más común.
+
+### Optimizadores
+
+Entre los más conocidos se encuentran:
+
+- SGD;
+- Momentum;
+- RMSprop;
+- Adam.
+
+## 22. Sobreajuste
+
+Una red sobreajustada obtiene:
+
+- error bajo en entrenamiento;
+- error alto en validación o prueba.
+
+Señales:
+
+- la pérdida de entrenamiento sigue bajando;
+- la pérdida de validación comienza a subir;
+- crece la diferencia entre ambas.
+
+## 23. Regularización
+
+### 23.1 Regularización L2
+
+Agrega una penalización:
+
+$$
+L_{total}=L+\lambda\sum_j w_j^2
+$$
+
+### 23.2 Regularización L1
+
+$$
+L_{total}=L+\lambda\sum_j |w_j|
+$$
+
+### 23.3 Dropout
+
+Desactiva aleatoriamente una proporción de neuronas durante el entrenamiento.
+
+### 23.4 Early stopping
+
+Detiene el entrenamiento cuando la validación deja de mejorar.
+
+## 24. Implementación moderna con keras
+
+El paquete `keras` permite construir redes utilizando una interfaz de alto nivel.
+
+::: {.callout-note title="Entorno de ejecución"}
+La instalación de `keras` y su motor puede variar según el equipo. Conviene ejecutar este ejemplo en un entorno configurado o en Google Colab.
+:::
+
+```{r}
+#| eval: false
+
+library(keras)
+
+x_train_keras <- as.matrix(x_train)
+x_test_keras <- as.matrix(x_test)
+
+y_train_keras <- as.integer(
+  train$Species
+) - 1
+
+y_test_keras <- as.integer(
+  test$Species
+) - 1
+```
+
+Modelo:
+
+```{r}
+#| eval: false
+
+modelo_keras <- keras_model_sequential() |>
+  layer_dense(
+    units = 16,
+    activation = "relu",
+    input_shape = ncol(x_train_keras)
+  ) |>
+  layer_dropout(rate = 0.20) |>
+  layer_dense(
+    units = 8,
+    activation = "relu"
+  ) |>
+  layer_dense(
+    units = 3,
+    activation = "softmax"
+  )
+```
+
+Compilación:
+
+```{r}
+#| eval: false
+
+modelo_keras |>
+  compile(
+    optimizer = "adam",
+    loss = "sparse_categorical_crossentropy",
+    metrics = "accuracy"
+  )
+```
+
+Entrenamiento:
+
+```{r}
+#| eval: false
+
+historia <- modelo_keras |>
+  fit(
+    x = x_train_keras,
+    y = y_train_keras,
+    epochs = 100,
+    batch_size = 16,
+    validation_split = 0.20,
+    verbose = 0
+  )
+```
+
+Evaluación:
+
+```{r}
+#| eval: false
+
+modelo_keras |>
+  evaluate(
+    x_test_keras,
+    y_test_keras,
+    verbose = 0
+  )
+```
+
+## 25. Curvas de aprendizaje
+
+Las curvas de pérdida y exactitud ayudan a diagnosticar el entrenamiento.
+
+```{r}
+#| eval: false
+
+plot(historia)
+```
+
+Debe compararse:
+
+- desempeño de entrenamiento;
+- desempeño de validación;
+- punto donde comienza el sobreajuste.
+
+## 26. Clasificación multiclase
+
+En un problema con $K$ clases:
+
+- la capa de salida suele tener $K$ neuronas;
+- se utiliza softmax;
+- la clase predicha es la de mayor probabilidad.
+
+$$
+\widehat{y}=
+\arg\max_k P(y=k\mid\mathbf{x})
+$$
+
+## 27. Codificación de la respuesta
+
+Para clasificación multiclase pueden emplearse:
+
+- enteros de 0 a $K-1$;
+- variables indicadoras one-hot.
+
+Ejemplo one-hot:
+
+| Clase | Neurona 1 | Neurona 2 | Neurona 3 |
+|---|---:|---:|---:|
+| A | 1 | 0 | 0 |
+| B | 0 | 1 | 0 |
+| C | 0 | 0 | 1 |
+
+## 28. Inicialización de pesos
+
+Todos los pesos no deben comenzar con el mismo valor, porque las neuronas aprenderían exactamente lo mismo.
+
+Las inicializaciones modernas buscan:
+
+- romper simetría;
+- mantener estable la varianza;
+- mejorar el flujo de gradientes.
+
+## 29. Gradientes que desaparecen o explotan
+
+En redes profundas, los gradientes pueden:
+
+- aproximarse a cero;
+- crecer excesivamente.
+
+Consecuencias:
+
+- aprendizaje muy lento;
+- inestabilidad;
+- pesos extremos.
+
+Soluciones comunes:
+
+- ReLU;
+- inicialización adecuada;
+- normalización;
+- arquitecturas apropiadas;
+- control de la tasa de aprendizaje.
+
+## 30. Importancia de la reproducibilidad
+
+Para reproducir resultados:
+
+- fijar semillas;
+- registrar arquitectura;
+- guardar parámetros;
+- documentar divisiones;
+- conservar versiones;
+- guardar modelos entrenados;
+- anotar métricas y umbrales.
+
+```{r}
+set.seed(2026)
+```
+
+## 31. Interpretabilidad
+
+Las redes neuronales suelen considerarse menos interpretables que:
+
+- regresión logística;
+- árboles de decisión;
+- modelos lineales.
+
+Herramientas posibles:
+
+- importancia por permutación;
+- análisis de sensibilidad;
+- gráficos de dependencia;
+- SHAP;
+- LIME;
+- inspección de activaciones.
+
+La interpretación debe acompañarse de validación y conocimiento del dominio.
+
+## 32. Aplicación biomédica
+
+Ejemplo: clasificar pacientes según riesgo de enfermedad.
+
+Variables:
+
+- edad;
+- presión arterial;
+- glucosa;
+- colesterol;
+- frecuencia cardiaca.
+
+Respuesta:
+
+- riesgo bajo;
+- riesgo alto.
+
+Debe prestarse especial atención a:
+
+- sensibilidad;
+- falsos negativos;
+- calidad de los datos;
+- validación externa;
+- sesgo de selección;
+- explicabilidad.
+
+## 33. Aplicación ambiental
+
+Ejemplo: clasificar niveles de contaminación.
+
+Variables:
+
+- PM10;
+- ozono;
+- temperatura;
+- humedad;
+- velocidad del viento;
+- hora;
+- estación.
+
+Respuesta:
+
+- aceptable;
+- no aceptable.
+
+La red puede capturar relaciones no lineales, pero debe compararse con modelos más simples.
+
+## 34. Comparación con otros algoritmos
+
+| Aspecto | Red neuronal | Regresión logística | Árbol | Random Forest |
+|---|---|---|---|---|
+| No linealidad | Alta | Limitada | Alta | Alta |
+| Interpretación | Baja | Alta | Alta | Media |
+| Preparación | Alta | Media | Media | Media |
+| Escalamiento | Importante | Recomendable | Poco importante | Poco importante |
+| Datos requeridos | Frecuentemente muchos | Menos | Moderados | Moderados |
+| Costo | Puede ser alto | Bajo | Bajo | Moderado |
+
+## 35. Ventajas
+
+- modelan relaciones complejas;
+- representan no linealidades;
+- se adaptan a clasificación y regresión;
+- pueden aprender características internas;
+- escalan a problemas de gran dimensión;
+- son base de aprendizaje profundo.
+
+## 36. Limitaciones
+
+- requieren preparación cuidadosa;
+- pueden necesitar muchos datos;
+- implican varios hiperparámetros;
+- pueden sobreajustar;
+- son menos interpretables;
+- el entrenamiento puede ser costoso;
+- los resultados dependen de arquitectura e inicialización.
+
+## 37. Errores frecuentes
+
+1. No normalizar variables.
+2. Usar el conjunto de prueba para ajustar.
+3. Entrenar demasiadas épocas sin validación.
+4. Usar una red enorme para pocos datos.
+5. Evaluar solo exactitud.
+6. Ignorar el desbalance.
+7. No fijar semilla.
+8. No guardar la arquitectura.
+9. Interpretar probabilidades como certezas.
+10. Comparar modelos con particiones diferentes.
+11. Dejar identificadores como predictores.
+12. No comparar contra un modelo simple.
+
+## 38. Flujo de trabajo recomendado
+
+1. Definir el objetivo.
+2. Preparar los datos.
+3. Separar entrenamiento, validación y prueba.
+4. Normalizar con entrenamiento.
+5. Construir una arquitectura pequeña.
+6. Entrenar y revisar curvas.
+7. Ajustar hiperparámetros.
+8. Aplicar regularización.
+9. Evaluar en prueba una sola vez.
+10. Comparar con modelos base.
+11. Interpretar errores.
+12. Documentar y guardar el modelo.
+
+## 39. Actividad guiada
+
+Utiliza `iris` para clasificación multiclase.
+
+1. Divide los datos en entrenamiento y prueba.
+2. Normaliza las cuatro variables.
+3. Diseña una red con una capa oculta.
+4. Entrena el modelo.
+5. Obtén probabilidades.
+6. Asigna la clase más probable.
+7. Construye la matriz de confusión.
+8. Calcula exactitud.
+9. Repite con más neuronas.
+10. Compara los resultados.
+11. Describe si existe sobreajuste.
+12. Compara contra k-NN o Random Forest.
+
+## 40. Ejercicios
+
+### Ejercicio 1
+
+Calcula manualmente la salida de una neurona sigmoide.
+
+### Ejercicio 2
+
+Programa una neurona ReLU en R.
+
+### Ejercicio 3
+
+Entrena un perceptrón para la compuerta OR.
+
+### Ejercicio 4
+
+Explica por qué XOR requiere una capa oculta.
+
+### Ejercicio 5
+
+Entrena una red binaria con `neuralnet`.
+
+### Ejercicio 6
+
+Compara arquitecturas `hidden = 3`, `hidden = 5` y `hidden = c(5,3)`.
+
+### Ejercicio 7
+
+Modifica el umbral de clasificación y analiza sensibilidad y especificidad.
+
+### Ejercicio 8
+
+Construye una red multiclase con `keras`.
+
+### Ejercicio 9
+
+Compara la red con regresión logística.
+
+### Ejercicio 10
+
+Describe tres medidas para reducir sobreajuste.
+
+## 41. Preguntas de reflexión
+
+- ¿Qué función cumple el sesgo?
+- ¿Por qué se necesitan activaciones no lineales?
+- ¿Qué diferencia existe entre propagación hacia adelante y retropropagación?
+- ¿Por qué debe separarse validación de prueba?
+- ¿Qué indica una pérdida de validación creciente?
+- ¿Cuándo conviene usar una red neuronal?
+- ¿Cuándo sería preferible un modelo más simple?
+- ¿Por qué las probabilidades deben interpretarse con cautela?
+
+## 42. Conclusión
+
+Las redes neuronales artificiales combinan neuronas simples para aprender relaciones complejas.
+
+Sus componentes fundamentales son:
+
+- entradas;
+- pesos;
+- sesgos;
+- funciones de activación;
+- capas;
+- función de pérdida;
+- optimización;
+- retropropagación.
+
+Una red efectiva no depende solamente de aumentar capas o neuronas. También requiere:
+
+- datos de calidad;
+- normalización correcta;
+- validación;
+- regularización;
+- selección cuidadosa de arquitectura;
+- evaluación con métricas apropiadas;
+- comparación con modelos más sencillos.
+
+En el siguiente capítulo podremos abordar métodos no supervisados, comenzando con **agrupamiento k-means**.

@@ -1,0 +1,28 @@
+# Perfil PDF profesional.
+# Uso: quarto render --profile pdf --to pdf
+
+execute:
+  echo: true
+  warning: false
+  message: false
+  freeze: auto
+  fig_crop: false
+
+knitr:
+  opts_chunk:
+    dev: "png"
+    dpi: 180
+    fig.width: 7
+    fig.height: 4.5
+    out.width: "92%"
+    collapse: false
+    comment: "#>"
+
+format:
+  pdf:
+    toc: true
+    lof: true
+    number-sections: true
+    include-in-header:
+      - latex/configuracion-pdf.tex
+      - latex/portada-pdf.tex

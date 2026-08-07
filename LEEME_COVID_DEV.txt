@@ -1,0 +1,13 @@
+﻿NUEVA LÃNEA EXPERIMENTAL COVID-19
+
+Carpeta:
+C:\libro-machine-learning-r-covid-dev
+
+Origen:
+C:\libro-machine-learning-r-dev
+
+No se modificaron las carpetas estable ni desarrollo.
+No se copiÃ³ la carpeta .git.
+
+VersiÃ³n inicial:
+v0.14.0-covid-dev

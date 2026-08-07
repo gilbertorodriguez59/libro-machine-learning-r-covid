@@ -1,0 +1,547 @@
+# Clasificador Naive Bayes
+
+
+::: {.callout-note title="Conexión con el volumen teórico"}
+
+La formulación matemática de **probabilidad condicional, teorema de Bayes y clasificación probabilística** se desarrolla con mayor profundidad
+en los capítulos 3 y 6 de *Fundamentos Matemáticos del Aprendizaje
+Automático* [@rodriguez2026fundamentos].
+
+:::
+
+## Objetivos del capítulo
+
+Al finalizar este capítulo, el lector será capaz de:
+
+- explicar el teorema de Bayes aplicado a clasificación;
+- interpretar probabilidades previas, verosimilitudes y probabilidades posteriores;
+- comprender el supuesto de independencia condicional;
+- distinguir entre Naive Bayes categórico y gaussiano;
+- construir un clasificador sencillo sin paquetes especializados;
+- entrenar y evaluar un modelo Naive Bayes en R;
+- aplicar el algoritmo a una muestra de la base ATUS;
+- reconocer sus ventajas, limitaciones y condiciones de uso.
+
+## Introducción
+
+**Naive Bayes** es una familia de clasificadores probabilísticos basada en el teorema de Bayes. Su nombre incluye la palabra *naive* —ingenuo— porque supone que las variables predictoras son condicionalmente independientes una vez conocida la clase.
+
+Este supuesto rara vez se cumple de manera exacta en datos reales. Sin embargo, el clasificador puede funcionar sorprendentemente bien incluso cuando existe cierta dependencia entre las variables [@domingos1997optimality; @hand2001idiots].
+
+La principal fortaleza del método es que transforma la clasificación en una comparación de probabilidades. Para una observación nueva, se calcula qué clase resulta más probable dados los valores de sus predictores.
+
+## Recordatorio del teorema de Bayes
+
+Para una clase $C$ y un conjunto de características $X$, el teorema de Bayes establece:
+
+$$
+P(C\mid X)=\frac{P(X\mid C)P(C)}{P(X)}
+$$
+
+donde:
+
+- $P(C)$ es la **probabilidad previa** de la clase;
+- $P(X\mid C)$ es la **verosimilitud** de observar las características cuando la clase es $C$;
+- $P(C\mid X)$ es la **probabilidad posterior** de la clase después de observar $X$;
+- $P(X)$ es una constante común al comparar las clases.
+
+Para clasificar no es necesario calcular explícitamente $P(X)$. Basta comparar:
+
+$$
+P(C\mid X)\propto P(X\mid C)P(C)
+$$
+
+## El supuesto ingenuo de independencia
+
+Si una observación tiene predictores $X_1,X_2,\ldots,X_p$, Naive Bayes supone que, conocida la clase, sus contribuciones pueden multiplicarse:
+
+$$
+P(X_1,\ldots,X_p\mid C)
+=\prod_{j=1}^{p}P(X_j\mid C)
+$$
+
+Por tanto:
+
+$$
+P(C\mid X_1,\ldots,X_p)
+\propto P(C)\prod_{j=1}^{p}P(X_j\mid C)
+$$
+
+::: {.callout-tip title="Idea esencial"}
+Naive Bayes calcula un puntaje probabilístico para cada clase. La observación se asigna a la clase cuyo producto entre probabilidad previa y verosimilitudes es mayor.
+:::
+
+## Ejemplo manual con variables categóricas
+
+Consideremos un pequeño conjunto de accidentes descritos por dos variables: condición climática y horario.
+
+```{r nb-datos-didacticos}
+datos_nb <- data.frame(
+  clima = c("Seco", "Seco", "Lluvia", "Lluvia", "Seco",
+            "Lluvia", "Seco", "Lluvia", "Seco", "Lluvia"),
+  horario = c("Día", "Noche", "Día", "Noche", "Día",
+              "Noche", "Noche", "Día", "Día", "Noche"),
+  victimas = factor(
+    c("No", "No", "Sí", "Sí", "No", "Sí", "Sí", "No", "No", "Sí")
+  )
+)
+
+datos_nb
+```
+
+## Calcular las probabilidades previas
+
+```{r nb-probabilidades-previas}
+previas <- prop.table(table(datos_nb$victimas))
+previas
+```
+
+Las probabilidades previas representan la proporción inicial de cada clase antes de observar las variables predictoras.
+
+## Calcular probabilidades condicionales
+
+```{r nb-probabilidades-condicionales}
+prob_clima <- prop.table(
+  table(datos_nb$clima, datos_nb$victimas),
+  margin = 2
+)
+
+prob_horario <- prop.table(
+  table(datos_nb$horario, datos_nb$victimas),
+  margin = 2
+)
+
+prob_clima
+prob_horario
+```
+
+## Clasificar una observación manualmente
+
+Supongamos un accidente ocurrido con lluvia durante la noche. Comparamos los puntajes para las dos clases.
+
+```{r nb-clasificacion-manual}
+puntaje_si <-
+  previas["Sí"] *
+  prob_clima["Lluvia", "Sí"] *
+  prob_horario["Noche", "Sí"]
+
+puntaje_no <-
+  previas["No"] *
+  prob_clima["Lluvia", "No"] *
+  prob_horario["Noche", "No"]
+
+c(Sí = puntaje_si, No = puntaje_no)
+```
+
+```{r nb-normalizar-puntajes}
+posteriores <- c(Sí = puntaje_si, No = puntaje_no)
+posteriores <- posteriores / sum(posteriores)
+posteriores
+```
+
+::: {.callout-note title="Interpretación"}
+Los productos iniciales son proporcionales a las probabilidades posteriores. Al dividir cada puntaje entre la suma de ambos se obtienen valores que suman uno y pueden interpretarse como probabilidades normalizadas bajo el modelo.
+:::
+
+## El problema de las probabilidades iguales a cero
+
+Cuando una combinación nunca aparece en el entrenamiento, una de las probabilidades condicionales puede ser cero. Al multiplicar, todo el puntaje de esa clase se vuelve cero.
+
+Una solución habitual es el **suavizado de Laplace**, que agrega una pequeña cantidad a los conteos antes de calcular las probabilidades.
+
+$$
+\widehat{P}(X_j=x\mid C=c)
+=\frac{n_{x,c}+\alpha}{n_c+\alpha k}
+$$
+
+Aquí, $k$ es el número de categorías y normalmente se utiliza $\alpha=1$.
+
+## Naive Bayes gaussiano
+
+Cuando un predictor es numérico continuo, una opción común es suponer que, dentro de cada clase, sigue una distribución normal:
+
+$$
+X_j\mid C=c\sim N(\mu_{jc},\sigma_{jc}^{2})
+$$
+
+La media y la desviación estándar se estiman por separado para cada clase. Esta variante se denomina **Naive Bayes gaussiano**.
+
+## Instalar y cargar paquetes
+
+```{r nb-paquetes}
+paquetes_nb <- c("readr", "dplyr", "ggplot2", "e1071")
+
+faltantes_nb <- paquetes_nb[
+  !vapply(paquetes_nb, requireNamespace, logical(1), quietly = TRUE)
+]
+
+if (length(faltantes_nb) > 0) {
+  install.packages(faltantes_nb, repos = "https://cloud.r-project.org")
+}
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(e1071)
+source("util_graficas.R")
+```
+
+## Cargar la base preparada de ATUS
+
+```{r nb-cargar-atus}
+ruta_atus_ml <- "datos/atus_ml_preparado.csv"
+
+if (!file.exists(ruta_atus_ml)) {
+  stop(
+    paste(
+      "No se encontró datos/atus_ml_preparado.csv.",
+      "Ejecute primero el capítulo de preparación de datos."
+    )
+  )
+}
+
+atus_ml <- read_csv(ruta_atus_ml, show_col_types = FALSE)
+```
+
+## Preparar una muestra para el modelo
+
+```{r nb-preparar-atus}
+set.seed(123)
+
+atus_nb <- atus_ml |>
+  sample_n(min(20000, nrow(atus_ml))) |>
+  transmute(
+    accidente_con_victimas = factor(
+      accidente_con_victimas,
+      levels = c("Solo daños", "Con víctimas")
+    ),
+    MES = factor(MES),
+    ID_HORA = as.numeric(ID_HORA),
+    DIASEMANA = factor(DIASEMANA),
+    TIPACCID = factor(TIPACCID),
+    CAUSAACCI = factor(CAUSAACCI)
+  ) |>
+  na.omit()
+
+prop.table(table(atus_nb$accidente_con_victimas))
+```
+
+## División estratificada en entrenamiento y prueba
+
+```{r nb-division-estratificada}
+set.seed(123)
+
+indices_nb <- unlist(
+  lapply(
+    split(seq_len(nrow(atus_nb)), atus_nb$accidente_con_victimas),
+    function(indices) {
+      sample(indices, size = floor(0.70 * length(indices)))
+    }
+  )
+)
+
+entrenamiento_nb <- atus_nb[indices_nb, ]
+prueba_nb <- atus_nb[-indices_nb, ]
+
+prop.table(table(entrenamiento_nb$accidente_con_victimas))
+prop.table(table(prueba_nb$accidente_con_victimas))
+```
+
+## Entrenar el modelo Naive Bayes
+
+```{r nb-entrenar-modelo}
+modelo_nb <- naiveBayes(
+  accidente_con_victimas ~
+    MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,
+  data = entrenamiento_nb,
+  laplace = 1
+)
+
+modelo_nb
+```
+
+El argumento `laplace = 1` aplica suavizado de Laplace a los predictores categóricos.
+
+## Obtener predicciones de clase
+
+```{r nb-predicciones-clase}
+prediccion_nb <- predict(
+  modelo_nb,
+  newdata = prueba_nb,
+  type = "class"
+)
+
+head(prediccion_nb)
+```
+
+## Obtener probabilidades posteriores
+
+```{r nb-predicciones-probabilidad}
+probabilidades_nb <- predict(
+  modelo_nb,
+  newdata = prueba_nb,
+  type = "raw"
+)
+
+head(probabilidades_nb)
+```
+
+## Construir la matriz de confusión
+
+```{r nb-matriz-confusion}
+matriz_nb <- table(
+  Real = prueba_nb$accidente_con_victimas,
+  Predicho = prediccion_nb
+)
+
+matriz_nb
+```
+
+## Calcular las métricas
+
+```{r nb-funcion-division-segura}
+division_segura_nb <- function(numerador, denominador) {
+  if (is.na(denominador) || denominador == 0) {
+    return(NA_real_)
+  }
+
+  numerador / denominador
+}
+```
+
+```{r nb-calcular-metricas}
+clase_positiva <- "Con víctimas"
+clase_negativa <- "Solo daños"
+
+vp <- matriz_nb[clase_positiva, clase_positiva]
+fn <- matriz_nb[clase_positiva, clase_negativa]
+fp <- matriz_nb[clase_negativa, clase_positiva]
+vn <- matriz_nb[clase_negativa, clase_negativa]
+
+exactitud <- division_segura_nb(vp + vn, vp + vn + fp + fn)
+sensibilidad <- division_segura_nb(vp, vp + fn)
+especificidad <- division_segura_nb(vn, vn + fp)
+precision <- division_segura_nb(vp, vp + fp)
+f1 <- if (is.na(precision) || is.na(sensibilidad) ||
+          precision + sensibilidad == 0) {
+  NA_real_
+} else {
+  2 * precision * sensibilidad / (precision + sensibilidad)
+}
+
+metricas_nb <- data.frame(
+  Metrica = c(
+    "Exactitud", "Sensibilidad", "Especificidad", "Precisión", "F1"
+  ),
+  Valor = c(exactitud, sensibilidad, especificidad, precision, f1)
+)
+
+metricas_nb
+```
+
+## Visualizar las métricas
+
+```{r nb-grafica-metricas, fig.width=7, fig.height=4.5}
+ggplot(metricas_nb, aes(x = reorder(Metrica, Valor), y = Valor)) +
+  geom_col() +
+  geom_text(
+    aes(label = sprintf("%.3f", Valor)),
+    hjust = -0.1,
+    na.rm = TRUE
+  ) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 1.08)) +
+  labs(
+    title = "Desempeño del modelo Naive Bayes",
+    x = NULL,
+    y = "Valor"
+  ) +
+  tema_libro()
+```
+
+**Fuente:** elaboración propia mediante R con datos del INEGI, Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS), 2024.
+
+## Inspeccionar las probabilidades aprendidas
+
+```{r nb-inspeccionar-modelo}
+modelo_nb$apriori
+modelo_nb$tables$MES
+```
+
+La primera salida muestra las probabilidades previas de las clases. La segunda resume las probabilidades condicionales estimadas para los meses.
+
+## Ventajas de Naive Bayes
+
+- Es sencillo y rápido de entrenar.
+- Produce probabilidades de pertenencia a cada clase.
+- Funciona con conjuntos de datos de alta dimensión.
+- Puede combinar predictores categóricos y numéricos.
+- Requiere menos datos que modelos más complejos.
+- Constituye una excelente línea base probabilística.
+
+## Limitaciones
+
+- El supuesto de independencia condicional puede ser poco realista.
+- Variables muy correlacionadas pueden contar información repetida.
+- Las probabilidades estimadas no siempre están bien calibradas.
+- Las categorías no observadas requieren suavizado.
+- La forma gaussiana puede ser inadecuada para variables numéricas asimétricas.
+
+::: {.callout-warning title="Precaución metodológica"}
+Un buen valor de exactitud no demuestra que el supuesto de independencia sea verdadero. El modelo debe evaluarse con datos no utilizados en el entrenamiento y con métricas apropiadas para la clase de interés.
+:::
+
+## Comparación conceptual con otros algoritmos
+
+| Método | Idea principal | Escalamiento | Interpretabilidad | Relaciones no lineales |
+|---|---|---:|---:|---:|
+| Regresión logística | Modela probabilidades mediante una función logística | Recomendable | Alta | Limitada sin transformaciones |
+| k-NN | Clasifica por cercanía | Necesario | Media | Sí |
+| Árbol | Divide el espacio mediante reglas | No necesario | Alta | Sí |
+| Random Forest | Combina muchos árboles | No necesario | Media | Sí |
+| SVM | Maximiza el margen | Muy recomendable | Media-baja | Sí, mediante kernels |
+| Naive Bayes | Multiplica probabilidades condicionales | Depende de la variante | Alta | Mediante distribuciones por clase |
+
+## Actividades para el lector
+
+1. Cambie el suavizado de Laplace a `0`, `0.5` y `2`. Compare las métricas.
+2. Elimine una variable predictora y examine si mejora la sensibilidad.
+3. Modifique el tamaño de la muestra y mida el tiempo de entrenamiento.
+4. Compare Naive Bayes con la regresión logística utilizando exactamente la misma partición.
+5. Examine qué categorías presentan probabilidades condicionales muy distintas entre las clases.
+6. Explique por qué dos variables correlacionadas pueden influir doblemente en el producto de verosimilitudes.
+
+## Conclusiones
+
+Naive Bayes muestra que un modelo relativamente simple puede construir clasificaciones útiles mediante probabilidades. Su supuesto de independencia facilita el cálculo y reduce el costo computacional, aunque exige interpretar los resultados con prudencia.
+
+En ATUS, el método proporciona una línea base probabilística rápida para predecir si un accidente pertenece a la clase con víctimas o a la clase de solo daños. Su desempeño debe juzgarse junto con la sensibilidad, la especificidad y F1, no únicamente por la exactitud.
+
+## Referencias fundamentales de Naive Bayes
+
+El análisis de las condiciones bajo las cuales el clasificador bayesiano simple puede ser óptimo fue desarrollado por @domingos1997optimality. Una discusión crítica sobre por qué el método puede funcionar bien pese a su supuesto ingenuo aparece en @hand2001idiots. Para una introducción moderna dentro del aprendizaje estadístico puede consultarse @james2021islr.
+
+
+## Laboratorio interactivo: probabilidades posteriores Naive Bayes
+
+::: {.content-visible when-format="html"}
+
+Modifica probabilidades previas y condicionales para observar el resultado.
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 700
+#| components: [viewer]
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Calculadora Naive Bayes"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("prior", "P(Clase 1)", 0.05, 0.95, 0.40, step = 0.05),
+      sliderInput("e1", "P(Evidencia | Clase 1)", 0.01, 0.99, 0.80, step = 0.01),
+      sliderInput("e0", "P(Evidencia | Clase 0)", 0.01, 0.99, 0.25, step = 0.01),
+      radioButtons("observada", "Evidencia observada",
+                   choices = c("Sí" = "si", "No" = "no"))
+    ),
+    mainPanel(
+      tableOutput("calculo"),
+      plotOutput("grafica", height = "340px"),
+      textOutput("decision")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  posterior <- reactive({
+    p1 <- input$prior
+    p0 <- 1 - p1
+    if (input$observada == "si") {
+      l1 <- input$e1
+      l0 <- input$e0
+    } else {
+      l1 <- 1 - input$e1
+      l0 <- 1 - input$e0
+    }
+    num1 <- p1 * l1
+    num0 <- p0 * l0
+    evidencia <- num1 + num0
+    c(Clase_0 = num0 / evidencia, Clase_1 = num1 / evidencia)
+  })
+
+  output$calculo <- renderTable({
+    p <- posterior()
+    data.frame(
+      Clase = names(p),
+      Probabilidad_posterior = round(as.numeric(p), 4)
+    )
+  })
+
+  output$grafica <- renderPlot({
+    p <- posterior()
+    barplot(p, ylim = c(0, 1),
+            ylab = "Probabilidad posterior",
+            main = "Resultado de Naive Bayes")
+    abline(h = 0.5, lty = 2)
+  })
+
+  output$decision <- renderText({
+    p <- posterior()
+    paste("Clase predicha:",
+          ifelse(p["Clase_1"] >= p["Clase_0"], "Clase 1", "Clase 0"))
+  })
+}
+
+shinyApp(ui, server)
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Laboratorio disponible en la versión web
+
+Permite modificar probabilidades previas y condicionales.
+
+:::
+
+
+## Materiales complementarios del capítulo
+
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<iframe width="100%" height="420"
+src="https://www.youtube.com/embed/UbfJ3bLDwUI"
+title="Capítulo 11. Clasificador Naive Bayes"
+frameborder="0"
+allowfullscreen></iframe>
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+### Video del capítulo
+
+Disponible en YouTube:
+
+<https://youtu.be/UbfJ3bLDwUI>
+
+:::
+
+| Recurso | Descripción | Abrir o descargar |
+|---|---|---|
+| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-11/capitulo-11-naive-bayes-presentacion.pdf){target="_blank"} |
+| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-11/capitulo-11-naive-bayes-presentacion.pptx) |
+| Infografía | Resumen visual del capítulo. | [Abrir infografía](recursos/capitulo-11/capitulo-11-naive-bayes-infografia.png){target="_blank"} |
+
+::: {.content-visible when-format="html"}
+
+![Infografía del capítulo 11](recursos/capitulo-11/capitulo-11-naive-bayes-infografia.png){fig-alt="Capítulo 11. Clasificador Naive Bayes" width="85%"}
+
+:::
+
+Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
+contenido del libro y revisados y adaptados por el autor.

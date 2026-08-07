@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Evaluación, validación y comparación de modelos – Aprendizaje y Clasificación Automática con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09-svm.html" rel="next">
+<link href="./07-random-forest.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./08-evaluacion-modelos.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Evaluación, validación y comparación de modelos</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Aprendizaje y Clasificación Automática con R</a> 
+        <div class="sidebar-tools-main">
+    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Presentación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-bienvenida.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenida</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-creditos-editoriales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Créditos editoriales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-licencia-y-uso-academico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licencia y uso académico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-agradecimientos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Agradecimientos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-cuaderno-google-colab.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cuaderno completo para Google Colab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">¿Qué es el aprendizaje automático?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-preparacion-datos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Preparación de datos reales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-analisis-exploratorio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis exploratorio de datos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-lineal-multiple.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-logistica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k vecinos más cercanos, k-NN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-arboles-decision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Árboles de decisión para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-random-forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Random Forest para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-evaluacion-modelos.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Evaluación, validación y comparación de modelos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-svm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Máquinas de Vectores de Soporte (SVM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-naive-bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Clasificador Naive Bayes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-redes-neuronales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Redes neuronales artificiales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-kmeans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Agrupamiento con k-means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glosario.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glosario</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./referencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-figuras.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice de figuras</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-tematico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice temático</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acerca-del-autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acerca del autor</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#objetivos-del-capítulo" id="toc-objetivos-del-capítulo" class="nav-link active" data-scroll-target="#objetivos-del-capítulo"><span class="header-section-number">9.1</span> Objetivos del capítulo</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link" data-scroll-target="#introducción"><span class="header-section-number">9.2</span> Introducción</a></li>
+  <li><a href="#cargar-los-datos" id="toc-cargar-los-datos" class="nav-link" data-scroll-target="#cargar-los-datos"><span class="header-section-number">9.3</span> Cargar los datos</a></li>
+  <li><a href="#preparar-una-muestra-reproducible" id="toc-preparar-una-muestra-reproducible" class="nav-link" data-scroll-target="#preparar-una-muestra-reproducible"><span class="header-section-number">9.4</span> Preparar una muestra reproducible</a></li>
+  <li><a href="#entrenamiento-validación-y-prueba" id="toc-entrenamiento-validación-y-prueba" class="nav-link" data-scroll-target="#entrenamiento-validación-y-prueba"><span class="header-section-number">9.5</span> Entrenamiento, validación y prueba</a></li>
+  <li><a href="#división-estratificada" id="toc-división-estratificada" class="nav-link" data-scroll-target="#división-estratificada"><span class="header-section-number">9.6</span> División estratificada</a></li>
+  <li><a href="#matriz-de-confusión" id="toc-matriz-de-confusión" class="nav-link" data-scroll-target="#matriz-de-confusión"><span class="header-section-number">9.7</span> Matriz de confusión</a></li>
+  <li><a href="#métricas-principales" id="toc-métricas-principales" class="nav-link" data-scroll-target="#métricas-principales"><span class="header-section-number">9.8</span> Métricas principales</a>
+  <ul class="collapse">
+  <li><a href="#exactitud" id="toc-exactitud" class="nav-link" data-scroll-target="#exactitud"><span class="header-section-number">9.8.1</span> Exactitud</a></li>
+  <li><a href="#sensibilidad" id="toc-sensibilidad" class="nav-link" data-scroll-target="#sensibilidad"><span class="header-section-number">9.8.2</span> Sensibilidad</a></li>
+  <li><a href="#especificidad" id="toc-especificidad" class="nav-link" data-scroll-target="#especificidad"><span class="header-section-number">9.8.3</span> Especificidad</a></li>
+  <li><a href="#precisión" id="toc-precisión" class="nav-link" data-scroll-target="#precisión"><span class="header-section-number">9.8.4</span> Precisión</a></li>
+  <li><a href="#valor-f1" id="toc-valor-f1" class="nav-link" data-scroll-target="#valor-f1"><span class="header-section-number">9.8.5</span> Valor F1</a></li>
+  </ul></li>
+  <li><a href="#función-para-calcular-métricas" id="toc-función-para-calcular-métricas" class="nav-link" data-scroll-target="#función-para-calcular-métricas"><span class="header-section-number">9.9</span> Función para calcular métricas</a></li>
+  <li><a href="#modelo-de-referencia-regla-mayoritaria" id="toc-modelo-de-referencia-regla-mayoritaria" class="nav-link" data-scroll-target="#modelo-de-referencia-regla-mayoritaria"><span class="header-section-number">9.10</span> Modelo de referencia: regla mayoritaria</a></li>
+  <li><a href="#evaluar-una-regresión-logística" id="toc-evaluar-una-regresión-logística" class="nav-link" data-scroll-target="#evaluar-una-regresión-logística"><span class="header-section-number">9.11</span> Evaluar una regresión logística</a></li>
+  <li><a href="#comparación-inicial" id="toc-comparación-inicial" class="nav-link" data-scroll-target="#comparación-inicial"><span class="header-section-number">9.12</span> Comparación inicial</a></li>
+  <li><a href="#umbral-de-clasificación" id="toc-umbral-de-clasificación" class="nav-link" data-scroll-target="#umbral-de-clasificación"><span class="header-section-number">9.13</span> Umbral de clasificación</a></li>
+  <li><a href="#validación-cruzada" id="toc-validación-cruzada" class="nav-link" data-scroll-target="#validación-cruzada"><span class="header-section-number">9.14</span> Validación cruzada</a>
+  <ul class="collapse">
+  <li><a href="#crear-pliegues-estratificados" id="toc-crear-pliegues-estratificados" class="nav-link" data-scroll-target="#crear-pliegues-estratificados"><span class="header-section-number">9.14.1</span> Crear pliegues estratificados</a></li>
+  <li><a href="#validación-cruzada-de-la-regresión-logística" id="toc-validación-cruzada-de-la-regresión-logística" class="nav-link" data-scroll-target="#validación-cruzada-de-la-regresión-logística"><span class="header-section-number">9.14.2</span> Validación cruzada de la regresión logística</a></li>
+  </ul></li>
+  <li><a href="#cómo-comparar-varios-modelos" id="toc-cómo-comparar-varios-modelos" class="nav-link" data-scroll-target="#cómo-comparar-varios-modelos"><span class="header-section-number">9.15</span> Cómo comparar varios modelos</a></li>
+  <li><a href="#selección-del-modelo-final" id="toc-selección-del-modelo-final" class="nav-link" data-scroll-target="#selección-del-modelo-final"><span class="header-section-number">9.16</span> Selección del modelo final</a></li>
+  <li><a href="#actividad-guiada" id="toc-actividad-guiada" class="nav-link" data-scroll-target="#actividad-guiada"><span class="header-section-number">9.17</span> Actividad guiada</a></li>
+  <li><a href="#actividades-para-el-lector" id="toc-actividades-para-el-lector" class="nav-link" data-scroll-target="#actividades-para-el-lector"><span class="header-section-number">9.18</span> Actividades para el lector</a></li>
+  <li><a href="#resumen-del-capítulo" id="toc-resumen-del-capítulo" class="nav-link" data-scroll-target="#resumen-del-capítulo"><span class="header-section-number">9.19</span> Resumen del capítulo</a></li>
+  <li><a href="#referencias-fundamentales-sobre-evaluación" id="toc-referencias-fundamentales-sobre-evaluación" class="nav-link" data-scroll-target="#referencias-fundamentales-sobre-evaluación"><span class="header-section-number">9.20</span> Referencias fundamentales sobre evaluación</a></li>
+  <li><a href="#laboratorio-interactivo-matriz-de-confusión-y-métricas" id="toc-laboratorio-interactivo-matriz-de-confusión-y-métricas" class="nav-link" data-scroll-target="#laboratorio-interactivo-matriz-de-confusión-y-métricas"><span class="header-section-number">9.21</span> Laboratorio interactivo: matriz de confusión y métricas</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">9.22</span> Materiales complementarios del capítulo</a>
+  <ul class="collapse">
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">9.22.1</span> Video del capítulo</a></li>
+  </ul></li>
+  <li><a href="#caso-aplicado-b-evaluación-del-modelo-covid-19" id="toc-caso-aplicado-b-evaluación-del-modelo-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-evaluación-del-modelo-covid-19"><span class="header-section-number">9.23</span> Caso aplicado B: evaluación del modelo COVID-19</a>
+  <ul class="collapse">
+  <li><a href="#métricas" id="toc-métricas" class="nav-link" data-scroll-target="#métricas"><span class="header-section-number">9.23.1</span> Métricas</a></li>
+  <li><a href="#comparación-de-umbrales" id="toc-comparación-de-umbrales" class="nav-link" data-scroll-target="#comparación-de-umbrales"><span class="header-section-number">9.23.2</span> Comparación de umbrales</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Evaluación, validación y comparación de modelos</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Conexión con el volumen teórico">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Conexión con el volumen teórico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La formulación matemática de <strong>matrices de confusión, métricas, validación y selección de modelos</strong> se desarrolla con mayor profundidad en los capítulos 6 y 7 de <em>Fundamentos Matemáticos del Aprendizaje Automático</em> <span class="citation" data-cites="rodriguez2026fundamentos">(<a href="referencias.html#ref-rodriguez2026fundamentos" role="doc-biblioref">Rodríguez Escobedo 2026</a>)</span>.</p>
+</div>
+</div>
+<section id="objetivos-del-capítulo" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="objetivos-del-capítulo"><span class="header-section-number">9.1</span> Objetivos del capítulo</h2>
+<p>Al finalizar este capítulo, el lector será capaz de:</p>
+<ul>
+<li>explicar por qué la exactitud no siempre es suficiente;</li>
+<li>construir e interpretar una matriz de confusión;</li>
+<li>calcular exactitud, sensibilidad, especificidad, precisión y valor F1;</li>
+<li>distinguir entrenamiento, validación y prueba;</li>
+<li>aplicar validación cruzada estratificada;</li>
+<li>comparar modelos con criterios predictivos y prácticos;</li>
+<li>seleccionar un modelo sin depender de una sola métrica.</li>
+</ul>
+</section>
+<section id="introducción" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="introducción"><span class="header-section-number">9.2</span> Introducción</h2>
+<p>Entrenar un modelo es apenas la mitad del trabajo. Después debemos responder una pregunta más delicada: <strong>¿qué tan bien funcionará con accidentes que nunca vio durante el aprendizaje?</strong></p>
+<p>Un modelo puede memorizar los datos de entrenamiento y parecer excelente, pero fallar con observaciones nuevas. Por eso la evaluación debe realizarse con datos separados y métricas apropiadas para el objetivo del problema.</p>
+<p>En este capítulo se utiliza nuevamente la base preparada a partir de ATUS <span class="citation" data-cites="inegi_atus_2024">(<a href="referencias.html#ref-inegi_atus_2024" role="doc-biblioref">Instituto Nacional de Estadística y Geografía 2025</a>)</span>.</p>
+</section>
+<section id="cargar-los-datos" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="cargar-los-datos"><span class="header-section-number">9.3</span> Cargar los datos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'scales'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:readr':
+
+    col_factor</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ruta_atus_ml <span class="ot">&lt;-</span> <span class="st">"datos/atus_ml_preparado.csv"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(ruta_atus_ml)) {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"No se encontró datos/atus_ml_preparado.csv."</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Renderice primero el capítulo de preparación de datos."</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>atus_ml <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  ruta_atus_ml,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="preparar-una-muestra-reproducible" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="preparar-una-muestra-reproducible"><span class="header-section-number">9.4</span> Preparar una muestra reproducible</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>atus_eval <span class="ot">&lt;-</span> atus_ml <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">30000</span>, <span class="fu">nrow</span>(atus_ml))) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">accidente_con_victimas =</span> <span class="fu">factor</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      accidente_con_victimas,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Solo daños"</span>, <span class="st">"Con víctimas"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">MES =</span> <span class="fu">factor</span>(MES),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ID_HORA =</span> <span class="fu">as.numeric</span>(ID_HORA),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">DIASEMANA =</span> <span class="fu">factor</span>(DIASEMANA),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">TIPACCID =</span> <span class="fu">factor</span>(TIPACCID),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">CAUSAACCI =</span> <span class="fu">factor</span>(CAUSAACCI)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(atus_eval<span class="sc">$</span>accidente_con_victimas))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Solo daños Con víctimas 
+   0.8277333    0.1722667 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Interpretación">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La tabla de proporciones permite identificar si una clase es mucho más frecuente que la otra. Cuando existe desbalance, una exactitud alta puede resultar engañosa.</p>
+</div>
+</div>
+</section>
+<section id="entrenamiento-validación-y-prueba" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="entrenamiento-validación-y-prueba"><span class="header-section-number">9.5</span> Entrenamiento, validación y prueba</h2>
+<p>Los datos pueden dividirse en tres partes:</p>
+<ul>
+<li><strong>Entrenamiento:</strong> se utiliza para estimar los parámetros del modelo.</li>
+<li><strong>Validación:</strong> ayuda a elegir hiperparámetros y comparar alternativas.</li>
+<li><strong>Prueba:</strong> se reserva para estimar el desempeño final.</li>
+</ul>
+<p>En ejercicios introductorios es frecuente utilizar entrenamiento y prueba, mientras que la validación se realiza mediante validación cruzada dentro del conjunto de entrenamiento.</p>
+</section>
+<section id="división-estratificada" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="división-estratificada"><span class="header-section-number">9.6</span> División estratificada</h2>
+<p>Una división estratificada conserva aproximadamente la proporción de cada clase.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>indices_entrenamiento <span class="ot">&lt;-</span> <span class="fu">unlist</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">split</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(atus_eval)), atus_eval<span class="sc">$</span>accidente_con_victimas),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(indices) {</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sample</span>(indices, <span class="at">size =</span> <span class="fu">floor</span>(<span class="fl">0.70</span> <span class="sc">*</span> <span class="fu">length</span>(indices)))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>entrenamiento <span class="ot">&lt;-</span> atus_eval[indices_entrenamiento, ]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>prueba <span class="ot">&lt;-</span> atus_eval[<span class="sc">-</span>indices_entrenamiento, ]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Solo daños Con víctimas 
+   0.8277537    0.1722463 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(prueba<span class="sc">$</span>accidente_con_victimas))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  Solo daños Con víctimas 
+   0.8276858    0.1723142 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Explicación del código">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Explicación del código
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los índices se separan por clase y después se toma 70 % de cada grupo. Así se reduce el riesgo de que una clase quede sobrerrepresentada en entrenamiento o prueba.</p>
+</div>
+</div>
+</section>
+<section id="matriz-de-confusión" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="matriz-de-confusión"><span class="header-section-number">9.7</span> Matriz de confusión</h2>
+<p>Para una clase positiva denominada <strong>Con víctimas</strong>, la matriz contiene:</p>
+<ul>
+<li><strong>Verdadero positivo (VP):</strong> el accidente tenía víctimas y el modelo lo detectó.</li>
+<li><strong>Falso negativo (FN):</strong> tenía víctimas, pero el modelo lo clasificó como solo daños.</li>
+<li><strong>Falso positivo (FP):</strong> era de solo daños, pero el modelo predijo víctimas.</li>
+<li><strong>Verdadero negativo (VN):</strong> era de solo daños y se clasificó correctamente.</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Clase real</th>
+<th style="text-align: right;">Predicción positiva</th>
+<th style="text-align: right;">Predicción negativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Positiva</td>
+<td style="text-align: right;">VP</td>
+<td style="text-align: right;">FN</td>
+</tr>
+<tr class="even">
+<td>Negativa</td>
+<td style="text-align: right;">FP</td>
+<td style="text-align: right;">VN</td>
+</tr>
+</tbody>
+</table>
+<p>Un falso negativo puede ser especialmente importante cuando el propósito consiste en identificar accidentes con víctimas.</p>
+</section>
+<section id="métricas-principales" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="métricas-principales"><span class="header-section-number">9.8</span> Métricas principales</h2>
+<section id="exactitud" class="level3" data-number="9.8.1">
+<h3 data-number="9.8.1" class="anchored" data-anchor-id="exactitud"><span class="header-section-number">9.8.1</span> Exactitud</h3>
+<p><span class="math display">\[
+\text{Exactitud}=\frac{VP+VN}{VP+FN+FP+VN}
+\]</span></p>
+<p>Mide la proporción total de predicciones correctas.</p>
+</section>
+<section id="sensibilidad" class="level3" data-number="9.8.2">
+<h3 data-number="9.8.2" class="anchored" data-anchor-id="sensibilidad"><span class="header-section-number">9.8.2</span> Sensibilidad</h3>
+<p><span class="math display">\[
+\text{Sensibilidad}=\frac{VP}{VP+FN}
+\]</span></p>
+<p>Mide qué proporción de los accidentes con víctimas fue detectada.</p>
+</section>
+<section id="especificidad" class="level3" data-number="9.8.3">
+<h3 data-number="9.8.3" class="anchored" data-anchor-id="especificidad"><span class="header-section-number">9.8.3</span> Especificidad</h3>
+<p><span class="math display">\[
+\text{Especificidad}=\frac{VN}{VN+FP}
+\]</span></p>
+<p>Mide qué proporción de los accidentes de solo daños fue reconocida correctamente.</p>
+</section>
+<section id="precisión" class="level3" data-number="9.8.4">
+<h3 data-number="9.8.4" class="anchored" data-anchor-id="precisión"><span class="header-section-number">9.8.4</span> Precisión</h3>
+<p><span class="math display">\[
+\text{Precisión}=\frac{VP}{VP+FP}
+\]</span></p>
+<p>Indica qué proporción de las predicciones positivas realmente tenía víctimas.</p>
+</section>
+<section id="valor-f1" class="level3" data-number="9.8.5">
+<h3 data-number="9.8.5" class="anchored" data-anchor-id="valor-f1"><span class="header-section-number">9.8.5</span> Valor F1</h3>
+<p><span class="math display">\[
+F_1=2\frac{\text{Precisión}\times\text{Sensibilidad}}
+{\text{Precisión}+\text{Sensibilidad}}
+\]</span></p>
+<p>El valor F1 equilibra precisión y sensibilidad.</p>
+</section>
+</section>
+<section id="función-para-calcular-métricas" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="función-para-calcular-métricas"><span class="header-section-number">9.9</span> Función para calcular métricas</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>calcular_metricas <span class="ot">&lt;-</span> <span class="cf">function</span>(real, predicho, <span class="at">positiva =</span> <span class="st">"Con víctimas"</span>) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  real <span class="ot">&lt;-</span> <span class="fu">factor</span>(real)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  predicho <span class="ot">&lt;-</span> <span class="fu">factor</span>(predicho, <span class="at">levels =</span> <span class="fu">levels</span>(real))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  negativas <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">levels</span>(real), positiva)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(negativas) <span class="sc">!=</span> <span class="dv">1</span>) {</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"La función requiere exactamente dos clases."</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  negativa <span class="ot">&lt;-</span> negativas[<span class="dv">1</span>]</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  matriz <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Real =</span> real, <span class="at">Predicho =</span> predicho)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  VP <span class="ot">&lt;-</span> matriz[positiva, positiva]</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  FN <span class="ot">&lt;-</span> matriz[positiva, negativa]</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  FP <span class="ot">&lt;-</span> matriz[negativa, positiva]</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  VN <span class="ot">&lt;-</span> matriz[negativa, negativa]</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  division_segura <span class="ot">&lt;-</span> <span class="cf">function</span>(numerador, denominador) {</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(numerador) <span class="sc">||</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(denominador) <span class="sc">||</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>      denominador <span class="sc">==</span> <span class="dv">0</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    ) {</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="cn">NA_real_</span>)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(numerador <span class="sc">/</span> denominador)</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  exactitud <span class="ot">&lt;-</span> <span class="fu">division_segura</span>(VP <span class="sc">+</span> VN, VP <span class="sc">+</span> FN <span class="sc">+</span> FP <span class="sc">+</span> VN)</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  sensibilidad <span class="ot">&lt;-</span> <span class="fu">division_segura</span>(VP, VP <span class="sc">+</span> FN)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  especificidad <span class="ot">&lt;-</span> <span class="fu">division_segura</span>(VN, VN <span class="sc">+</span> FP)</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>  precision <span class="ot">&lt;-</span> <span class="fu">division_segura</span>(VP, VP <span class="sc">+</span> FP)</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  f1 <span class="ot">&lt;-</span> <span class="fu">division_segura</span>(</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span> <span class="sc">*</span> precision <span class="sc">*</span> sensibilidad,</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    precision <span class="sc">+</span> sensibilidad</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">matriz =</span> matriz,</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">metricas =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">exactitud =</span> exactitud,</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">sensibilidad =</span> sensibilidad,</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">especificidad =</span> especificidad,</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">precision =</span> precision,</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">f1 =</span> f1</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="modelo-de-referencia-regla-mayoritaria" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="modelo-de-referencia-regla-mayoritaria"><span class="header-section-number">9.10</span> Modelo de referencia: regla mayoritaria</h2>
+<p>Antes de celebrar un modelo complejo, conviene compararlo con una regla muy simple: predecir siempre la clase más frecuente.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>clase_mayoritaria <span class="ot">&lt;-</span> <span class="fu">names</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.max</span>(<span class="fu">table</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>prediccion_referencia <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rep</span>(clase_mayoritaria, <span class="fu">nrow</span>(prueba)),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">levels</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>resultado_referencia <span class="ot">&lt;-</span> <span class="fu">calcular_metricas</span>(</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">real =</span> prueba<span class="sc">$</span>accidente_con_victimas,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">predicho =</span> prediccion_referencia</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>resultado_referencia<span class="sc">$</span>matriz</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Predicho
+Real           Solo daños Con víctimas
+  Solo daños         7450            0
+  Con víctimas       1551            0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>resultado_referencia<span class="sc">$</span>metricas</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud sensibilidad especificidad precision f1
+1 0.8276858            0             1        NA NA</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="¿Por qué puede aparecer NA?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Por qué puede aparecer NA?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El modelo de referencia predice únicamente la clase mayoritaria. Si nunca predice la clase positiva <strong>Con víctimas</strong>, la precisión no puede calcularse porque su denominador es cero. En ese caso R muestra <code>NA</code>, que significa <strong>métrica no definida</strong>, pero el libro continúa procesándose normalmente.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="Una exactitud alta puede engañar">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Una exactitud alta puede engañar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si 90 % de los accidentes perteneciera a una sola clase, predecir siempre esa clase produciría 90 % de exactitud sin aprender ninguna relación útil. Por eso deben revisarse sensibilidad, especificidad, precisión y F1.</p>
+</div>
+</div>
+</section>
+<section id="evaluar-una-regresión-logística" class="level2" data-number="9.11">
+<h2 data-number="9.11" class="anchored" data-anchor-id="evaluar-una-regresión-logística"><span class="header-section-number">9.11</span> Evaluar una regresión logística</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  accidente_con_victimas <span class="sc">~</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    MES <span class="sc">+</span> ID_HORA <span class="sc">+</span> DIASEMANA <span class="sc">+</span> TIPACCID <span class="sc">+</span> CAUSAACCI,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> entrenamiento,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> binomial</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>probabilidad_logistica <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  modelo_logistico,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> prueba,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co"># glm() modela la probabilidad del segundo nivel del factor.</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>clase_positiva_modelada <span class="ot">&lt;-</span> <span class="fu">levels</span>(</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  entrenamiento<span class="sc">$</span>accidente_con_victimas</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>)[<span class="dv">2</span>]</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>prediccion_logistica <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  probabilidad_logistica <span class="sc">&gt;=</span> <span class="fl">0.50</span>,</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  clase_positiva_modelada,</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">levels</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas)[<span class="dv">1</span>]</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>prediccion_logistica <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>  prediccion_logistica,</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">levels</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>resultado_logistico <span class="ot">&lt;-</span> <span class="fu">calcular_metricas</span>(</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">real =</span> prueba<span class="sc">$</span>accidente_con_victimas,</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">predicho =</span> prediccion_logistica</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>resultado_logistico<span class="sc">$</span>matriz</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Predicho
+Real           Solo daños Con víctimas
+  Solo daños         7403           47
+  Con víctimas       1198          353</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>resultado_logistico<span class="sc">$</span>metricas</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud sensibilidad especificidad precision        f1
+1  0.861682    0.2275951     0.9936913    0.8825 0.3618657</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Revise qué clase modela R">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Revise qué clase modela R
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En una regresión logística binaria, <code>glm()</code> calcula la probabilidad del segundo nivel del factor respuesta. El orden de los niveles debe verificarse antes de transformar probabilidades en clases.</p>
+</div>
+</div>
+</section>
+<section id="comparación-inicial" class="level2" data-number="9.12">
+<h2 data-number="9.12" class="anchored" data-anchor-id="comparación-inicial"><span class="header-section-number">9.12</span> Comparación inicial</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>comparacion_inicial <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">modelo =</span> <span class="st">"Regla mayoritaria"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    resultado_referencia<span class="sc">$</span>metricas</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">modelo =</span> <span class="st">"Regresión logística"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    resultado_logistico<span class="sc">$</span>metricas</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>comparacion_inicial</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               modelo exactitud sensibilidad especificidad precision        f1
+1   Regla mayoritaria 0.8276858    0.0000000     1.0000000        NA        NA
+2 Regresión logística 0.8616820    0.2275951     0.9936913    0.8825 0.3618657</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>comparacion_larga <span class="ot">&lt;-</span> comparacion_inicial <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="sc">-</span>modelo,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"metrica"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"valor"</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  comparacion_larga,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> metrica, <span class="at">y =</span> valor, <span class="at">fill =</span> modelo)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Un modelo debe superar una referencia sencilla"</span>,</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Métrica"</span>,</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Valor"</span>,</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Modelo"</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tema_libro</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_col()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08-evaluacion-modelos_files/figure-html/grafica-comparacion-inicial-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Comparación de métricas entre una regla de referencia y la regresión logística.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Fuente:</strong> Elaboración propia con datos del INEGI, ATUS 2024.</p>
+</section>
+<section id="umbral-de-clasificación" class="level2" data-number="9.13">
+<h2 data-number="9.13" class="anchored" data-anchor-id="umbral-de-clasificación"><span class="header-section-number">9.13</span> Umbral de clasificación</h2>
+<p>El umbral de 0.50 no es una ley universal. Reducirlo puede aumentar la sensibilidad, aunque también puede generar más falsos positivos.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>umbrales <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.10</span>, <span class="fl">0.90</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>metricas_umbral <span class="ot">&lt;-</span> <span class="fu">lapply</span>(umbrales, <span class="cf">function</span>(umbral) {</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  prediccion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    probabilidad_logistica <span class="sc">&gt;=</span> umbral,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    clase_positiva_modelada,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">levels</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas)[<span class="dv">1</span>]</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  prediccion <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    prediccion,</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">levels</span>(entrenamiento<span class="sc">$</span>accidente_con_victimas)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  metricas <span class="ot">&lt;-</span> <span class="fu">calcular_metricas</span>(</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    prueba<span class="sc">$</span>accidente_con_victimas,</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>    prediccion</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">$</span>metricas</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">umbral =</span> umbral, metricas)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>()</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>metricas_umbral</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   umbral exactitud sensibilidad especificidad precision        f1
+1    0.10 0.7351405    0.7878788     0.7241611 0.3729020 0.5062138
+2    0.15 0.7996889    0.7150226     0.8173154 0.4489879 0.5516041
+3    0.20 0.8055772    0.7047066     0.8265772 0.4582809 0.5553862
+4    0.25 0.8182424    0.6834300     0.8463087 0.4807256 0.5644302
+5    0.30 0.8196867    0.6756931     0.8496644 0.4833948 0.5635924
+6    0.35 0.8237974    0.6434558     0.8613423 0.4913836 0.5572306
+7    0.40 0.8447950    0.4455190     0.9279195 0.5627036 0.4973012
+8    0.45 0.8586824    0.2778852     0.9795973 0.7392796 0.4039363
+9    0.50 0.8616820    0.2275951     0.9936913 0.8825000 0.3618657
+10   0.55 0.8602378    0.2127660     0.9950336 0.8991826 0.3441084
+11   0.60 0.8593490    0.1889104     0.9989262 0.9734219 0.3164147
+12   0.65 0.8596823    0.1856867     1.0000000 1.0000000 0.3132137
+13   0.70 0.8596823    0.1856867     1.0000000 1.0000000 0.3132137
+14   0.75 0.8596823    0.1856867     1.0000000 1.0000000 0.3132137
+15   0.80 0.8596823    0.1856867     1.0000000 1.0000000 0.3132137
+16   0.85 0.8596823    0.1856867     1.0000000 1.0000000 0.3132137
+17   0.90 0.8596823    0.1856867     1.0000000 1.0000000 0.3132137</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Decisión práctica">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Decisión práctica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El mejor umbral depende del costo de cada error. Cuando omitir un accidente con víctimas es más grave que generar una alerta adicional, puede priorizarse la sensibilidad.</p>
+</div>
+</div>
+</section>
+<section id="validación-cruzada" class="level2" data-number="9.14">
+<h2 data-number="9.14" class="anchored" data-anchor-id="validación-cruzada"><span class="header-section-number">9.14</span> Validación cruzada</h2>
+<p>La validación cruzada divide el conjunto de entrenamiento en varios pliegues. Cada pliegue funciona una vez como validación y los restantes como entrenamiento.</p>
+<p>En validación cruzada de <span class="math inline">\(K\)</span> pliegues:</p>
+<ol type="1">
+<li>se divide la muestra en <span class="math inline">\(K\)</span> partes;</li>
+<li>se entrena con <span class="math inline">\(K-1\)</span> partes;</li>
+<li>se evalúa en la parte restante;</li>
+<li>se repite hasta utilizar todos los pliegues;</li>
+<li>se promedian las métricas.</li>
+</ol>
+<section id="crear-pliegues-estratificados" class="level3" data-number="9.14.1">
+<h3 data-number="9.14.1" class="anchored" data-anchor-id="crear-pliegues-estratificados"><span class="header-section-number">9.14.1</span> Crear pliegues estratificados</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>crear_pliegues <span class="ot">&lt;-</span> <span class="cf">function</span>(respuesta, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">semilla =</span> <span class="dv">123</span>) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(semilla)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  pliegues <span class="ot">&lt;-</span> <span class="fu">integer</span>(<span class="fu">length</span>(respuesta))</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (clase <span class="cf">in</span> <span class="fu">levels</span>(<span class="fu">factor</span>(respuesta))) {</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    indices <span class="ot">&lt;-</span> <span class="fu">which</span>(respuesta <span class="sc">==</span> clase)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    etiquetas <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">seq_len</span>(k), <span class="at">length.out =</span> <span class="fu">length</span>(indices))</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    pliegues[indices] <span class="ot">&lt;-</span> <span class="fu">sample</span>(etiquetas)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  pliegues</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>pliegue <span class="ot">&lt;-</span> <span class="fu">crear_pliegues</span>(</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>  entrenamiento<span class="sc">$</span>accidente_con_victimas,</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">5</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pliegue, entrenamiento<span class="sc">$</span>accidente_con_victimas)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+pliegue Solo daños Con víctimas
+      1       3477          724
+      2       3477          724
+      3       3476          723
+      4       3476          723
+      5       3476          723</code></pre>
+</div>
+</div>
+</section>
+<section id="validación-cruzada-de-la-regresión-logística" class="level3" data-number="9.14.2">
+<h3 data-number="9.14.2" class="anchored" data-anchor-id="validación-cruzada-de-la-regresión-logística"><span class="header-section-number">9.14.2</span> Validación cruzada de la regresión logística</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>resultados_cv <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(k) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  datos_entrenamiento <span class="ot">&lt;-</span> entrenamiento[pliegue <span class="sc">!=</span> k, ]</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  datos_validacion <span class="ot">&lt;-</span> entrenamiento[pliegue <span class="sc">==</span> k, ]</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  modelo <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    accidente_con_victimas <span class="sc">~</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>      MES <span class="sc">+</span> ID_HORA <span class="sc">+</span> DIASEMANA <span class="sc">+</span> TIPACCID <span class="sc">+</span> CAUSAACCI,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> datos_entrenamiento,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> binomial</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  probabilidad <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    modelo,</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> datos_validacion,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  clase_modelada <span class="ot">&lt;-</span> <span class="fu">levels</span>(</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    datos_entrenamiento<span class="sc">$</span>accidente_con_victimas</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>  )[<span class="dv">2</span>]</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>  prediccion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    probabilidad <span class="sc">&gt;=</span> <span class="fl">0.50</span>,</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    clase_modelada,</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">levels</span>(datos_entrenamiento<span class="sc">$</span>accidente_con_victimas)[<span class="dv">1</span>]</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>  prediccion <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>    prediccion,</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">levels</span>(datos_entrenamiento<span class="sc">$</span>accidente_con_victimas)</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>  metricas <span class="ot">&lt;-</span> <span class="fu">calcular_metricas</span>(</span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>    datos_validacion<span class="sc">$</span>accidente_con_victimas,</span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>    prediccion</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">$</span>metricas</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="at">pliegue =</span> k, metricas)</span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>()</span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a>resultados_cv</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  pliegue exactitud sensibilidad especificidad precision        f1
+1       1 0.8631278    0.2389503     0.9930975 0.8781726 0.3756786
+2       2 0.8590812    0.2140884     0.9933851 0.8707865 0.3436807
+3       3 0.8630626    0.2268326     0.9953970 0.9111111 0.3632337
+4       4 0.8637771    0.2406639     0.9933832 0.8832487 0.3782609
+5       5 0.8525839    0.1798064     0.9925201 0.8333333 0.2957907</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>resumen_cv <span class="ot">&lt;-</span> resultados_cv <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">where</span>(is.numeric) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">matches</span>(<span class="st">"pliegue"</span>),</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list</span>(<span class="at">media =</span> mean, <span class="at">desviacion =</span> sd),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `summarise()`.
+ℹ In argument: `across(...)`.
+Caused by warning:
+! The `...` argument of `across()` is deprecated as of dplyr 1.1.0.
+Supply arguments directly to `.fns` through an anonymous function instead.
+
+  # Previously
+  across(a:b, mean, na.rm = TRUE)
+
+  # Now
+  across(a:b, \(x) mean(x, na.rm = TRUE))</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>resumen_cv</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud_media exactitud_desviacion sensibilidad_media
+1       0.8603265          0.004710052          0.2200683
+  sensibilidad_desviacion especificidad_media especificidad_desviacion
+1              0.02491609           0.9935566              0.001087613
+  precision_media precision_desviacion  f1_media f1_desviacion
+1       0.8753305           0.02799749 0.3513289    0.03392253</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Interpretación">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La media resume el desempeño esperado y la desviación estándar muestra su estabilidad. Dos modelos con medias parecidas pueden diferir mucho si uno presenta resultados más variables entre pliegues.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="cómo-comparar-varios-modelos" class="level2" data-number="9.15">
+<h2 data-number="9.15" class="anchored" data-anchor-id="cómo-comparar-varios-modelos"><span class="header-section-number">9.15</span> Cómo comparar varios modelos</h2>
+<p>Para comparar regresión logística, k-NN, árbol de decisión y Random Forest conviene utilizar:</p>
+<ol type="1">
+<li>la misma muestra;</li>
+<li>la misma variable respuesta;</li>
+<li>la misma partición de entrenamiento y prueba;</li>
+<li>el mismo criterio para definir la clase positiva;</li>
+<li>las mismas métricas;</li>
+<li>una validación cruzada equivalente;</li>
+<li>tiempos de entrenamiento y predicción;</li>
+<li>facilidad de interpretación.</li>
+</ol>
+<p>Una tabla de decisión puede tener esta estructura:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Modelo</th>
+<th style="text-align: right;">Exactitud</th>
+<th style="text-align: right;">Sensibilidad</th>
+<th style="text-align: right;">Especificidad</th>
+<th style="text-align: right;">F1</th>
+<th>Interpretación</th>
+<th>Costo computacional</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Regresión logística</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td>Alta</td>
+<td>Bajo</td>
+</tr>
+<tr class="even">
+<td>k-NN</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td>Media-baja</td>
+<td>Medio</td>
+</tr>
+<tr class="odd">
+<td>Árbol de decisión</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td>Alta</td>
+<td>Bajo</td>
+</tr>
+<tr class="even">
+<td>Random Forest</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td>Media</td>
+<td>Alto</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="selección-del-modelo-final" class="level2" data-number="9.16">
+<h2 data-number="9.16" class="anchored" data-anchor-id="selección-del-modelo-final"><span class="header-section-number">9.16</span> Selección del modelo final</h2>
+<p>No existe un modelo universalmente mejor. La selección depende de la finalidad:</p>
+<ul>
+<li>Si se requiere explicar el efecto de las variables, puede preferirse regresión logística.</li>
+<li>Si se necesita una regla visual y fácil de comunicar, un árbol puede ser apropiado.</li>
+<li>Si se prioriza capacidad predictiva y estabilidad, Random Forest puede resultar competitivo.</li>
+<li>Si el costo de los falsos negativos es alto, debe priorizarse sensibilidad.</li>
+<li>Si las alertas falsas son costosas, precisión y especificidad cobran mayor importancia.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled" title="Principio fundamental">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Principio fundamental
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El mejor modelo no es necesariamente el que tiene la mayor exactitud, sino el que responde mejor al objetivo, controla los errores relevantes y mantiene un desempeño estable con datos nuevos.</p>
+</div>
+</div>
+</section>
+<section id="actividad-guiada" class="level2" data-number="9.17">
+<h2 data-number="9.17" class="anchored" data-anchor-id="actividad-guiada"><span class="header-section-number">9.17</span> Actividad guiada</h2>
+<ol type="1">
+<li>Ejecute la regresión logística con umbrales de 0.30, 0.50 y 0.70.</li>
+<li>Registre la matriz de confusión de cada caso.</li>
+<li>Compare sensibilidad, especificidad, precisión y F1.</li>
+<li>Explique qué umbral elegiría para detectar accidentes con víctimas.</li>
+<li>Justifique su decisión considerando el costo de falsos negativos y falsos positivos.</li>
+</ol>
+</section>
+<section id="actividades-para-el-lector" class="level2" data-number="9.18">
+<h2 data-number="9.18" class="anchored" data-anchor-id="actividades-para-el-lector"><span class="header-section-number">9.18</span> Actividades para el lector</h2>
+<ol type="1">
+<li><p>Construya una función que calcule la exactitud balanceada:</p>
+<p><span class="math display">\[
+\text{Exactitud balanceada}=\frac{\text{Sensibilidad}+\text{Especificidad}}{2}
+\]</span></p></li>
+<li><p>Compare la variabilidad de las métricas en validación cruzada.</p></li>
+<li><p>Repita el procedimiento con un árbol de decisión.</p></li>
+<li><p>Elabore una tabla comparativa con los cuatro modelos estudiados.</p></li>
+<li><p>Escriba una recomendación técnica de no más de 200 palabras.</p></li>
+</ol>
+</section>
+<section id="resumen-del-capítulo" class="level2" data-number="9.19">
+<h2 data-number="9.19" class="anchored" data-anchor-id="resumen-del-capítulo"><span class="header-section-number">9.19</span> Resumen del capítulo</h2>
+<p>En este capítulo aprendimos que evaluar un modelo requiere datos no utilizados durante el entrenamiento, una clase positiva bien definida y varias métricas. También construimos una regla de referencia, estudiamos el efecto del umbral y aplicamos validación cruzada estratificada. Estas herramientas permiten comparar modelos de forma más justa y elegirlos según el objetivo real del análisis.</p>
+</section>
+<section id="referencias-fundamentales-sobre-evaluación" class="level2" data-number="9.20">
+<h2 data-number="9.20" class="anchored" data-anchor-id="referencias-fundamentales-sobre-evaluación"><span class="header-section-number">9.20</span> Referencias fundamentales sobre evaluación</h2>
+<p>La validación cruzada y su uso para estimar el desempeño de modelos fueron examinados comparativamente por <span class="citation" data-cites="kohavi1995crossvalidation">Kohavi (<a href="referencias.html#ref-kohavi1995crossvalidation" role="doc-biblioref">1995</a>)</span>. Para el análisis mediante curvas ROC y AUC, una referencia ampliamente utilizada es <span class="citation" data-cites="fawcett2006roc">Fawcett (<a href="referencias.html#ref-fawcett2006roc" role="doc-biblioref">2006</a>)</span>. Una visión integrada de partición de datos, remuestreo y comparación de modelos aparece en <span class="citation" data-cites="james2021islr">James et&nbsp;al. (<a href="referencias.html#ref-james2021islr" role="doc-biblioref">2021</a>)</span>.</p>
+</section>
+<section id="laboratorio-interactivo-matriz-de-confusión-y-métricas" class="level2" data-number="9.21">
+<h2 data-number="9.21" class="anchored" data-anchor-id="laboratorio-interactivo-matriz-de-confusión-y-métricas"><span class="header-section-number">9.21</span> Laboratorio interactivo: matriz de confusión y métricas</h2>
+<p>Modifica los cuatro valores de la matriz de confusión y observa cómo cambian exactitud, sensibilidad, especificidad, precisión y F1.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+ui &lt;- fluidPage(
+  titlePanel("Calculadora de métricas de clasificación"),
+  sidebarLayout(
+    sidebarPanel(
+      numericInput("vp", "Verdaderos positivos", 40, min = 0),
+      numericInput("vn", "Verdaderos negativos", 45, min = 0),
+      numericInput("fp", "Falsos positivos", 5, min = 0),
+      numericInput("fn", "Falsos negativos", 10, min = 0)
+    ),
+    mainPanel(
+      tableOutput("matriz"),
+      tableOutput("metricas"),
+      plotOutput("grafica", height = "320px")
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+  calc &lt;- reactive({
+    vp &lt;- input$vp; vn &lt;- input$vn; fp &lt;- input$fp; fn &lt;- input$fn
+    total &lt;- vp + vn + fp + fn
+    exactitud &lt;- ifelse(total == 0, NA, (vp + vn) / total)
+    sensibilidad &lt;- ifelse(vp + fn == 0, NA, vp / (vp + fn))
+    especificidad &lt;- ifelse(vn + fp == 0, NA, vn / (vn + fp))
+    precision &lt;- ifelse(vp + fp == 0, NA, vp / (vp + fp))
+    f1 &lt;- ifelse(
+      is.na(precision) || is.na(sensibilidad) || precision + sensibilidad == 0,
+      NA,
+      2 * precision * sensibilidad / (precision + sensibilidad)
+    )
+    list(
+      matriz = matrix(c(vn, fp, fn, vp), nrow = 2, byrow = TRUE,
+                      dimnames = list(
+                        "Real" = c("Clase 0", "Clase 1"),
+                        "Predicho" = c("Clase 0", "Clase 1")
+                      )),
+      metricas = c(
+        Exactitud = exactitud,
+        Sensibilidad = sensibilidad,
+        Especificidad = especificidad,
+        Precision = precision,
+        F1 = f1
+      )
+    )
+  })
+
+  output$matriz &lt;- renderTable({
+    as.data.frame.matrix(calc()$matriz)
+  }, rownames = TRUE)
+
+  output$metricas &lt;- renderTable({
+    data.frame(
+      Métrica = names(calc()$metricas),
+      Valor = round(as.numeric(calc()$metricas), 4)
+    )
+  })
+
+  output$grafica &lt;- renderPlot({
+    m &lt;- calc()$metricas
+    barplot(
+      m,
+      ylim = c(0, 1),
+      ylab = "Valor",
+      main = "Métricas del modelo"
+    )
+    abline(h = seq(0, 1, by = 0.2), lty = 3)
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="9.22">
+<h2 data-number="9.22" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">9.22</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="9.22.1">
+<h3 data-number="9.22.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">9.22.1</span> Video del capítulo</h3>
+<iframe width="100%" height="420" src="https://www.youtube.com/embed/ShiKrfhIfpY" title="Capítulo 9. Evaluación, validación y comparación de modelos" frameborder="0" allowfullscreen="">
+</iframe>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Descripción</th>
+<th>Abrir o descargar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Presentación en PDF</td>
+<td>Síntesis del capítulo para lectura o exposición.</td>
+<td><a href="recursos/capitulo-09/capitulo-09-evaluacion-modelos-presentacion.pdf" target="_blank">Abrir PDF</a></td>
+</tr>
+<tr class="even">
+<td>Presentación editable</td>
+<td>Diapositivas en PowerPoint.</td>
+<td><a href="recursos/capitulo-09/capitulo-09-evaluacion-modelos-presentacion.pptx">Descargar PPTX</a></td>
+</tr>
+<tr class="odd">
+<td>Infografía</td>
+<td>Resumen visual del capítulo.</td>
+<td><a href="recursos/capitulo-09/capitulo-09-evaluacion-modelos-infografia.png" target="_blank">Abrir infografía</a></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="recursos/capitulo-09/capitulo-09-evaluacion-modelos-infografia.png" class="img-fluid figure-img" style="width:85.0%" alt="Capítulo 9. Evaluación, validación y comparación de modelos"></p>
+<figcaption>Infografía del capítulo 9</figcaption>
+</figure>
+</div>
+<p>Los materiales fueron creados con apoyo de NotebookLM de Google a partir del contenido del libro y revisados y adaptados por el autor.</p>
+</section>
+</section>
+<section id="caso-aplicado-b-evaluación-del-modelo-covid-19" class="level2" data-number="9.23">
+<h2 data-number="9.23" class="anchored" data-anchor-id="caso-aplicado-b-evaluación-del-modelo-covid-19"><span class="header-section-number">9.23</span> Caso aplicado B: evaluación del modelo COVID-19</h2>
+<p>La evaluación debe realizarse con observaciones que no participaron en el ajuste del modelo.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>covid <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span>,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>covid_modelo <span class="ot">&lt;-</span> covid <span class="sc">|&gt;</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    MURIO,</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    EDAD,</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    NEUMONIA,</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    DIABETES,</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    HIPERTENSION,</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    OBESIDAD,</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    RENAL_CRONICA</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>indice_entrenamiento <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_len</span>(<span class="fu">nrow</span>(covid_modelo)),</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">nrow</span>(covid_modelo))</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>covid_train <span class="ot">&lt;-</span> covid_modelo[indice_entrenamiento, ]</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>covid_test <span class="ot">&lt;-</span> covid_modelo[<span class="sc">-</span>indice_entrenamiento, ]</span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>modelo_covid <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>  MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span></span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>    HIPERTENSION <span class="sc">+</span> OBESIDAD <span class="sc">+</span> RENAL_CRONICA,</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> covid_train,</span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>()</span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>covid_test<span class="sc">$</span>probabilidad <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a>  modelo_covid,</span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> covid_test,</span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a>umbral <span class="ot">&lt;-</span> <span class="fl">0.50</span></span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a>covid_test<span class="sc">$</span>prediccion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a>  covid_test<span class="sc">$</span>probabilidad <span class="sc">&gt;=</span> umbral,</span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>,</span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span></span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a>VP <span class="ot">&lt;-</span> <span class="fu">sum</span>(</span>
+<span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a>  covid_test<span class="sc">$</span>prediccion <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span></span>
+<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a>    covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-58"><a href="#cb39-58" aria-hidden="true" tabindex="-1"></a>VN <span class="ot">&lt;-</span> <span class="fu">sum</span>(</span>
+<span id="cb39-59"><a href="#cb39-59" aria-hidden="true" tabindex="-1"></a>  covid_test<span class="sc">$</span>prediccion <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span></span>
+<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a>    covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">0</span></span>
+<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>FP <span class="ot">&lt;-</span> <span class="fu">sum</span>(</span>
+<span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a>  covid_test<span class="sc">$</span>prediccion <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span></span>
+<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a>    covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">0</span></span>
+<span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a>FN <span class="ot">&lt;-</span> <span class="fu">sum</span>(</span>
+<span id="cb39-69"><a href="#cb39-69" aria-hidden="true" tabindex="-1"></a>  covid_test<span class="sc">$</span>prediccion <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span></span>
+<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a>    covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a>matriz_covid <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(VN, FP, FN, VP),</span>
+<span id="cb39-75"><a href="#cb39-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">2</span>,</span>
+<span id="cb39-76"><a href="#cb39-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-77"><a href="#cb39-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">dimnames =</span> <span class="fu">list</span>(</span>
+<span id="cb39-78"><a href="#cb39-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">Real =</span> <span class="fu">c</span>(<span class="st">"Clase 0"</span>, <span class="st">"Clase 1"</span>),</span>
+<span id="cb39-79"><a href="#cb39-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">Predicha =</span> <span class="fu">c</span>(<span class="st">"Clase 0"</span>, <span class="st">"Clase 1"</span>)</span>
+<span id="cb39-80"><a href="#cb39-80" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-81"><a href="#cb39-81" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-82"><a href="#cb39-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-83"><a href="#cb39-83" aria-hidden="true" tabindex="-1"></a>matriz_covid</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Predicha
+Real      Clase 0 Clase 1
+  Clase 0    6688     240
+  Clase 1     529    2457</code></pre>
+</div>
+</div>
+<section id="métricas" class="level3" data-number="9.23.1">
+<h3 data-number="9.23.1" class="anchored" data-anchor-id="métricas"><span class="header-section-number">9.23.1</span> Métricas</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>exactitud <span class="ot">&lt;-</span> (VP <span class="sc">+</span> VN) <span class="sc">/</span> (VP <span class="sc">+</span> VN <span class="sc">+</span> FP <span class="sc">+</span> FN)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>sensibilidad <span class="ot">&lt;-</span> VP <span class="sc">/</span> (VP <span class="sc">+</span> FN)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>especificidad <span class="ot">&lt;-</span> VN <span class="sc">/</span> (VN <span class="sc">+</span> FP)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> VP <span class="sc">/</span> (VP <span class="sc">+</span> FP)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> precision <span class="sc">*</span> sensibilidad <span class="sc">/</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  (precision <span class="sc">+</span> sensibilidad)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>balanced_accuracy <span class="ot">&lt;-</span> (</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  sensibilidad <span class="sc">+</span> especificidad</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  exactitud,</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  sensibilidad,</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  especificidad,</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  precision,</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  f1,</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>  balanced_accuracy</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud sensibilidad especificidad precision        f1 balanced_accuracy
+1 0.9224329    0.8228399      0.965358 0.9110122 0.8646841         0.8940989</code></pre>
+</div>
+</div>
+</section>
+<section id="comparación-de-umbrales" class="level3" data-number="9.23.2">
+<h3 data-number="9.23.2" class="anchored" data-anchor-id="comparación-de-umbrales"><span class="header-section-number">9.23.2</span> Comparación de umbrales</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>evaluar_umbral <span class="ot">&lt;-</span> <span class="cf">function</span>(umbral) {</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    covid_test<span class="sc">$</span>probabilidad <span class="sc">&gt;=</span> umbral,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  vp <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  vn <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  fp <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  fn <span class="ot">&lt;-</span> <span class="fu">sum</span>(pred <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> covid_test<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">umbral =</span> umbral,</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> vp <span class="sc">/</span> (vp <span class="sc">+</span> fn),</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> vn <span class="sc">/</span> (vn <span class="sc">+</span> fp),</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> vp <span class="sc">/</span> (vp <span class="sc">+</span> fp)</span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>resultados_umbrales <span class="ot">&lt;-</span> <span class="fu">do.call</span>(</span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>  rbind,</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq</span>(<span class="fl">0.10</span>, <span class="fl">0.90</span>, <span class="at">by =</span> <span class="fl">0.05</span>),</span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>    evaluar_umbral</span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>resultados_umbrales</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   umbral sensibilidad especificidad precision
+1    0.10    0.9648359     0.7801674 0.6541780
+2    0.15    0.9467515     0.8455543 0.7254298
+3    0.20    0.9296718     0.8819284 0.7723984
+4    0.25    0.9092431     0.9077656 0.8094812
+5    0.30    0.8951775     0.9237875 0.8350515
+6    0.35    0.8787676     0.9400982 0.8634419
+7    0.40    0.8603483     0.9515012 0.8843373
+8    0.45    0.8409243     0.9585739 0.8974267
+9    0.50    0.8228399     0.9653580 0.9110122
+10   0.55    0.8000670     0.9698326 0.9195535
+11   0.60    0.7746149     0.9743072 0.9285428
+12   0.65    0.7458138     0.9777714 0.9353213
+13   0.70    0.7200268     0.9805139 0.9409190
+14   0.75    0.6942398     0.9831120 0.9465753
+15   0.80    0.6677830     0.9864319 0.9549808
+16   0.85    0.6389819     0.9884527 0.9597586
+17   0.90    0.6098459     0.9904734 0.9650238</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En un problema de detección de riesgo, disminuir el umbral suele aumentar la sensibilidad, pero también puede generar más falsos positivos. El umbral no es una constante universal: depende del objetivo y del costo de cada error.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-fawcett2006roc" class="csl-entry" role="listitem">
+Fawcett, Tom. 2006. <span>«An Introduction to ROC Analysis»</span>. <em>Pattern Recognition Letters</em> 27 (8): 861-74. <a href="https://doi.org/10.1016/j.patrec.2005.10.010">https://doi.org/10.1016/j.patrec.2005.10.010</a>.
+</div>
+<div id="ref-inegi_atus_2024" class="csl-entry" role="listitem">
+Instituto Nacional de Estadística y Geografía. 2025. <span>«Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS), 2024»</span>. Instituto Nacional de Estadística y Geografía. <a href="https://www.inegi.org.mx/programas/accidentes/">https://www.inegi.org.mx/programas/accidentes/</a>.
+</div>
+<div id="ref-james2021islr" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, y Robert Tibshirani. 2021. <em>An Introduction to Statistical Learning: with Applications in R</em>. 2.ª ed. Springer. <a href="https://doi.org/10.1007/978-1-0716-1418-1">https://doi.org/10.1007/978-1-0716-1418-1</a>.
+</div>
+<div id="ref-kohavi1995crossvalidation" class="csl-entry" role="listitem">
+Kohavi, Ron. 1995. <span>«A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection»</span>. <em>Proceedings of the 14th International Joint Conference on Artificial Intelligence</em> 2: 1137-45.
+</div>
+<div id="ref-rodriguez2026fundamentos" class="csl-entry" role="listitem">
+Rodríguez Escobedo, Jesús Gilberto. 2026. <em>Fundamentos Matemáticos del Aprendizaje Automático: Teoría, demostraciones y formulación rigurosa de los métodos de regresión, clasificación y análisis de datos</em>. Primera edición digital. San Luis Potosí, México.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./07-random-forest.html" class="pagination-link" aria-label="Random Forest para clasificación">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Random Forest para clasificación</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09-svm.html" class="pagination-link" aria-label="Máquinas de Vectores de Soporte (SVM)">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Máquinas de Vectores de Soporte (SVM)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

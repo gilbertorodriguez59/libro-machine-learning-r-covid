@@ -1,0 +1,36 @@
+ACTUALIZACIÓN EDITORIAL v0.14.1 - LIBRO COVID
+
+Esta actualización toma como referencia editorial el libro:
+Fundamentos Matemáticos del Aprendizaje Automático.
+
+CAMBIOS
+
+- Elimina "MI" del nombre del autor en el proyecto.
+- Agrega Bienvenida.
+- Agrega Créditos editoriales.
+- Agrega Licencia y uso académico.
+- Agrega Prefacio.
+- Agrega Agradecimientos.
+- Agrega Glosario.
+- Conserva y reubica Referencias.
+- Agrega Índice de figuras.
+- Agrega Índice temático.
+- Agrega Acerca del autor.
+- Agrega conexiones bibliográficas con el volumen teórico en los 13 capítulos.
+- Activa índice general y lista de figuras en el perfil PDF.
+- Actualiza la versión a 0.14.1.
+
+INSTALACIÓN
+
+1. Descomprima este ZIP.
+2. Ejecute:
+   INSTALAR_ACTUALIZACION_EDITORIAL_V0141.bat
+
+3. Después ejecute:
+   RENDERIZAR_REVISION_EDITORIAL_V0141.bat
+
+La actualización trabaja únicamente en:
+
+C:\libro-machine-learning-r-covid-dev
+
+Se crea un respaldo automático antes de modificar archivos.

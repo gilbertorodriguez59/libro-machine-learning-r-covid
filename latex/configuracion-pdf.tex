@@ -1,0 +1,94 @@
+% Configuración editorial para el PDF del libro
+\usepackage{xcolor}
+\usepackage{fontspec}
+\usepackage{microtype}
+\usepackage{fvextra}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{etoolbox}
+
+% Tipografías incluidas normalmente con TeX Live/TinyTeX
+% Evitan depender de fuentes instaladas en Windows.
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont[Scale=0.86]{TeX Gyre Cursor}
+
+% Paleta visual
+\definecolor{AzulLibro}{HTML}{1F4E79}
+\definecolor{TurquesaLibro}{HTML}{168A91}
+\definecolor{FondoCodigo}{HTML}{F4F6F8}
+\definecolor{BordeCodigo}{HTML}{8BA6BF}
+\definecolor{TextoCodigo}{HTML}{202124}
+\definecolor{GrisEncabezado}{HTML}{5A6673}
+
+% Composición general
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt minus 1pt}
+\setlist[itemize]{topsep=4pt,itemsep=2pt,parsep=0pt}
+\setlist[enumerate]{topsep=4pt,itemsep=2pt,parsep=0pt}
+\emergencystretch=2em
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+
+% Títulos
+\titleformat{\chapter}[display]
+  {\normalfont\Huge\bfseries\color{AzulLibro}}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-15pt}{25pt}
+\titleformat{\section}
+  {\needspace{4\baselineskip}\normalfont\Large\bfseries\color{AzulLibro}}
+  {\thesection}{0.75em}{}
+\titleformat{\subsection}
+  {\needspace{3\baselineskip}\normalfont\large\bfseries\color{TurquesaLibro}}
+  {\thesubsection}{0.75em}{}
+
+% Encabezados y pies
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\color{GrisEncabezado}\nouppercase{\leftmark}}
+\fancyhead[RO]{\small\color{GrisEncabezado}\nouppercase{\rightmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{15pt}
+
+% Bloques de código generados por Pandoc/Quarto
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+  commandchars=\\\{\},
+  breaklines=true,
+  breakanywhere=true,
+  fontsize=\footnotesize,
+  baselinestretch=1.03,
+  frame=single,
+  framesep=3mm,
+  rulecolor=\color{BordeCodigo},
+  fillcolor=\color{FondoCodigo},
+  formatcom=\color{TextoCodigo},
+  xleftmargin=1mm,
+  xrightmargin=1mm
+}
+
+% Código sin resaltado
+\fvset{
+  breaklines=true,
+  breakanywhere=true,
+  fontsize=\footnotesize,
+  baselinestretch=1.03
+}
+
+% Tablas y figuras
+\renewcommand{\arraystretch}{1.15}
+\captionsetup{font=small,labelfont=bf,justification=centering}
+\AtBeginEnvironment{longtable}{\small}
+
+% Nombres en español
+\renewcommand{\contentsname}{Índice general}
+\renewcommand{\chaptername}{Capítulo}
