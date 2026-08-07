@@ -5,7 +5,9 @@ project:
     - recursos
     - recursos_colab
     - imagenes
-    - datos/covid19/procesados`r`n    - datos/covid19/muestras`r`n    - datos/covid19/diccionarios
+    - datos/covid19/procesados
+    - datos/covid19/muestras
+    - datos/covid19/diccionarios
     - Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
 
 lang: es

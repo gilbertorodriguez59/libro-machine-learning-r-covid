@@ -5,7 +5,7 @@ Además de la versión web y del documento PDF, el libro cuenta con un **cuadern
 ::: {.callout-tip title="Abrir o descargar el cuaderno"}
 
 **Abrir directamente en Google Colab:**  
-[Ejecutar el libro completo en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-dev/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+[Ejecutar el libro completo en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
 
 **Descargar el archivo `.ipynb`:**  
 [Descargar el cuaderno completo](Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)

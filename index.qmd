@@ -5,7 +5,7 @@
 ### Un enfoque práctico con datos abiertos reales {.unnumbered}
 
 **Autor:** Jesús Gilberto Rodríguez Escobedo  
-**Versión:** 0.14.1
+**Versión:** 0.14.2
 **Modalidad:** Libro abierto, práctico e interactivo  
 **Tecnologías:** R · Quarto · Machine Learning · Shinylive · Google Colab · YouTube · GitHub Pages
 
@@ -65,7 +65,7 @@ Este libro está dirigido a estudiantes de ingeniería, ciencias, ciencia de dat
 
 El contenido del libro también está disponible como un cuaderno ejecutable de Google Colab. Las explicaciones se presentan en celdas de texto y cada código R está separado para ejecutarse paso a paso.
 
-- [Abrir el cuaderno en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-dev/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+- [Abrir el cuaderno en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
 - [Descargar el archivo `.ipynb`](Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
 - [Consultar instrucciones de uso](00-cuaderno-google-colab.qmd)
 
@@ -108,6 +108,7 @@ El libro cuenta con una lista oficial de reproducción en YouTube, donde se reú
 
 Enlace directo: <https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
 
+:::
 ::: {.content-visible when-format="html"}
 <div class="playlist-card">
   <div>

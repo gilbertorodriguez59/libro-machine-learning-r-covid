@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Regresión logística para clasificación – Aprendizaje y Clasificación Automática con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./05-knn.html" rel="next">
+<link href="./04-regresion-lineal-multiple.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-regresion-logistica.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Aprendizaje y Clasificación Automática con R</a> 
+        <div class="sidebar-tools-main">
+    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Presentación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-bienvenida.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenida</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-creditos-editoriales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Créditos editoriales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-licencia-y-uso-academico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licencia y uso académico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-agradecimientos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Agradecimientos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-cuaderno-google-colab.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cuaderno completo para Google Colab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">¿Qué es el aprendizaje automático?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-preparacion-datos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Preparación de datos reales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-analisis-exploratorio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis exploratorio de datos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-lineal-multiple.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-logistica.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k vecinos más cercanos, k-NN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-arboles-decision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Árboles de decisión para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-random-forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Random Forest para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-evaluacion-modelos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Evaluación, validación y comparación de modelos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-svm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Máquinas de Vectores de Soporte (SVM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-naive-bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Clasificador Naive Bayes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-redes-neuronales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Redes neuronales artificiales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-kmeans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Agrupamiento con k-means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glosario.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glosario</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./referencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-figuras.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice de figuras</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-tematico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice temático</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acerca-del-autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acerca del autor</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#objetivos-del-capítulo" id="toc-objetivos-del-capítulo" class="nav-link active" data-scroll-target="#objetivos-del-capítulo"><span class="header-section-number">5.1</span> Objetivos del capítulo</a></li>
+  <li><a href="#fundamento-matemático" id="toc-fundamento-matemático" class="nav-link" data-scroll-target="#fundamento-matemático"><span class="header-section-number">5.2</span> Fundamento matemático</a></li>
+  <li><a href="#visualización-de-la-función-logística" id="toc-visualización-de-la-función-logística" class="nav-link" data-scroll-target="#visualización-de-la-función-logística"><span class="header-section-number">5.3</span> Visualización de la función logística</a></li>
+  <li><a href="#cargar-paquetes-y-datos" id="toc-cargar-paquetes-y-datos" class="nav-link" data-scroll-target="#cargar-paquetes-y-datos"><span class="header-section-number">5.4</span> Cargar paquetes y datos</a></li>
+  <li><a href="#preparar-y-dividir-datos" id="toc-preparar-y-dividir-datos" class="nav-link" data-scroll-target="#preparar-y-dividir-datos"><span class="header-section-number">5.5</span> Preparar y dividir datos</a></li>
+  <li><a href="#ajustar-modelo" id="toc-ajustar-modelo" class="nav-link" data-scroll-target="#ajustar-modelo"><span class="header-section-number">5.6</span> Ajustar modelo</a></li>
+  <li><a href="#predicción-y-matriz-de-confusión" id="toc-predicción-y-matriz-de-confusión" class="nav-link" data-scroll-target="#predicción-y-matriz-de-confusión"><span class="header-section-number">5.7</span> Predicción y matriz de confusión</a></li>
+  <li><a href="#métricas" id="toc-métricas" class="nav-link" data-scroll-target="#métricas"><span class="header-section-number">5.8</span> Métricas</a></li>
+  <li><a href="#distribución-de-probabilidades" id="toc-distribución-de-probabilidades" class="nav-link" data-scroll-target="#distribución-de-probabilidades"><span class="header-section-number">5.9</span> Distribución de probabilidades</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">5.10</span> Materiales complementarios del capítulo</a>
+  <ul class="collapse">
+  <li><a href="#video-explicativo" id="toc-video-explicativo" class="nav-link" data-scroll-target="#video-explicativo"><span class="header-section-number">5.10.1</span> Video explicativo</a></li>
+  <li><a href="#vista-previa-de-la-infografía" id="toc-vista-previa-de-la-infografía" class="nav-link" data-scroll-target="#vista-previa-de-la-infografía"><span class="header-section-number">5.10.2</span> Vista previa de la infografía</a></li>
+  </ul></li>
+  <li><a href="#laboratorio-interactivo-regresión-logística" id="toc-laboratorio-interactivo-regresión-logística" class="nav-link" data-scroll-target="#laboratorio-interactivo-regresión-logística"><span class="header-section-number">5.11</span> Laboratorio interactivo: regresión logística</a></li>
+  <li><a href="#caso-aplicado-b-regresión-logística-con-covid-19" id="toc-caso-aplicado-b-regresión-logística-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-regresión-logística-con-covid-19"><span class="header-section-number">5.12</span> Caso aplicado B: regresión logística con COVID-19</a>
+  <ul class="collapse">
+  <li><a href="#razones-de-momios" id="toc-razones-de-momios" class="nav-link" data-scroll-target="#razones-de-momios"><span class="header-section-number">5.12.1</span> Razones de momios</a></li>
+  <li><a href="#probabilidades-para-la-base-de-prueba" id="toc-probabilidades-para-la-base-de-prueba" class="nav-link" data-scroll-target="#probabilidades-para-la-base-de-prueba"><span class="header-section-number">5.12.2</span> Probabilidades para la base de prueba</a></li>
+  </ul></li>
+  <li><a href="#laboratorio-interactivo-probabilidad-estimada-covid-19" id="toc-laboratorio-interactivo-probabilidad-estimada-covid-19" class="nav-link" data-scroll-target="#laboratorio-interactivo-probabilidad-estimada-covid-19"><span class="header-section-number">5.13</span> Laboratorio interactivo: probabilidad estimada COVID-19</a></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">5.14</span> Conclusión</a></li>
+  <li><a href="#referencias-fundamentales-de-la-regresión-logística" id="toc-referencias-fundamentales-de-la-regresión-logística" class="nav-link" data-scroll-target="#referencias-fundamentales-de-la-regresión-logística"><span class="header-section-number">5.15</span> Referencias fundamentales de la regresión logística</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Conexión con el volumen teórico">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Conexión con el volumen teórico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La formulación matemática de <strong>regresión logística, máxima verosimilitud y clasificación probabilística</strong> se desarrolla con mayor profundidad en los capítulos 3, 6 y 11 de <em>Fundamentos Matemáticos del Aprendizaje Automático</em> <span class="citation" data-cites="rodriguez2026fundamentos">(<a href="referencias.html#ref-rodriguez2026fundamentos" role="doc-biblioref">Rodríguez Escobedo 2026</a>)</span>.</p>
+</div>
+</div>
+<section id="objetivos-del-capítulo" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="objetivos-del-capítulo"><span class="header-section-number">5.1</span> Objetivos del capítulo</h2>
+<p>Al finalizar este capítulo, el lector será capaz de ajustar una regresión logística, predecir probabilidades y evaluar el desempeño.</p>
+</section>
+<section id="fundamento-matemático" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="fundamento-matemático"><span class="header-section-number">5.2</span> Fundamento matemático</h2>
+<p>La regresión logística utiliza la función:</p>
+<p><span class="math display">\[
+p = \frac{1}{1 + e^{-z}}
+\]</span></p>
+<p>donde <span class="math inline">\(z = \beta_0 + \beta_1x_1 + \cdots + \beta_px_p\)</span>.</p>
+</section>
+<section id="visualización-de-la-función-logística" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="visualización-de-la-función-logística"><span class="header-section-number">5.3</span> Visualización de la función logística</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">200</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>datos_logistica <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">z =</span> z, <span class="at">p =</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>z)))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_logistica, <span class="fu">aes</span>(<span class="at">x =</span> z, <span class="at">y =</span> p)) <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> col_azul) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Función logística"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Transforma valores reales en probabilidades"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"z"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Probabilidad"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tema_libro</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-regresion-logistica_files/figure-html/grafica-logistica-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Explicación del código
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Se genera una secuencia de valores para <span class="math inline">\(z\)</span> y se calcula su probabilidad usando la función logística.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación del resultado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La curva tiene forma de S. Valores negativos producen probabilidades cercanas a cero y valores positivos probabilidades cercanas a uno.</p>
+</div>
+</div>
+</section>
+<section id="cargar-paquetes-y-datos" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="cargar-paquetes-y-datos"><span class="header-section-number">5.4</span> Cargar paquetes y datos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'readr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:scales':
+
+    col_factor</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ruta_atus_ml <span class="ot">&lt;-</span> <span class="st">"datos/atus_ml_preparado.csv"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_atus_ml)) {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  atus_ml <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ruta_atus_ml, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Base preparada cargada correctamente."</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  atus_ml <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"No se encontró el archivo datos/atus_ml_preparado.csv. Ejecuta primero el capítulo 2."</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Base preparada cargada correctamente."</code></pre>
+</div>
+</div>
+</section>
+<section id="preparar-y-dividir-datos" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="preparar-y-dividir-datos"><span class="header-section-number">5.5</span> Preparar y dividir datos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(atus_ml)) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  atus_modelo <span class="ot">&lt;-</span> atus_ml <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">victimas_binaria =</span> <span class="fu">ifelse</span>(accidente_con_victimas <span class="sc">==</span> <span class="st">"Con víctimas"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">MES =</span> <span class="fu">as.factor</span>(MES),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">ID_HORA =</span> <span class="fu">as.numeric</span>(ID_HORA),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">DIASEMANA =</span> <span class="fu">as.factor</span>(DIASEMANA),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">TIPACCID =</span> <span class="fu">as.factor</span>(TIPACCID),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">CAUSAACCI =</span> <span class="fu">as.factor</span>(CAUSAACCI),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">accidente_con_victimas =</span> <span class="fu">factor</span>(accidente_con_victimas, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Con víctimas"</span>, <span class="st">"Solo daños"</span>))</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(atus_modelo), <span class="at">size =</span> <span class="fu">round</span>(<span class="fl">0.7</span> <span class="sc">*</span> <span class="fu">nrow</span>(atus_modelo)))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  entrenamiento <span class="ot">&lt;-</span> atus_modelo[idx, ]</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  prueba <span class="ot">&lt;-</span> atus_modelo[<span class="sc">-</span>idx, ]</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Explicación del código
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La variable respuesta se transforma a binaria y la base se divide en entrenamiento y prueba.</p>
+</div>
+</div>
+</section>
+<section id="ajustar-modelo" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="ajustar-modelo"><span class="header-section-number">5.6</span> Ajustar modelo</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"entrenamiento"</span>)) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  modelo_logistico <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    victimas_binaria <span class="sc">~</span> MES <span class="sc">+</span> ID_HORA <span class="sc">+</span> DIASEMANA <span class="sc">+</span> TIPACCID <span class="sc">+</span> CAUSAACCI,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> entrenamiento,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> binomial</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="fu">summary</span>(modelo_logistico)<span class="sc">$</span>coefficients, <span class="dv">12</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                Estimate   Std. Error     z value     Pr(&gt;|z|)
+(Intercept) 18.107257162 101.84719280  0.17778848 8.588891e-01
+MES02       -0.045765700   0.02975556 -1.53805548 1.240350e-01
+MES03       -0.032191364   0.02927313 -1.09968980 2.714673e-01
+MES04       -0.002838049   0.02945462 -0.09635327 9.232400e-01
+MES05       -0.015408552   0.02906672 -0.53010979 5.960358e-01
+MES06       -0.054753129   0.02983667 -1.83509526 6.649158e-02
+MES07       -0.076296781   0.03035194 -2.51373620 1.194598e-02
+MES08       -0.094049541   0.02997105 -3.13801278 1.700975e-03
+MES09       -0.077109438   0.03015044 -2.55748998 1.054306e-02
+MES10       -0.154152374   0.02979697 -5.17342485 2.298416e-07
+MES11       -0.106385033   0.02950811 -3.60528073 3.118157e-04
+MES12       -0.111888509   0.02959338 -3.78086333 1.562855e-04</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación del resultado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los coeficientes estiman el efecto de cada variable sobre el logit de la probabilidad de accidente con víctimas.</p>
+</div>
+</div>
+</section>
+<section id="predicción-y-matriz-de-confusión" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="predicción-y-matriz-de-confusión"><span class="header-section-number">5.7</span> Predicción y matriz de confusión</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"modelo_logistico"</span>)) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  prueba<span class="sc">$</span>probabilidad_victimas <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_logistico, <span class="at">newdata =</span> prueba, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  prueba<span class="sc">$</span>prediccion_03 <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(prueba<span class="sc">$</span>probabilidad_victimas <span class="sc">&gt;=</span> <span class="fl">0.3</span>, <span class="st">"Con víctimas"</span>, <span class="st">"Solo daños"</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Con víctimas"</span>, <span class="st">"Solo daños"</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  matriz_confusion_03 <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Real =</span> prueba<span class="sc">$</span>accidente_con_victimas,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Predicho =</span> prueba<span class="sc">$</span>prediccion_03</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  matriz_confusion_03</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Predicho
+Real           Con víctimas Solo daños
+  Con víctimas        13765       6739
+  Solo daños          14302      82382</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Explicación del código
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Las probabilidades se convierten en clases usando un punto de corte de 0.3.</p>
+</div>
+</div>
+</section>
+<section id="métricas" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="métricas"><span class="header-section-number">5.8</span> Métricas</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"matriz_confusion_03"</span>)) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  VP <span class="ot">&lt;-</span> matriz_confusion_03[<span class="st">"Con víctimas"</span>, <span class="st">"Con víctimas"</span>]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  FN <span class="ot">&lt;-</span> matriz_confusion_03[<span class="st">"Con víctimas"</span>, <span class="st">"Solo daños"</span>]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  FP <span class="ot">&lt;-</span> matriz_confusion_03[<span class="st">"Solo daños"</span>, <span class="st">"Con víctimas"</span>]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  VN <span class="ot">&lt;-</span> matriz_confusion_03[<span class="st">"Solo daños"</span>, <span class="st">"Solo daños"</span>]</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">exactitud =</span> (VP <span class="sc">+</span> VN) <span class="sc">/</span> (VP <span class="sc">+</span> FN <span class="sc">+</span> FP <span class="sc">+</span> VN),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> VP <span class="sc">/</span> (VP <span class="sc">+</span> FN),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> VN <span class="sc">/</span> (VN <span class="sc">+</span> FP)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud sensibilidad especificidad
+1 0.8204509    0.6713324     0.8520748</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación del resultado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La sensibilidad mide la capacidad para detectar accidentes con víctimas; la especificidad mide la capacidad para detectar accidentes de solo daños.</p>
+</div>
+</div>
+</section>
+<section id="distribución-de-probabilidades" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="distribución-de-probabilidades"><span class="header-section-number">5.9</span> Distribución de probabilidades</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"prueba"</span>)) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(prueba, <span class="fu">aes</span>(<span class="at">x =</span> probabilidad_victimas, <span class="at">fill =</span> accidente_con_victimas)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">alpha =</span> <span class="fl">0.75</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">escala_clases_fill</span>(<span class="at">name =</span> <span class="st">"Clase real"</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Distribución de probabilidades predichas"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">subtitle =</span> <span class="st">"Regresión logística"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Probabilidad predicha de accidente con víctimas"</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Frecuencia"</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tema_libro</span>()</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-regresion-logistica_files/figure-html/histograma-logistica-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="5.10">
+<h2 data-number="5.10" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">5.10</span> Materiales complementarios del capítulo</h2>
+<p>Estos recursos permiten estudiar la regresión logística desde una perspectiva audiovisual, gráfica y práctica.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Utilidad</th>
+<th>Abrir o reproducir</th>
+<th>Descargar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Video explicativo</td>
+<td>Explicación audiovisual de la regresión logística aplicada a problemas de clasificación.</td>
+<td><a href="https://www.youtube.com/watch?v=7CwP40QDeys" target="_blank">Ver en YouTube</a></td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>Presentación en PDF</td>
+<td>Diapositivas para lectura, estudio o exposición.</td>
+<td><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pdf" target="_blank">Ver PDF</a></td>
+<td><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pdf" download="capitulo-05-regresion-logistica-clasificacion.pdf">Descargar PDF</a></td>
+</tr>
+<tr class="odd">
+<td>Presentación editable</td>
+<td>Archivo PowerPoint para utilizarlo en clase o adaptarlo.</td>
+<td><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pptx">Abrir PPTX</a></td>
+<td><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pptx" download="capitulo-05-regresion-logistica-clasificacion.pptx">Descargar PPTX</a></td>
+</tr>
+<tr class="even">
+<td>Infografía</td>
+<td>Síntesis visual de los conceptos, la función logística y el proceso de clasificación.</td>
+<td><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png" target="_blank">Ver infografía</a></td>
+<td><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png" download="capitulo-05-regresion-logistica-clasificacion-infografia.png">Descargar PNG</a></td>
+</tr>
+</tbody>
+</table>
+<section id="video-explicativo" class="level3" data-number="5.10.1">
+<h3 data-number="5.10.1" class="anchored" data-anchor-id="video-explicativo"><span class="header-section-number">5.10.1</span> Video explicativo</h3>
+<div class="video-responsive">
+<p><iframe src="https://www.youtube.com/embed/7CwP40QDeys" title="Capítulo 5. Regresión logística para clasificación" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""> </iframe></p>
+</div>
+</section>
+<section id="vista-previa-de-la-infografía" class="level3" data-number="5.10.2">
+<h3 data-number="5.10.2" class="anchored" data-anchor-id="vista-previa-de-la-infografía"><span class="header-section-number">5.10.2</span> Vista previa de la infografía</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png"><img src="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png" class="img-fluid figure-img"></a></p>
+<figcaption>Infografía del capítulo 5</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Curso completo en YouTube">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Curso completo en YouTube
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Este video forma parte de la lista oficial del curso.</p>
+<p><a href="https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q" target="_blank">Consultar todos los videos del curso</a></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Elaboración de los materiales">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Elaboración de los materiales
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los materiales complementarios fueron elaborados con apoyo de <strong>NotebookLM de Google</strong>, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="laboratorio-interactivo-regresión-logística" class="level2" data-number="5.11">
+<h2 data-number="5.11" class="anchored" data-anchor-id="laboratorio-interactivo-regresión-logística"><span class="header-section-number">5.11</span> Laboratorio interactivo: regresión logística</h2>
+<p>Explora cómo el intercepto, la pendiente y el umbral cambian la probabilidad estimada y la clasificación final.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+sigmoide &lt;- function(z) {
+  1 / (1 + exp(-z))
+}
+
+ui &lt;- fluidPage(
+  titlePanel("Laboratorio de regresión logística"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("b0", "Intercepto", -10, 10, -3, 0.25),
+      sliderInput("b1", "Pendiente", -5, 5, 1.2, 0.1),
+      sliderInput("umbral", "Umbral de clasificación", 0.05, 0.95, 0.5, 0.05),
+      sliderInput("xnew", "Valor nuevo de x", -5, 10, 2.5, 0.1)
+    ),
+
+    mainPanel(
+      plotOutput("curva", height = "440px"),
+      verbatimTextOutput("resultado"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+
+  prob_nueva &lt;- reactive({
+    sigmoide(input$b0 + input$b1 * input$xnew)
+  })
+
+  output$curva &lt;- renderPlot({
+    x &lt;- seq(-5, 10, length.out = 400)
+    p &lt;- sigmoide(input$b0 + input$b1 * x)
+
+    plot(
+      x, p,
+      type = "l",
+      lwd = 3,
+      ylim = c(0, 1),
+      xlab = "Variable x",
+      ylab = "Probabilidad estimada",
+      main = "Curva logística y umbral"
+    )
+
+    abline(h = input$umbral, lty = 2)
+    abline(v = input$xnew, lty = 3)
+
+    points(
+      input$xnew,
+      prob_nueva(),
+      pch = 19,
+      cex = 1.8
+    )
+
+    text(
+      input$xnew,
+      prob_nueva(),
+      labels = paste0("  p = ", round(prob_nueva(), 3)),
+      pos = 4
+    )
+  })
+
+  output$resultado &lt;- renderPrint({
+    clase &lt;- ifelse(
+      prob_nueva() &gt;= input$umbral,
+      1,
+      0
+    )
+
+    cat("Logit =", round(input$b0 + input$b1 * input$xnew, 4), "\n")
+    cat("Probabilidad =", round(prob_nueva(), 4), "\n")
+    cat("Umbral =", input$umbral, "\n")
+    cat("Clase predicha =", clase)
+  })
+
+  output$interpretacion &lt;- renderText({
+    if (prob_nueva() &gt;= input$umbral) {
+      "La probabilidad supera el umbral, por lo que la observación se asigna a la clase 1."
+    } else {
+      "La probabilidad no alcanza el umbral, por lo que la observación se asigna a la clase 0."
+    }
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+</section>
+<section id="caso-aplicado-b-regresión-logística-con-covid-19" class="level2" data-number="5.12">
+<h2 data-number="5.12" class="anchored" data-anchor-id="caso-aplicado-b-regresión-logística-con-covid-19"><span class="header-section-number">5.12</span> Caso aplicado B: regresión logística con COVID-19</h2>
+<p>Construiremos un modelo para estimar la probabilidad de una <strong>defunción registrada</strong> a partir de variables demográficas y clínicas.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>covid <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>covid_modelo <span class="ot">&lt;-</span> covid <span class="sc">|&gt;</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    MURIO,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    EDAD,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    NEUMONIA,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    DIABETES,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    HIPERTENSION,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    OBESIDAD,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    RENAL_CRONICA</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">drop_na</span>()</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>indice_entrenamiento <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_len</span>(<span class="fu">nrow</span>(covid_modelo)),</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">nrow</span>(covid_modelo))</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>covid_train <span class="ot">&lt;-</span> covid_modelo[indice_entrenamiento, ]</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>covid_test <span class="ot">&lt;-</span> covid_modelo[<span class="sc">-</span>indice_entrenamiento, ]</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>modelo_covid <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>  MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>    HIPERTENSION <span class="sc">+</span> OBESIDAD <span class="sc">+</span> RENAL_CRONICA,</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> covid_train,</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>()</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_covid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = MURIO ~ EDAD + NEUMONIA + DIABETES + HIPERTENSION + 
+    OBESIDAD + RENAL_CRONICA, family = binomial(), data = covid_train)
+
+Coefficients:
+               Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)   -6.645656   0.076488 -86.885  &lt; 2e-16 ***
+EDAD           0.085282   0.001262  67.587  &lt; 2e-16 ***
+NEUMONIA       4.669477   0.072170  64.701  &lt; 2e-16 ***
+DIABETES       0.771141   0.053016  14.545  &lt; 2e-16 ***
+HIPERTENSION   0.384351   0.050681   7.584 3.36e-14 ***
+OBESIDAD      -0.038515   0.071748  -0.537    0.591    
+RENAL_CRONICA  2.721557   0.118389  22.988  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 48508  on 39652  degrees of freedom
+Residual deviance: 17201  on 39646  degrees of freedom
+AIC: 17215
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<section id="razones-de-momios" class="level3" data-number="5.12.1">
+<h3 data-number="5.12.1" class="anchored" data-anchor-id="razones-de-momios"><span class="header-section-number">5.12.1</span> Razones de momios</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>odds_ratios <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">names</span>(<span class="fu">coef</span>(modelo_covid)),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">coeficiente =</span> <span class="fu">coef</span>(modelo_covid),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">odds_ratio =</span> <span class="fu">exp</span>(<span class="fu">coef</span>(modelo_covid))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>odds_ratios</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   variable coeficiente   odds_ratio
+(Intercept)     (Intercept) -6.64565589 1.299656e-03
+EDAD                   EDAD  0.08528154 1.089024e+00
+NEUMONIA           NEUMONIA  4.66947685 1.066419e+02
+DIABETES           DIABETES  0.77114138 2.162233e+00
+HIPERTENSION   HIPERTENSION  0.38435060 1.468660e+00
+OBESIDAD           OBESIDAD -0.03851490 9.622174e-01
+RENAL_CRONICA RENAL_CRONICA  2.72155730 1.520398e+01</code></pre>
+</div>
+</div>
+<p>Un <code>odds_ratio</code> mayor que uno indica que, manteniendo constantes las demás variables, el predictor se asocia con un aumento de los momios del desenlace. Esto <strong>no demuestra causalidad</strong>.</p>
+</section>
+<section id="probabilidades-para-la-base-de-prueba" class="level3" data-number="5.12.2">
+<h3 data-number="5.12.2" class="anchored" data-anchor-id="probabilidades-para-la-base-de-prueba"><span class="header-section-number">5.12.2</span> Probabilidades para la base de prueba</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>covid_test<span class="sc">$</span>probabilidad <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  modelo_covid,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> covid_test,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"response"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  covid_test <span class="sc">|&gt;</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(probabilidad)),</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="dv">10</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 8
+   MURIO  EDAD NEUMONIA DIABETES HIPERTENSION OBESIDAD RENAL_CRONICA
+   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt;
+ 1     1    98        1        1            1        0             1
+ 2     1    93        1        1            1        0             1
+ 3     1    92        1        1            1        0             1
+ 4     1    90        1        1            1        0             1
+ 5     1    90        1        1            1        0             1
+ 6     1    90        1        1            1        0             1
+ 7     1    94        1        1            0        0             1
+ 8     1    89        1        1            1        0             1
+ 9     1    88        1        1            1        0             1
+10     1    88        1        1            1        1             1
+# ℹ 1 more variable: probabilidad &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="laboratorio-interactivo-probabilidad-estimada-covid-19" class="level2" data-number="5.13">
+<h2 data-number="5.13" class="anchored" data-anchor-id="laboratorio-interactivo-probabilidad-estimada-covid-19"><span class="header-section-number">5.13</span> Laboratorio interactivo: probabilidad estimada COVID-19</h2>
+<p>El simulador usa coeficientes estimados previamente con la muestra educativa. Su propósito es mostrar el funcionamiento matemático de una regresión logística; <strong>no es una calculadora clínica ni un instrumento de diagnóstico</strong>.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 760
+#| components: [viewer]
+
+library(shiny)
+
+ui &lt;- fluidPage(
+  titlePanel("Simulador educativo de regresión logística COVID-19"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("edad", "Edad", 0, 100, 50, step = 1),
+      checkboxInput("neumonia", "Neumonía registrada", FALSE),
+      checkboxInput("diabetes", "Diabetes", FALSE),
+      checkboxInput("hipertension", "Hipertensión", FALSE),
+      checkboxInput("obesidad", "Obesidad", FALSE),
+      checkboxInput("renal", "Enfermedad renal crónica", FALSE),
+      sliderInput(
+        "umbral",
+        "Umbral de clasificación",
+        0.05, 0.95, 0.50, step = 0.05
+      )
+    ),
+
+    mainPanel(
+      h3(textOutput("probabilidad")),
+      textOutput("clasificacion"),
+      plotOutput("grafica", height = "360px"),
+      helpText(
+        "Resultado exclusivamente educativo. No usar para decisiones médicas."
+      )
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+
+  prob &lt;- reactive({
+    eta &lt;-
+      -6.6586 +
+      0.0856 * input$edad +
+      4.6571 * as.numeric(input$neumonia) +
+      0.7185 * as.numeric(input$diabetes) +
+      0.3992 * as.numeric(input$hipertension) -
+      0.0422 * as.numeric(input$obesidad) +
+      2.6948 * as.numeric(input$renal)
+
+    1 / (1 + exp(-eta))
+  })
+
+  output$probabilidad &lt;- renderText({
+    paste0(
+      "Probabilidad estimada en la muestra: ",
+      round(100 * prob(), 1),
+      "%"
+    )
+  })
+
+  output$clasificacion &lt;- renderText({
+    clase &lt;- ifelse(
+      prob() &gt;= input$umbral,
+      "Clase 1: defunción registrada",
+      "Clase 0: sin defunción registrada"
+    )
+
+    paste(
+      clase,
+      "con umbral",
+      round(input$umbral, 2)
+    )
+  })
+
+  output$grafica &lt;- renderPlot({
+    edades &lt;- 0:100
+
+    eta &lt;-
+      -6.6586 +
+      0.0856 * edades +
+      4.6571 * as.numeric(input$neumonia) +
+      0.7185 * as.numeric(input$diabetes) +
+      0.3992 * as.numeric(input$hipertension) -
+      0.0422 * as.numeric(input$obesidad) +
+      2.6948 * as.numeric(input$renal)
+
+    probabilidades &lt;- 1 / (1 + exp(-eta))
+
+    plot(
+      edades,
+      probabilidades,
+      type = "l",
+      lwd = 3,
+      ylim = c(0, 1),
+      xlab = "Edad",
+      ylab = "Probabilidad estimada",
+      main = "Curva logística según las características elegidas"
+    )
+
+    abline(h = input$umbral, lty = 2)
+    points(input$edad, prob(), pch = 19, cex = 1.8)
+    grid()
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+</section>
+<section id="conclusión" class="level2" data-number="5.14">
+<h2 data-number="5.14" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">5.14</span> Conclusión</h2>
+<p>La regresión logística es un modelo interpretable para clasificación binaria. El punto de corte permite ajustar el balance entre sensibilidad y especificidad.</p>
+</section>
+<section id="referencias-fundamentales-de-la-regresión-logística" class="level2" data-number="5.15">
+<h2 data-number="5.15" class="anchored" data-anchor-id="referencias-fundamentales-de-la-regresión-logística"><span class="header-section-number">5.15</span> Referencias fundamentales de la regresión logística</h2>
+<p>La formulación moderna de la regresión para respuestas binarias se relaciona con el trabajo de Cox <span class="citation" data-cites="cox1958regression">(<a href="referencias.html#ref-cox1958regression" role="doc-biblioref">Cox 1958</a>)</span>. Para profundizar en ajuste, interpretación, diagnóstico y aplicaciones del modelo logístico puede consultarse a <span class="citation" data-cites="hosmer2013applied">Hosmer et&nbsp;al. (<a href="referencias.html#ref-hosmer2013applied" role="doc-biblioref">2013</a>)</span>. Una presentación orientada al aprendizaje estadístico y a su implementación en R aparece en <span class="citation" data-cites="james2021islr">James et&nbsp;al. (<a href="referencias.html#ref-james2021islr" role="doc-biblioref">2021</a>)</span>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-cox1958regression" class="csl-entry" role="listitem">
+Cox, David R. 1958. <span>«The Regression Analysis of Binary Sequences»</span>. <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 20 (2): 215-42. <a href="https://doi.org/10.1111/j.2517-6161.1958.tb00292.x">https://doi.org/10.1111/j.2517-6161.1958.tb00292.x</a>.
+</div>
+<div id="ref-hosmer2013applied" class="csl-entry" role="listitem">
+Hosmer, David W., Stanley Lemeshow, y Rodney X. Sturdivant. 2013. <em>Applied Logistic Regression</em>. 3.ª ed. Wiley. <a href="https://doi.org/10.1002/9781118548387">https://doi.org/10.1002/9781118548387</a>.
+</div>
+<div id="ref-james2021islr" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, y Robert Tibshirani. 2021. <em>An Introduction to Statistical Learning: with Applications in R</em>. 2.ª ed. Springer. <a href="https://doi.org/10.1007/978-1-0716-1418-1">https://doi.org/10.1007/978-1-0716-1418-1</a>.
+</div>
+<div id="ref-rodriguez2026fundamentos" class="csl-entry" role="listitem">
+Rodríguez Escobedo, Jesús Gilberto. 2026. <em>Fundamentos Matemáticos del Aprendizaje Automático: Teoría, demostraciones y formulación rigurosa de los métodos de regresión, clasificación y análisis de datos</em>. Primera edición digital. San Luis Potosí, México.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04-regresion-lineal-multiple.html" class="pagination-link" aria-label="Regresión lineal simple y múltiple">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./05-knn.html" class="pagination-link" aria-label="k vecinos más cercanos, k-NN">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k vecinos más cercanos, k-NN</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,8 +1,11 @@
 # Perfil PDF profesional estable.
-# Uso: quarto render --profile pdf --to pdf --no-cache
 
-# Shinylive se desactiva en PDF. Los laboratorios interactivos permanecen
-# disponibles en la edición web.
+project:
+  output-dir: docs
+
+book:
+  output-file: "Aprendizaje-y-Clasificacion-Automatica-con-R"
+
 filters: []
 
 execute:

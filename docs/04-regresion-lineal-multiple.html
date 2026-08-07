@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Regresión lineal simple y múltiple – Aprendizaje y Clasificación Automática con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-regresion-logistica.html" rel="next">
+<link href="./03-analisis-exploratorio.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-regresion-lineal-multiple.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Aprendizaje y Clasificación Automática con R</a> 
+        <div class="sidebar-tools-main">
+    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Presentación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-bienvenida.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenida</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-creditos-editoriales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Créditos editoriales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-licencia-y-uso-academico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licencia y uso académico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-agradecimientos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Agradecimientos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-cuaderno-google-colab.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cuaderno completo para Google Colab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">¿Qué es el aprendizaje automático?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-preparacion-datos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Preparación de datos reales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-analisis-exploratorio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis exploratorio de datos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-lineal-multiple.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-logistica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k vecinos más cercanos, k-NN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-arboles-decision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Árboles de decisión para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-random-forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Random Forest para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-evaluacion-modelos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Evaluación, validación y comparación de modelos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-svm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Máquinas de Vectores de Soporte (SVM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-naive-bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Clasificador Naive Bayes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-redes-neuronales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Redes neuronales artificiales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-kmeans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Agrupamiento con k-means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glosario.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glosario</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./referencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-figuras.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice de figuras</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-tematico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice temático</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acerca-del-autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acerca del autor</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#objetivos-del-capítulo" id="toc-objetivos-del-capítulo" class="nav-link active" data-scroll-target="#objetivos-del-capítulo"><span class="header-section-number">4.1</span> Objetivos del capítulo</a></li>
+  <li><a href="#por-qué-estudiar-regresión-lineal-en-un-libro-de-clasificación" id="toc-por-qué-estudiar-regresión-lineal-en-un-libro-de-clasificación" class="nav-link" data-scroll-target="#por-qué-estudiar-regresión-lineal-en-un-libro-de-clasificación"><span class="header-section-number">4.2</span> ¿Por qué estudiar regresión lineal en un libro de clasificación?</a></li>
+  <li><a href="#regresión-lineal-simple" id="toc-regresión-lineal-simple" class="nav-link" data-scroll-target="#regresión-lineal-simple"><span class="header-section-number">4.3</span> Regresión lineal simple</a></li>
+  <li><a href="#primer-ejemplo-didáctico" id="toc-primer-ejemplo-didáctico" class="nav-link" data-scroll-target="#primer-ejemplo-didáctico"><span class="header-section-number">4.4</span> Primer ejemplo didáctico</a></li>
+  <li><a href="#visualizar-la-relación" id="toc-visualizar-la-relación" class="nav-link" data-scroll-target="#visualizar-la-relación"><span class="header-section-number">4.5</span> Visualizar la relación</a></li>
+  <li><a href="#ajustar-el-modelo-simple" id="toc-ajustar-el-modelo-simple" class="nav-link" data-scroll-target="#ajustar-el-modelo-simple"><span class="header-section-number">4.6</span> Ajustar el modelo simple</a></li>
+  <li><a href="#interpretar-los-coeficientes" id="toc-interpretar-los-coeficientes" class="nav-link" data-scroll-target="#interpretar-los-coeficientes"><span class="header-section-number">4.7</span> Interpretar los coeficientes</a></li>
+  <li><a href="#realizar-una-predicción" id="toc-realizar-una-predicción" class="nav-link" data-scroll-target="#realizar-una-predicción"><span class="header-section-number">4.8</span> Realizar una predicción</a></li>
+  <li><a href="#residuos" id="toc-residuos" class="nav-link" data-scroll-target="#residuos"><span class="header-section-number">4.9</span> Residuos</a></li>
+  <li><a href="#visualizar-los-residuos" id="toc-visualizar-los-residuos" class="nav-link" data-scroll-target="#visualizar-los-residuos"><span class="header-section-number">4.10</span> Visualizar los residuos</a></li>
+  <li><a href="#regresión-lineal-múltiple" id="toc-regresión-lineal-múltiple" class="nav-link" data-scroll-target="#regresión-lineal-múltiple"><span class="header-section-number">4.11</span> Regresión lineal múltiple</a></li>
+  <li><a href="#preparar-un-ejemplo-múltiple" id="toc-preparar-un-ejemplo-múltiple" class="nav-link" data-scroll-target="#preparar-un-ejemplo-múltiple"><span class="header-section-number">4.12</span> Preparar un ejemplo múltiple</a></li>
+  <li><a href="#ajustar-el-modelo-múltiple" id="toc-ajustar-el-modelo-múltiple" class="nav-link" data-scroll-target="#ajustar-el-modelo-múltiple"><span class="header-section-number">4.13</span> Ajustar el modelo múltiple</a></li>
+  <li><a href="#interpretar-los-coeficientes-múltiples" id="toc-interpretar-los-coeficientes-múltiples" class="nav-link" data-scroll-target="#interpretar-los-coeficientes-múltiples"><span class="header-section-number">4.14</span> Interpretar los coeficientes múltiples</a></li>
+  <li><a href="#separar-entrenamiento-y-prueba" id="toc-separar-entrenamiento-y-prueba" class="nav-link" data-scroll-target="#separar-entrenamiento-y-prueba"><span class="header-section-number">4.15</span> Separar entrenamiento y prueba</a></li>
+  <li><a href="#métricas-de-evaluación" id="toc-métricas-de-evaluación" class="nav-link" data-scroll-target="#métricas-de-evaluación"><span class="header-section-number">4.16</span> Métricas de evaluación</a></li>
+  <li><a href="#observado-frente-a-predicho" id="toc-observado-frente-a-predicho" class="nav-link" data-scroll-target="#observado-frente-a-predicho"><span class="header-section-number">4.17</span> Observado frente a predicho</a></li>
+  <li><a href="#aplicación-con-datos-atus-agregados" id="toc-aplicación-con-datos-atus-agregados" class="nav-link" data-scroll-target="#aplicación-con-datos-atus-agregados"><span class="header-section-number">4.18</span> Aplicación con datos ATUS agregados</a></li>
+  <li><a href="#construir-una-base-mensual" id="toc-construir-una-base-mensual" class="nav-link" data-scroll-target="#construir-una-base-mensual"><span class="header-section-number">4.19</span> Construir una base mensual</a></li>
+  <li><a href="#ajustar-la-regresión-múltiple-con-atus" id="toc-ajustar-la-regresión-múltiple-con-atus" class="nav-link" data-scroll-target="#ajustar-la-regresión-múltiple-con-atus"><span class="header-section-number">4.20</span> Ajustar la regresión múltiple con ATUS</a></li>
+  <li><a href="#supuestos-principales" id="toc-supuestos-principales" class="nav-link" data-scroll-target="#supuestos-principales"><span class="header-section-number">4.21</span> Supuestos principales</a></li>
+  <li><a href="#diferencias-entre-regresión-lineal-y-logística" id="toc-diferencias-entre-regresión-lineal-y-logística" class="nav-link" data-scroll-target="#diferencias-entre-regresión-lineal-y-logística"><span class="header-section-number">4.22</span> Diferencias entre regresión lineal y logística</a></li>
+  <li><a href="#laboratorio-interactivo-regresión-lineal" id="toc-laboratorio-interactivo-regresión-lineal" class="nav-link" data-scroll-target="#laboratorio-interactivo-regresión-lineal"><span class="header-section-number">4.23</span> Laboratorio interactivo: regresión lineal</a></li>
+  <li><a href="#actividades-para-el-lector" id="toc-actividades-para-el-lector" class="nav-link" data-scroll-target="#actividades-para-el-lector"><span class="header-section-number">4.24</span> Actividades para el lector</a></li>
+  <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">4.25</span> Conclusiones</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">4.26</span> Materiales complementarios del capítulo</a>
+  <ul class="collapse">
+  <li><a href="#video-explicativo" id="toc-video-explicativo" class="nav-link" data-scroll-target="#video-explicativo"><span class="header-section-number">4.26.1</span> Video explicativo</a></li>
+  <li><a href="#vista-previa-de-la-infografía" id="toc-vista-previa-de-la-infografía" class="nav-link" data-scroll-target="#vista-previa-de-la-infografía"><span class="header-section-number">4.26.2</span> Vista previa de la infografía</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Conexión con el volumen teórico">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Conexión con el volumen teórico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La formulación matemática de <strong>regresión lineal simple y múltiple</strong> se desarrolla con mayor profundidad en los capítulos 9 y 10 de <em>Fundamentos Matemáticos del Aprendizaje Automático</em> <span class="citation" data-cites="rodriguez2026fundamentos">(<a href="referencias.html#ref-rodriguez2026fundamentos" role="doc-biblioref">Rodríguez Escobedo 2026</a>)</span>.</p>
+</div>
+</div>
+<section id="objetivos-del-capítulo" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="objetivos-del-capítulo"><span class="header-section-number">4.1</span> Objetivos del capítulo</h2>
+<p>Al terminar este capítulo, el lector podrá:</p>
+<ul>
+<li>distinguir entre regresión y clasificación;</li>
+<li>interpretar una relación lineal entre una variable respuesta y una variable explicativa;</li>
+<li>ajustar una regresión lineal simple en R;</li>
+<li>construir e interpretar un modelo de regresión lineal múltiple;</li>
+<li>evaluar el ajuste mediante <span class="math inline">\(R^2\)</span>, <span class="math inline">\(R^2\)</span> ajustado, RMSE y análisis de residuos;</li>
+<li>reconocer cuándo la regresión lineal no es apropiada.</li>
+</ul>
+</section>
+<section id="por-qué-estudiar-regresión-lineal-en-un-libro-de-clasificación" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="por-qué-estudiar-regresión-lineal-en-un-libro-de-clasificación"><span class="header-section-number">4.2</span> ¿Por qué estudiar regresión lineal en un libro de clasificación?</h2>
+<p>La regresión lineal no es un algoritmo de clasificación: su respuesta es numérica y continua. Sin embargo, es una base fundamental del aprendizaje supervisado porque introduce ideas que reaparecen en otros modelos: función de predicción, coeficientes, error, ajuste, generalización y evaluación fuera de muestra.</p>
+<p>Además, permite comprender mejor la regresión logística del capítulo siguiente. Ambos modelos construyen una combinación de variables explicativas, aunque difieren en la naturaleza de la respuesta y en la función utilizada para obtener la predicción <span class="citation" data-cites="james2021islr">(<a href="referencias.html#ref-james2021islr" role="doc-biblioref">James et&nbsp;al. 2021</a>)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Idea central">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Idea central
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En regresión lineal se predice una cantidad, por ejemplo el número mensual de accidentes. En clasificación se predice una categoría, por ejemplo si un accidente tuvo víctimas o solo daños.</p>
+</div>
+</div>
+</section>
+<section id="regresión-lineal-simple" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="regresión-lineal-simple"><span class="header-section-number">4.3</span> Regresión lineal simple</h2>
+<p>La regresión lineal simple relaciona una variable respuesta <span class="math inline">\(Y\)</span> con una sola variable explicativa <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1 X_i + \varepsilon_i.
+\]</span></p>
+<p>Donde:</p>
+<ul>
+<li><span class="math inline">\(\beta_0\)</span> es la ordenada al origen;</li>
+<li><span class="math inline">\(\beta_1\)</span> representa el cambio promedio esperado en <span class="math inline">\(Y\)</span> cuando <span class="math inline">\(X\)</span> aumenta una unidad;</li>
+<li><span class="math inline">\(\varepsilon_i\)</span> representa la parte no explicada por el modelo.</li>
+</ul>
+<p>Los coeficientes se estiman normalmente mediante mínimos cuadrados, buscando minimizar la suma de los errores al cuadrado <span class="citation" data-cites="montgomery2021introduction">(<a href="referencias.html#ref-montgomery2021introduction" role="doc-biblioref">Montgomery et&nbsp;al. 2021</a>)</span>.</p>
+</section>
+<section id="primer-ejemplo-didáctico" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="primer-ejemplo-didáctico"><span class="header-section-number">4.4</span> Primer ejemplo didáctico</h2>
+<p>Supongamos que se desea relacionar el número de horas de estudio con la calificación obtenida.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>horas <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>calificacion <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">64</span>, <span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">79</span>, <span class="dv">86</span>, <span class="dv">90</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>datos_estudio <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">horas =</span> horas,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">calificacion =</span> calificacion</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>datos_estudio</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  horas calificacion
+1     2           55
+2     3           60
+3     4           64
+4     5           70
+5     6           75
+6     7           79
+7     8           86
+8     9           90</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizar-la-relación" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="visualizar-la-relación"><span class="header-section-number">4.5</span> Visualizar la relación</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_estudio, <span class="fu">aes</span>(<span class="at">x =</span> horas, <span class="at">y =</span> calificacion)) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Horas de estudio y calificación"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Ejemplo de una relación aproximadamente lineal"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Horas de estudio"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Calificación"</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tema_libro</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-regresion-lineal-multiple_files/figure-html/grafica-regresion-simple-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ajustar-el-modelo-simple" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="ajustar-el-modelo-simple"><span class="header-section-number">4.6</span> Ajustar el modelo simple</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>modelo_simple <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  calificacion <span class="sc">~</span> horas,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos_estudio</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_simple)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = calificacion ~ horas, data = datos_estudio)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.9643 -0.2589  0.1250  0.2887  0.9762 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  44.5476     0.6197   71.88 4.88e-10 ***
+horas         5.0595     0.1040   48.64 5.06e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.6741 on 6 degrees of freedom
+Multiple R-squared:  0.9975,    Adjusted R-squared:  0.997 
+F-statistic:  2366 on 1 and 6 DF,  p-value: 5.061e-09</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretar-los-coeficientes" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="interpretar-los-coeficientes"><span class="header-section-number">4.7</span> Interpretar los coeficientes</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>coeficientes_simple <span class="ot">&lt;-</span> <span class="fu">coef</span>(modelo_simple)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>coeficientes_simple</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)       horas 
+  44.547619    5.059524 </code></pre>
+</div>
+</div>
+<p>El modelo estimado tiene la forma:</p>
+<p><span class="math display">\[
+\widehat{Y} = \widehat{\beta}_0 + \widehat{\beta}_1 X.
+\]</span></p>
+<p>La pendiente indica cuántos puntos cambia, en promedio, la calificación por cada hora adicional de estudio. La ordenada al origen es necesaria matemáticamente, aunque no siempre tenga una interpretación práctica dentro del rango observado.</p>
+</section>
+<section id="realizar-una-predicción" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="realizar-una-predicción"><span class="header-section-number">4.8</span> Realizar una predicción</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nuevo_estudiante <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">horas =</span> <span class="fl">6.5</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  modelo_simple,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> nuevo_estudiante,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 77.43452 75.66668 79.20237</code></pre>
+</div>
+</div>
+<p>El intervalo de predicción es más amplio que un intervalo para la media porque considera tanto la incertidumbre del modelo como la variabilidad individual.</p>
+</section>
+<section id="residuos" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="residuos"><span class="header-section-number">4.9</span> Residuos</h2>
+<p>El residuo de la observación <span class="math inline">\(i\)</span> es:</p>
+<p><span class="math display">\[
+e_i = y_i - \widehat{y}_i.
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>diagnostico_simple <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">observado =</span> datos_estudio<span class="sc">$</span>calificacion,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">predicho =</span> <span class="fu">fitted</span>(modelo_simple),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">residuo =</span> <span class="fu">residuals</span>(modelo_simple)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>diagnostico_simple</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  observado predicho     residuo
+1        55 54.66667  0.33333333
+2        60 59.72619  0.27380952
+3        64 64.78571 -0.78571429
+4        70 69.84524  0.15476190
+5        75 74.90476  0.09523810
+6        79 79.96429 -0.96428571
+7        86 85.02381  0.97619048
+8        90 90.08333 -0.08333333</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizar-los-residuos" class="level2" data-number="4.10">
+<h2 data-number="4.10" class="anchored" data-anchor-id="visualizar-los-residuos"><span class="header-section-number">4.10</span> Visualizar los residuos</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diagnostico_simple, <span class="fu">aes</span>(<span class="at">x =</span> predicho, <span class="at">y =</span> residuo)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residuos frente a valores predichos"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Valor predicho"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residuo"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tema_libro</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-regresion-lineal-multiple_files/figure-html/grafica-residuos-simple-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Una nube sin patrón claro alrededor de cero es compatible con una relación lineal razonable. Curvaturas, forma de embudo o puntos extremos sugieren revisar el modelo.</p>
+</section>
+<section id="regresión-lineal-múltiple" class="level2" data-number="4.11">
+<h2 data-number="4.11" class="anchored" data-anchor-id="regresión-lineal-múltiple"><span class="header-section-number">4.11</span> Regresión lineal múltiple</h2>
+<p>La regresión múltiple incorpora varias variables explicativas:</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1X_{i1} + \beta_2X_{i2} + \cdots + \beta_pX_{ip} + \varepsilon_i.
+\]</span></p>
+<p>Cada coeficiente representa el cambio esperado en la respuesta cuando la variable correspondiente aumenta una unidad, <strong>manteniendo constantes las demás variables</strong>.</p>
+</section>
+<section id="preparar-un-ejemplo-múltiple" class="level2" data-number="4.12">
+<h2 data-number="4.12" class="anchored" data-anchor-id="preparar-un-ejemplo-múltiple"><span class="header-section-number">4.12</span> Preparar un ejemplo múltiple</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>datos_ambientales <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">temperatura =</span> <span class="fu">runif</span>(n, <span class="dv">12</span>, <span class="dv">35</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">velocidad_viento =</span> <span class="fu">runif</span>(n, <span class="fl">0.5</span>, <span class="dv">8</span>),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">trafico =</span> <span class="fu">runif</span>(n, <span class="dv">100</span>, <span class="dv">900</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>datos_ambientales<span class="sc">$</span>pm10 <span class="ot">&lt;-</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="dv">18</span> <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.9</span> <span class="sc">*</span> datos_ambientales<span class="sc">$</span>temperatura <span class="sc">-</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fl">2.1</span> <span class="sc">*</span> datos_ambientales<span class="sc">$</span>velocidad_viento <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.045</span> <span class="sc">*</span> datos_ambientales<span class="sc">$</span>trafico <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">6</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(datos_ambientales)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  temperatura velocidad_viento  trafico     pm10
+1    28.06949         1.426882 199.1416 60.66469
+2    24.80020         7.636602 504.3138 59.76823
+3    15.22322         6.362863 847.4719 57.86386
+4    18.57164         7.716020 190.2525 32.45387
+5    24.77349         1.356889 199.1549 35.97589
+6    12.57802         7.831641 402.8500 33.81511</code></pre>
+</div>
+</div>
+</section>
+<section id="ajustar-el-modelo-múltiple" class="level2" data-number="4.13">
+<h2 data-number="4.13" class="anchored" data-anchor-id="ajustar-el-modelo-múltiple"><span class="header-section-number">4.13</span> Ajustar el modelo múltiple</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>modelo_multiple <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  pm10 <span class="sc">~</span> temperatura <span class="sc">+</span> velocidad_viento <span class="sc">+</span> trafico,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> datos_ambientales</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_multiple)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = pm10 ~ temperatura + velocidad_viento + trafico, 
+    data = datos_ambientales)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.4969  -4.0965   0.1626   3.3999  12.7856 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      13.831686   2.970644   4.656 1.34e-05 ***
+temperatura       1.016287   0.095374  10.656  &lt; 2e-16 ***
+velocidad_viento -1.681322   0.282650  -5.948 7.75e-08 ***
+trafico           0.047190   0.002486  18.982  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.446 on 76 degrees of freedom
+Multiple R-squared:  0.866, Adjusted R-squared:  0.8607 
+F-statistic: 163.7 on 3 and 76 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="interpretar-los-coeficientes-múltiples" class="level2" data-number="4.14">
+<h2 data-number="4.14" class="anchored" data-anchor-id="interpretar-los-coeficientes-múltiples"><span class="header-section-number">4.14</span> Interpretar los coeficientes múltiples</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>tabla_coeficientes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">termino =</span> <span class="fu">names</span>(<span class="fu">coef</span>(modelo_multiple)),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimacion =</span> <span class="fu">as.numeric</span>(<span class="fu">coef</span>(modelo_multiple))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>tabla_coeficientes</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           termino  estimacion
+1      (Intercept) 13.83168556
+2      temperatura  1.01628652
+3 velocidad_viento -1.68132208
+4          trafico  0.04718991</code></pre>
+</div>
+</div>
+<p>Por ejemplo, el coeficiente de <code>velocidad_viento</code> estima el cambio promedio de PM10 asociado con un aumento de una unidad en la velocidad del viento, manteniendo constantes la temperatura y el tráfico.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Asociación no significa causalidad">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Asociación no significa causalidad
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un coeficiente estadísticamente significativo no demuestra por sí solo una relación causal. La causalidad requiere diseño, conocimiento sustantivo y control adecuado de variables de confusión.</p>
+</div>
+</div>
+</section>
+<section id="separar-entrenamiento-y-prueba" class="level2" data-number="4.15">
+<h2 data-number="4.15" class="anchored" data-anchor-id="separar-entrenamiento-y-prueba"><span class="header-section-number">4.15</span> Separar entrenamiento y prueba</h2>
+<p>Evaluar el modelo con los mismos datos usados para ajustarlo produce una visión demasiado optimista. Por ello se separan datos de entrenamiento y prueba.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>indices_entrenamiento <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_len</span>(<span class="fu">nrow</span>(datos_ambientales)),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">floor</span>(<span class="fl">0.8</span> <span class="sc">*</span> <span class="fu">nrow</span>(datos_ambientales))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>entrenamiento_reg <span class="ot">&lt;-</span> datos_ambientales[indices_entrenamiento, ]</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>prueba_reg <span class="ot">&lt;-</span> datos_ambientales[<span class="sc">-</span>indices_entrenamiento, ]</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>modelo_multiple_prueba <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  pm10 <span class="sc">~</span> temperatura <span class="sc">+</span> velocidad_viento <span class="sc">+</span> trafico,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> entrenamiento_reg</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>prediccion_reg <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  modelo_multiple_prueba,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> prueba_reg</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="métricas-de-evaluación" class="level2" data-number="4.16">
+<h2 data-number="4.16" class="anchored" data-anchor-id="métricas-de-evaluación"><span class="header-section-number">4.16</span> Métricas de evaluación</h2>
+<p>El error cuadrático medio y su raíz se calculan como:</p>
+<p><span class="math display">\[
+RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\widehat{y}_i)^2}.
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>rmse <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((prueba_reg<span class="sc">$</span>pm10 <span class="sc">-</span> prediccion_reg)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>mae <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(prueba_reg<span class="sc">$</span>pm10 <span class="sc">-</span> prediccion_reg))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>metricas_regresion <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrica =</span> <span class="fu">c</span>(<span class="st">"RMSE"</span>, <span class="st">"MAE"</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">valor =</span> <span class="fu">c</span>(rmse, mae)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>metricas_regresion</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  metrica    valor
+1    RMSE 4.290665
+2     MAE 3.749943</code></pre>
+</div>
+</div>
+</section>
+<section id="observado-frente-a-predicho" class="level2" data-number="4.17">
+<h2 data-number="4.17" class="anchored" data-anchor-id="observado-frente-a-predicho"><span class="header-section-number">4.17</span> Observado frente a predicho</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>comparacion_regresion <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">observado =</span> prueba_reg<span class="sc">$</span>pm10,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">predicho =</span> prediccion_reg</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(comparacion_regresion, <span class="fu">aes</span>(<span class="at">x =</span> observado, <span class="at">y =</span> predicho)) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Valores observados y predichos"</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"La línea diagonal representa predicción perfecta"</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"PM10 observado"</span>,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"PM10 predicho"</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tema_libro</span>()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-regresion-lineal-multiple_files/figure-html/observado-predicho-regresion-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="aplicación-con-datos-atus-agregados" class="level2" data-number="4.18">
+<h2 data-number="4.18" class="anchored" data-anchor-id="aplicación-con-datos-atus-agregados"><span class="header-section-number">4.18</span> Aplicación con datos ATUS agregados</h2>
+<p>En ATUS cada fila corresponde a un accidente. La base preparada del libro conserva las variables necesarias para los algoritmos de clasificación, pero no incluye entidad ni municipio. Por ello, en este ejemplo los registros se agregan por mes y se modela el número mensual de accidentes registrados.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'readr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:scales':
+
+    col_factor</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Adjuntando el paquete: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ruta_atus_ml <span class="ot">&lt;-</span> <span class="st">"datos/atus_ml_preparado.csv"</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(ruta_atus_ml)) {</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"No se encontró datos/atus_ml_preparado.csv."</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Ejecute primero la celda de preparación automática."</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>atus_reg <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  ruta_atus_ml,</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(atus_reg)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "accidente_con_victimas" "MES"                    "ID_HORA"               
+[4] "DIASEMANA"              "TIPACCID"               "CAUSAACCI"             </code></pre>
+</div>
+</div>
+</section>
+<section id="construir-una-base-mensual" class="level2" data-number="4.19">
+<h2 data-number="4.19" class="anchored" data-anchor-id="construir-una-base-mensual"><span class="header-section-number">4.19</span> Construir una base mensual</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>variables_necesarias <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"MES"</span>, <span class="st">"ID_HORA"</span>, <span class="st">"DIASEMANA"</span>, <span class="st">"TIPACCID"</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"accidente_con_victimas"</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>faltantes <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(variables_necesarias, <span class="fu">names</span>(atus_reg))</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(faltantes) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Faltan variables para el ejemplo:"</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(faltantes, <span class="at">collapse =</span> <span class="st">", "</span>)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>atus_mensual <span class="ot">&lt;-</span> atus_reg <span class="sc">|&gt;</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">ID_HORA =</span> <span class="fu">as.numeric</span>(ID_HORA),</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">MES =</span> <span class="fu">as.numeric</span>(MES),</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">fin_semana =</span> DIASEMANA <span class="sc">%in%</span> <span class="fu">c</span>(</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sábado"</span>, <span class="st">"sabado"</span>, <span class="st">"domingo"</span>,</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Sábado"</span>, <span class="st">"Sabado"</span>, <span class="st">"Domingo"</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">con_victimas =</span> accidente_con_victimas <span class="sc">==</span> <span class="st">"Con víctimas"</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(MES) <span class="sc">|&gt;</span></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">accidentes =</span> <span class="fu">n</span>(),</span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">tipos_accidente =</span> <span class="fu">n_distinct</span>(TIPACCID, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">hora_promedio =</span> <span class="fu">mean</span>(ID_HORA, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">proporcion_fin_semana =</span> <span class="fu">mean</span>(fin_semana, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">proporcion_con_victimas =</span> <span class="fu">mean</span>(con_victimas, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.finite</span>(accidentes),</span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.finite</span>(tipos_accidente),</span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.finite</span>(hora_promedio),</span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.finite</span>(proporcion_fin_semana),</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.finite</span>(proporcion_con_victimas)</span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>atus_mensual</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 6
+     MES accidentes tipos_accidente hora_promedio proporcion_fin_semana
+   &lt;dbl&gt;      &lt;int&gt;           &lt;int&gt;         &lt;dbl&gt;                 &lt;dbl&gt;
+ 1     1      31600              13          13.6                 0.252
+ 2     2      32208              13          13.7                 0.271
+ 3     3      33237              13          13.7                 0.320
+ 4     4      32666              13          13.7                 0.272
+ 5     5      34665              13          13.8                 0.260
+ 6     6      31737              13          13.7                 0.338
+ 7     7      30062              13          13.7                 0.270
+ 8     8      31800              13          13.8                 0.293
+ 9     9      31351              13          13.6                 0.292
+10    10      33771              13          13.6                 0.251
+11    11      34047              13          13.6                 0.293
+12    12      33483              13          13.6                 0.291
+# ℹ 1 more variable: proporcion_con_victimas &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="ajustar-la-regresión-múltiple-con-atus" class="level2" data-number="4.20">
+<h2 data-number="4.20" class="anchored" data-anchor-id="ajustar-la-regresión-múltiple-con-atus"><span class="header-section-number">4.20</span> Ajustar la regresión múltiple con ATUS</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>modelo_atus_reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  accidentes <span class="sc">~</span> MES <span class="sc">+</span> tipos_accidente <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    hora_promedio <span class="sc">+</span> proporcion_fin_semana,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> atus_mensual</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_atus_reg)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = accidentes ~ MES + tipos_accidente + hora_promedio + 
+    proporcion_fin_semana, data = atus_mensual)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2402.87  -610.94    75.52   707.04  2319.88 
+
+Coefficients: (1 not defined because of singularities)
+                      Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)           71520.81   93274.17   0.767    0.465
+MES                      65.83     140.08   0.470    0.651
+tipos_accidente             NA         NA      NA       NA
+hora_promedio         -2749.42    6808.57  -0.404    0.697
+proporcion_fin_semana -6359.05   17099.04  -0.372    0.720
+
+Residual standard error: 1487 on 8 degrees of freedom
+Multiple R-squared:  0.08946,   Adjusted R-squared:  -0.252 
+F-statistic: 0.262 on 3 and 8 DF,  p-value: 0.8509</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="Limitación del ejemplo">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Limitación del ejemplo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El número de accidentes es una variable de conteo. La regresión lineal se utiliza aquí con fines didácticos; en un estudio formal podrían ser más apropiados modelos de Poisson o binomial negativa. Esta comparación ayuda a comprender que la elección del algoritmo depende de la naturaleza de la respuesta.</p>
+</div>
+</div>
+</section>
+<section id="supuestos-principales" class="level2" data-number="4.21">
+<h2 data-number="4.21" class="anchored" data-anchor-id="supuestos-principales"><span class="header-section-number">4.21</span> Supuestos principales</h2>
+<p>La interpretación inferencial tradicional de la regresión lineal se apoya en varios supuestos:</p>
+<ol type="1">
+<li>relación aproximadamente lineal;</li>
+<li>errores independientes;</li>
+<li>varianza aproximadamente constante;</li>
+<li>ausencia de colinealidad extrema;</li>
+<li>normalidad aproximada de los errores cuando se construyen pruebas e intervalos.</li>
+</ol>
+<p>Los supuestos deben analizarse mediante gráficas, conocimiento del problema y medidas diagnósticas; no deben tratarse como una lista mecánica.</p>
+</section>
+<section id="diferencias-entre-regresión-lineal-y-logística" class="level2" data-number="4.22">
+<h2 data-number="4.22" class="anchored" data-anchor-id="diferencias-entre-regresión-lineal-y-logística"><span class="header-section-number">4.22</span> Diferencias entre regresión lineal y logística</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Característica</th>
+<th>Regresión lineal</th>
+<th>Regresión logística</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Respuesta</td>
+<td>Numérica continua</td>
+<td>Categórica binaria</td>
+</tr>
+<tr class="even">
+<td>Salida directa</td>
+<td>Cualquier número real</td>
+<td>Probabilidad entre 0 y 1</td>
+</tr>
+<tr class="odd">
+<td>Función usual</td>
+<td>Identidad</td>
+<td>Logística</td>
+</tr>
+<tr class="even">
+<td>Evaluación</td>
+<td>RMSE, MAE, <span class="math inline">\(R^2\)</span></td>
+<td>Matriz de confusión, sensibilidad, especificidad, AUC</td>
+</tr>
+<tr class="odd">
+<td>Ejemplo</td>
+<td>Predecir PM10</td>
+<td>Clasificar accidente con víctimas</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="laboratorio-interactivo-regresión-lineal" class="level2" data-number="4.23">
+<h2 data-number="4.23" class="anchored" data-anchor-id="laboratorio-interactivo-regresión-lineal"><span class="header-section-number">4.23</span> Laboratorio interactivo: regresión lineal</h2>
+<p>Modifica el intercepto, la pendiente y el nivel de ruido para observar cómo cambia la nube de puntos y la recta de regresión.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 700
+#| components: [viewer]
+
+library(shiny)
+
+ui &lt;- fluidPage(
+  titlePanel("Laboratorio de regresión lineal"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("b0", "Intercepto", -10, 10, 2, 0.5),
+      sliderInput("b1", "Pendiente", -5, 5, 1.5, 0.1),
+      sliderInput("ruido", "Desviación del ruido", 0, 8, 2, 0.25),
+      sliderInput("n", "Número de observaciones", 20, 200, 60, 10),
+      numericInput("semilla", "Semilla", 123, min = 1)
+    ),
+
+    mainPanel(
+      plotOutput("grafica", height = "450px"),
+      verbatimTextOutput("modelo"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+
+  datos &lt;- reactive({
+    set.seed(input$semilla)
+    x &lt;- runif(input$n, 0, 10)
+    y &lt;- input$b0 + input$b1 * x +
+      rnorm(input$n, 0, input$ruido)
+    data.frame(x = x, y = y)
+  })
+
+  ajuste &lt;- reactive({
+    lm(y ~ x, data = datos())
+  })
+
+  output$grafica &lt;- renderPlot({
+    d &lt;- datos()
+
+    plot(
+      d$x, d$y,
+      pch = 19,
+      xlab = "Variable x",
+      ylab = "Variable y",
+      main = "Datos simulados y recta estimada"
+    )
+
+    abline(ajuste(), lwd = 3)
+    abline(
+      a = input$b0,
+      b = input$b1,
+      lty = 2,
+      lwd = 2
+    )
+
+    legend(
+      "topleft",
+      legend = c("Recta estimada", "Recta verdadera"),
+      lty = c(1, 2),
+      lwd = c(3, 2),
+      bty = "n"
+    )
+  })
+
+  output$modelo &lt;- renderPrint({
+    coeficientes &lt;- coef(ajuste())
+    r2 &lt;- summary(ajuste())$r.squared
+
+    cat("Modelo estimado:\n")
+    cat(
+      "y =",
+      round(coeficientes[1], 3),
+      "+",
+      round(coeficientes[2], 3),
+      "x\n\n"
+    )
+    cat("R² =", round(r2, 4))
+  })
+
+  output$interpretacion &lt;- renderText({
+    if (input$ruido &lt; 1) {
+      "Con poco ruido, la recta estimada suele aproximarse mucho a la relación verdadera."
+    } else if (input$ruido &lt; 4) {
+      "El ruido genera dispersión y reduce la precisión del ajuste."
+    } else {
+      "Con ruido alto, la relación es más difícil de identificar y el R² suele disminuir."
+    }
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+</section>
+<section id="actividades-para-el-lector" class="level2" data-number="4.24">
+<h2 data-number="4.24" class="anchored" data-anchor-id="actividades-para-el-lector"><span class="header-section-number">4.24</span> Actividades para el lector</h2>
+<ol type="1">
+<li>Modifique el ejemplo simple y prediga la calificación para 7.5 horas de estudio.</li>
+<li>Retire una variable del modelo ambiental y compare el <span class="math inline">\(R^2\)</span> ajustado y el RMSE.</li>
+<li>Añada una interacción entre temperatura y velocidad del viento.</li>
+<li>Analice los residuos del modelo múltiple.</li>
+<li>Explique por qué no sería correcto utilizar regresión lineal ordinaria para predecir directamente una categoría como <code>Con víctimas</code> o <code>Solo daños</code>.</li>
+<li>Compare conceptualmente el modelo ATUS de este capítulo con la regresión logística del capítulo siguiente.</li>
+</ol>
+</section>
+<section id="conclusiones" class="level2" data-number="4.25">
+<h2 data-number="4.25" class="anchored" data-anchor-id="conclusiones"><span class="header-section-number">4.25</span> Conclusiones</h2>
+<p>La regresión lineal simple explica una respuesta cuantitativa mediante una variable y la regresión múltiple permite considerar varios factores simultáneamente. Su valor en este libro no se limita a la predicción numérica: proporciona el lenguaje básico para comprender coeficientes, errores, validación y generalización, conceptos que continuarán apareciendo en los algoritmos de clasificación.</p>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="4.26">
+<h2 data-number="4.26" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">4.26</span> Materiales complementarios del capítulo</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Utilidad</th>
+<th>Abrir o reproducir</th>
+<th>Descargar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Video explicativo</td>
+<td>Explicación audiovisual de la regresión lineal simple y múltiple.</td>
+<td><a href="https://www.youtube.com/watch?v=SE6DCeU9h1w" target="_blank">Ver en YouTube</a></td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>Presentación en PDF</td>
+<td>Diapositivas para lectura, estudio o exposición.</td>
+<td><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pdf" target="_blank">Ver PDF</a></td>
+<td><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pdf" download="capitulo-04-regresion-lineal-simple-multiple.pdf">Descargar PDF</a></td>
+</tr>
+<tr class="odd">
+<td>Presentación editable</td>
+<td>Archivo PowerPoint para utilizarlo en clase o adaptarlo.</td>
+<td><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pptx">Abrir PPTX</a></td>
+<td><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple.pptx" download="capitulo-04-regresion-lineal-simple-multiple.pptx">Descargar PPTX</a></td>
+</tr>
+<tr class="even">
+<td>Infografía</td>
+<td>Síntesis visual de conceptos, fórmulas e interpretación.</td>
+<td><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png" target="_blank">Ver infografía</a></td>
+<td><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png" download="capitulo-04-regresion-lineal-simple-multiple-infografia.png">Descargar PNG</a></td>
+</tr>
+</tbody>
+</table>
+<section id="video-explicativo" class="level3" data-number="4.26.1">
+<h3 data-number="4.26.1" class="anchored" data-anchor-id="video-explicativo"><span class="header-section-number">4.26.1</span> Video explicativo</h3>
+<div class="video-responsive">
+<p><iframe src="https://www.youtube.com/embed/SE6DCeU9h1w" title="Capítulo 4. Regresión lineal simple y múltiple" frameborder="0" allowfullscreen=""></iframe></p>
+</div>
+</section>
+<section id="vista-previa-de-la-infografía" class="level3" data-number="4.26.2">
+<h3 data-number="4.26.2" class="anchored" data-anchor-id="vista-previa-de-la-infografía"><span class="header-section-number">4.26.2</span> Vista previa de la infografía</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png"><img src="recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png" class="img-fluid figure-img"></a></p>
+<figcaption>Infografía del capítulo 4</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Curso completo en YouTube">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Curso completo en YouTube
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q" target="_blank">Consultar todos los videos del curso</a></p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-james2021islr" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, y Robert Tibshirani. 2021. <em>An Introduction to Statistical Learning: with Applications in R</em>. 2.ª ed. Springer. <a href="https://doi.org/10.1007/978-1-0716-1418-1">https://doi.org/10.1007/978-1-0716-1418-1</a>.
+</div>
+<div id="ref-montgomery2021introduction" class="csl-entry" role="listitem">
+Montgomery, Douglas C., Elizabeth A. Peck, y G. Geoffrey Vining. 2021. <em>Introduction to Linear Regression Analysis</em>. 6.ª ed. Wiley.
+</div>
+<div id="ref-rodriguez2026fundamentos" class="csl-entry" role="listitem">
+Rodríguez Escobedo, Jesús Gilberto. 2026. <em>Fundamentos Matemáticos del Aprendizaje Automático: Teoría, demostraciones y formulación rigurosa de los métodos de regresión, clasificación y análisis de datos</em>. Primera edición digital. San Luis Potosí, México.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03-analisis-exploratorio.html" class="pagination-link" aria-label="Análisis exploratorio de datos">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis exploratorio de datos</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-regresion-logistica.html" class="pagination-link" aria-label="Regresión logística para clasificación">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

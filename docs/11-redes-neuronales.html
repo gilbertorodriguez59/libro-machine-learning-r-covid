@@ -1,0 +1,2576 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>12&nbsp; Redes neuronales artificiales – Aprendizaje y Clasificación Automática con R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./12-kmeans.html" rel="next">
+<link href="./10-naive-bayes.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./11-redes-neuronales.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Redes neuronales artificiales</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Aprendizaje y Clasificación Automática con R</a> 
+        <div class="sidebar-tools-main">
+    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Presentación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-bienvenida.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bienvenida</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-creditos-editoriales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Créditos editoriales</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-licencia-y-uso-academico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licencia y uso académico</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-prefacio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-agradecimientos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Agradecimientos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-cuaderno-google-colab.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cuaderno completo para Google Colab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-introduccion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">¿Qué es el aprendizaje automático?</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-preparacion-datos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Preparación de datos reales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-analisis-exploratorio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Análisis exploratorio de datos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-lineal-multiple.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Regresión lineal simple y múltiple</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-regresion-logistica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión logística para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-knn.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">k vecinos más cercanos, k-NN</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-arboles-decision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Árboles de decisión para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-random-forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Random Forest para clasificación</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-evaluacion-modelos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Evaluación, validación y comparación de modelos</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-svm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Máquinas de Vectores de Soporte (SVM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-naive-bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Clasificador Naive Bayes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-redes-neuronales.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Redes neuronales artificiales</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-kmeans.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Agrupamiento con k-means</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glosario.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Glosario</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./referencias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-figuras.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice de figuras</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./indice-tematico.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Índice temático</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acerca-del-autor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acerca del autor</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#objetivos-de-aprendizaje" id="toc-objetivos-de-aprendizaje" class="nav-link active" data-scroll-target="#objetivos-de-aprendizaje"><span class="header-section-number">12.1</span> Objetivos de aprendizaje</a></li>
+  <li><a href="#introducción" id="toc-introducción" class="nav-link" data-scroll-target="#introducción"><span class="header-section-number">12.2</span> Introducción</a></li>
+  <li><a href="#la-neurona-artificial" id="toc-la-neurona-artificial" class="nav-link" data-scroll-target="#la-neurona-artificial"><span class="header-section-number">12.3</span> La neurona artificial</a>
+  <ul class="collapse">
+  <li><a href="#interpretación" id="toc-interpretación" class="nav-link" data-scroll-target="#interpretación"><span class="header-section-number">12.3.1</span> Interpretación</a></li>
+  </ul></li>
+  <li><a href="#ejemplo-manual-de-una-neurona" id="toc-ejemplo-manual-de-una-neurona" class="nav-link" data-scroll-target="#ejemplo-manual-de-una-neurona"><span class="header-section-number">12.4</span> Ejemplo manual de una neurona</a></li>
+  <li><a href="#funciones-de-activación" id="toc-funciones-de-activación" class="nav-link" data-scroll-target="#funciones-de-activación"><span class="header-section-number">12.5</span> Funciones de activación</a>
+  <ul class="collapse">
+  <li><a href="#función-escalón" id="toc-función-escalón" class="nav-link" data-scroll-target="#función-escalón"><span class="header-section-number">12.5.1</span> Función escalón</a></li>
+  <li><a href="#función-sigmoide" id="toc-función-sigmoide" class="nav-link" data-scroll-target="#función-sigmoide"><span class="header-section-number">12.5.2</span> Función sigmoide</a></li>
+  <li><a href="#tangente-hiperbólica" id="toc-tangente-hiperbólica" class="nav-link" data-scroll-target="#tangente-hiperbólica"><span class="header-section-number">12.5.3</span> Tangente hiperbólica</a></li>
+  <li><a href="#relu" id="toc-relu" class="nav-link" data-scroll-target="#relu"><span class="header-section-number">12.5.4</span> ReLU</a></li>
+  <li><a href="#softmax" id="toc-softmax" class="nav-link" data-scroll-target="#softmax"><span class="header-section-number">12.5.5</span> Softmax</a></li>
+  </ul></li>
+  <li><a href="#el-perceptrón" id="toc-el-perceptrón" class="nav-link" data-scroll-target="#el-perceptrón"><span class="header-section-number">12.6</span> El perceptrón</a>
+  <ul class="collapse">
+  <li><a href="#limitación" id="toc-limitación" class="nav-link" data-scroll-target="#limitación"><span class="header-section-number">12.6.1</span> Limitación</a></li>
+  </ul></li>
+  <li><a href="#estructura-de-una-red-multicapa" id="toc-estructura-de-una-red-multicapa" class="nav-link" data-scroll-target="#estructura-de-una-red-multicapa"><span class="header-section-number">12.7</span> Estructura de una red multicapa</a>
+  <ul class="collapse">
+  <li><a href="#capa-de-entrada" id="toc-capa-de-entrada" class="nav-link" data-scroll-target="#capa-de-entrada"><span class="header-section-number">12.7.1</span> Capa de entrada</a></li>
+  <li><a href="#capas-ocultas" id="toc-capas-ocultas" class="nav-link" data-scroll-target="#capas-ocultas"><span class="header-section-number">12.7.2</span> Capas ocultas</a></li>
+  <li><a href="#capa-de-salida" id="toc-capa-de-salida" class="nav-link" data-scroll-target="#capa-de-salida"><span class="header-section-number">12.7.3</span> Capa de salida</a></li>
+  </ul></li>
+  <li><a href="#propagación-hacia-adelante" id="toc-propagación-hacia-adelante" class="nav-link" data-scroll-target="#propagación-hacia-adelante"><span class="header-section-number">12.8</span> Propagación hacia adelante</a></li>
+  <li><a href="#función-de-pérdida" id="toc-función-de-pérdida" class="nav-link" data-scroll-target="#función-de-pérdida"><span class="header-section-number">12.9</span> Función de pérdida</a>
+  <ul class="collapse">
+  <li><a href="#error-cuadrático-medio" id="toc-error-cuadrático-medio" class="nav-link" data-scroll-target="#error-cuadrático-medio"><span class="header-section-number">12.9.1</span> Error cuadrático medio</a></li>
+  <li><a href="#entropía-cruzada-binaria" id="toc-entropía-cruzada-binaria" class="nav-link" data-scroll-target="#entropía-cruzada-binaria"><span class="header-section-number">12.9.2</span> Entropía cruzada binaria</a></li>
+  <li><a href="#entropía-cruzada-categórica" id="toc-entropía-cruzada-categórica" class="nav-link" data-scroll-target="#entropía-cruzada-categórica"><span class="header-section-number">12.9.3</span> Entropía cruzada categórica</a></li>
+  </ul></li>
+  <li><a href="#descenso-de-gradiente" id="toc-descenso-de-gradiente" class="nav-link" data-scroll-target="#descenso-de-gradiente"><span class="header-section-number">12.10</span> Descenso de gradiente</a>
+  <ul class="collapse">
+  <li><a href="#tasa-demasiado-pequeña" id="toc-tasa-demasiado-pequeña" class="nav-link" data-scroll-target="#tasa-demasiado-pequeña"><span class="header-section-number">12.10.1</span> Tasa demasiado pequeña</a></li>
+  <li><a href="#tasa-demasiado-grande" id="toc-tasa-demasiado-grande" class="nav-link" data-scroll-target="#tasa-demasiado-grande"><span class="header-section-number">12.10.2</span> Tasa demasiado grande</a></li>
+  </ul></li>
+  <li><a href="#retropropagación" id="toc-retropropagación" class="nav-link" data-scroll-target="#retropropagación"><span class="header-section-number">12.11</span> Retropropagación</a></li>
+  <li><a href="#implementación-manual-de-una-neurona-en-r" id="toc-implementación-manual-de-una-neurona-en-r" class="nav-link" data-scroll-target="#implementación-manual-de-una-neurona-en-r"><span class="header-section-number">12.12</span> Implementación manual de una neurona en R</a></li>
+  <li><a href="#laboratorio-interactivo-construye-una-neurona-artificial" id="toc-laboratorio-interactivo-construye-una-neurona-artificial" class="nav-link" data-scroll-target="#laboratorio-interactivo-construye-una-neurona-artificial"><span class="header-section-number">12.13</span> Laboratorio interactivo: construye una neurona artificial</a></li>
+  <li><a href="#perceptrón-desde-cero-en-r" id="toc-perceptrón-desde-cero-en-r" class="nav-link" data-scroll-target="#perceptrón-desde-cero-en-r"><span class="header-section-number">12.14</span> Perceptrón desde cero en R</a></li>
+  <li><a href="#ejemplo-de-xor" id="toc-ejemplo-de-xor" class="nav-link" data-scroll-target="#ejemplo-de-xor"><span class="header-section-number">12.15</span> Ejemplo de XOR</a></li>
+  <li><a href="#preparación-de-los-datos" id="toc-preparación-de-los-datos" class="nav-link" data-scroll-target="#preparación-de-los-datos"><span class="header-section-number">12.16</span> Preparación de los datos</a></li>
+  <li><a href="#normalización" id="toc-normalización" class="nav-link" data-scroll-target="#normalización"><span class="header-section-number">12.17</span> Normalización</a>
+  <ul class="collapse">
+  <li><a href="#estandarización" id="toc-estandarización" class="nav-link" data-scroll-target="#estandarización"><span class="header-section-number">12.17.1</span> Estandarización</a></li>
+  <li><a href="#mínimo-máximo" id="toc-mínimo-máximo" class="nav-link" data-scroll-target="#mínimo-máximo"><span class="header-section-number">12.17.2</span> Mínimo-máximo</a></li>
+  </ul></li>
+  <li><a href="#clasificación-binaria-con-neuralnet" id="toc-clasificación-binaria-con-neuralnet" class="nav-link" data-scroll-target="#clasificación-binaria-con-neuralnet"><span class="header-section-number">12.18</span> Clasificación binaria con neuralnet</a></li>
+  <li><a href="#predicción-con-neuralnet" id="toc-predicción-con-neuralnet" class="nav-link" data-scroll-target="#predicción-con-neuralnet"><span class="header-section-number">12.19</span> Predicción con neuralnet</a></li>
+  <li><a href="#métricas-binarias" id="toc-métricas-binarias" class="nav-link" data-scroll-target="#métricas-binarias"><span class="header-section-number">12.20</span> Métricas binarias</a></li>
+  <li><a href="#selección-del-umbral" id="toc-selección-del-umbral" class="nav-link" data-scroll-target="#selección-del-umbral"><span class="header-section-number">12.21</span> Selección del umbral</a></li>
+  <li><a href="#visualizador-interactivo-de-una-red-neuronal" id="toc-visualizador-interactivo-de-una-red-neuronal" class="nav-link" data-scroll-target="#visualizador-interactivo-de-una-red-neuronal"><span class="header-section-number">12.22</span> Visualizador interactivo de una red neuronal</a></li>
+  <li><a href="#arquitectura-de-la-red" id="toc-arquitectura-de-la-red" class="nav-link" data-scroll-target="#arquitectura-de-la-red"><span class="header-section-number">12.23</span> Arquitectura de la red</a>
+  <ul class="collapse">
+  <li><a href="#red-muy-pequeña" id="toc-red-muy-pequeña" class="nav-link" data-scroll-target="#red-muy-pequeña"><span class="header-section-number">12.23.1</span> Red muy pequeña</a></li>
+  <li><a href="#red-demasiado-grande" id="toc-red-demasiado-grande" class="nav-link" data-scroll-target="#red-demasiado-grande"><span class="header-section-number">12.23.2</span> Red demasiado grande</a></li>
+  </ul></li>
+  <li><a href="#épocas-lotes-y-optimizadores" id="toc-épocas-lotes-y-optimizadores" class="nav-link" data-scroll-target="#épocas-lotes-y-optimizadores"><span class="header-section-number">12.24</span> Épocas, lotes y optimizadores</a>
+  <ul class="collapse">
+  <li><a href="#época" id="toc-época" class="nav-link" data-scroll-target="#época"><span class="header-section-number">12.24.1</span> Época</a></li>
+  <li><a href="#lote" id="toc-lote" class="nav-link" data-scroll-target="#lote"><span class="header-section-number">12.24.2</span> Lote</a></li>
+  <li><a href="#descenso-por-lotes" id="toc-descenso-por-lotes" class="nav-link" data-scroll-target="#descenso-por-lotes"><span class="header-section-number">12.24.3</span> Descenso por lotes</a></li>
+  <li><a href="#descenso-estocástico" id="toc-descenso-estocástico" class="nav-link" data-scroll-target="#descenso-estocástico"><span class="header-section-number">12.24.4</span> Descenso estocástico</a></li>
+  <li><a href="#mini-batch" id="toc-mini-batch" class="nav-link" data-scroll-target="#mini-batch"><span class="header-section-number">12.24.5</span> Mini-batch</a></li>
+  <li><a href="#optimizadores" id="toc-optimizadores" class="nav-link" data-scroll-target="#optimizadores"><span class="header-section-number">12.24.6</span> Optimizadores</a></li>
+  </ul></li>
+  <li><a href="#sobreajuste" id="toc-sobreajuste" class="nav-link" data-scroll-target="#sobreajuste"><span class="header-section-number">12.25</span> Sobreajuste</a></li>
+  <li><a href="#regularización" id="toc-regularización" class="nav-link" data-scroll-target="#regularización"><span class="header-section-number">12.26</span> Regularización</a>
+  <ul class="collapse">
+  <li><a href="#regularización-l2" id="toc-regularización-l2" class="nav-link" data-scroll-target="#regularización-l2"><span class="header-section-number">12.26.1</span> Regularización L2</a></li>
+  <li><a href="#regularización-l1" id="toc-regularización-l1" class="nav-link" data-scroll-target="#regularización-l1"><span class="header-section-number">12.26.2</span> Regularización L1</a></li>
+  <li><a href="#dropout" id="toc-dropout" class="nav-link" data-scroll-target="#dropout"><span class="header-section-number">12.26.3</span> Dropout</a></li>
+  <li><a href="#early-stopping" id="toc-early-stopping" class="nav-link" data-scroll-target="#early-stopping"><span class="header-section-number">12.26.4</span> Early stopping</a></li>
+  </ul></li>
+  <li><a href="#implementación-moderna-con-keras" id="toc-implementación-moderna-con-keras" class="nav-link" data-scroll-target="#implementación-moderna-con-keras"><span class="header-section-number">12.27</span> Implementación moderna con keras</a></li>
+  <li><a href="#curvas-de-aprendizaje" id="toc-curvas-de-aprendizaje" class="nav-link" data-scroll-target="#curvas-de-aprendizaje"><span class="header-section-number">12.28</span> Curvas de aprendizaje</a></li>
+  <li><a href="#clasificación-multiclase" id="toc-clasificación-multiclase" class="nav-link" data-scroll-target="#clasificación-multiclase"><span class="header-section-number">12.29</span> Clasificación multiclase</a></li>
+  <li><a href="#codificación-de-la-respuesta" id="toc-codificación-de-la-respuesta" class="nav-link" data-scroll-target="#codificación-de-la-respuesta"><span class="header-section-number">12.30</span> Codificación de la respuesta</a></li>
+  <li><a href="#inicialización-de-pesos" id="toc-inicialización-de-pesos" class="nav-link" data-scroll-target="#inicialización-de-pesos"><span class="header-section-number">12.31</span> Inicialización de pesos</a></li>
+  <li><a href="#gradientes-que-desaparecen-o-explotan" id="toc-gradientes-que-desaparecen-o-explotan" class="nav-link" data-scroll-target="#gradientes-que-desaparecen-o-explotan"><span class="header-section-number">12.32</span> Gradientes que desaparecen o explotan</a></li>
+  <li><a href="#importancia-de-la-reproducibilidad" id="toc-importancia-de-la-reproducibilidad" class="nav-link" data-scroll-target="#importancia-de-la-reproducibilidad"><span class="header-section-number">12.33</span> Importancia de la reproducibilidad</a></li>
+  <li><a href="#interpretabilidad" id="toc-interpretabilidad" class="nav-link" data-scroll-target="#interpretabilidad"><span class="header-section-number">12.34</span> Interpretabilidad</a></li>
+  <li><a href="#aplicación-biomédica" id="toc-aplicación-biomédica" class="nav-link" data-scroll-target="#aplicación-biomédica"><span class="header-section-number">12.35</span> Aplicación biomédica</a></li>
+  <li><a href="#aplicación-ambiental" id="toc-aplicación-ambiental" class="nav-link" data-scroll-target="#aplicación-ambiental"><span class="header-section-number">12.36</span> Aplicación ambiental</a></li>
+  <li><a href="#comparación-con-otros-algoritmos" id="toc-comparación-con-otros-algoritmos" class="nav-link" data-scroll-target="#comparación-con-otros-algoritmos"><span class="header-section-number">12.37</span> Comparación con otros algoritmos</a></li>
+  <li><a href="#ventajas" id="toc-ventajas" class="nav-link" data-scroll-target="#ventajas"><span class="header-section-number">12.38</span> Ventajas</a></li>
+  <li><a href="#limitaciones" id="toc-limitaciones" class="nav-link" data-scroll-target="#limitaciones"><span class="header-section-number">12.39</span> Limitaciones</a></li>
+  <li><a href="#errores-frecuentes" id="toc-errores-frecuentes" class="nav-link" data-scroll-target="#errores-frecuentes"><span class="header-section-number">12.40</span> Errores frecuentes</a></li>
+  <li><a href="#flujo-de-trabajo-recomendado" id="toc-flujo-de-trabajo-recomendado" class="nav-link" data-scroll-target="#flujo-de-trabajo-recomendado"><span class="header-section-number">12.41</span> Flujo de trabajo recomendado</a></li>
+  <li><a href="#actividad-guiada" id="toc-actividad-guiada" class="nav-link" data-scroll-target="#actividad-guiada"><span class="header-section-number">12.42</span> Actividad guiada</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">12.43</span> Ejercicios</a>
+  <ul class="collapse">
+  <li><a href="#ejercicio-1" id="toc-ejercicio-1" class="nav-link" data-scroll-target="#ejercicio-1"><span class="header-section-number">12.43.1</span> Ejercicio 1</a></li>
+  <li><a href="#ejercicio-2" id="toc-ejercicio-2" class="nav-link" data-scroll-target="#ejercicio-2"><span class="header-section-number">12.43.2</span> Ejercicio 2</a></li>
+  <li><a href="#ejercicio-3" id="toc-ejercicio-3" class="nav-link" data-scroll-target="#ejercicio-3"><span class="header-section-number">12.43.3</span> Ejercicio 3</a></li>
+  <li><a href="#ejercicio-4" id="toc-ejercicio-4" class="nav-link" data-scroll-target="#ejercicio-4"><span class="header-section-number">12.43.4</span> Ejercicio 4</a></li>
+  <li><a href="#ejercicio-5" id="toc-ejercicio-5" class="nav-link" data-scroll-target="#ejercicio-5"><span class="header-section-number">12.43.5</span> Ejercicio 5</a></li>
+  <li><a href="#ejercicio-6" id="toc-ejercicio-6" class="nav-link" data-scroll-target="#ejercicio-6"><span class="header-section-number">12.43.6</span> Ejercicio 6</a></li>
+  <li><a href="#ejercicio-7" id="toc-ejercicio-7" class="nav-link" data-scroll-target="#ejercicio-7"><span class="header-section-number">12.43.7</span> Ejercicio 7</a></li>
+  <li><a href="#ejercicio-8" id="toc-ejercicio-8" class="nav-link" data-scroll-target="#ejercicio-8"><span class="header-section-number">12.43.8</span> Ejercicio 8</a></li>
+  <li><a href="#ejercicio-9" id="toc-ejercicio-9" class="nav-link" data-scroll-target="#ejercicio-9"><span class="header-section-number">12.43.9</span> Ejercicio 9</a></li>
+  <li><a href="#ejercicio-10" id="toc-ejercicio-10" class="nav-link" data-scroll-target="#ejercicio-10"><span class="header-section-number">12.43.10</span> Ejercicio 10</a></li>
+  </ul></li>
+  <li><a href="#preguntas-de-reflexión" id="toc-preguntas-de-reflexión" class="nav-link" data-scroll-target="#preguntas-de-reflexión"><span class="header-section-number">12.44</span> Preguntas de reflexión</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">12.45</span> Materiales complementarios del capítulo</a>
+  <ul class="collapse">
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">12.45.1</span> Video del capítulo</a></li>
+  </ul></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">12.46</span> Conclusión</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Redes neuronales artificiales</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Conexión con el volumen teórico">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Conexión con el volumen teórico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La formulación matemática de <strong>álgebra lineal, cálculo, descenso por gradiente y redes neuronales</strong> se desarrolla con mayor profundidad en los capítulos 2, 4 y 16 de <em>Fundamentos Matemáticos del Aprendizaje Automático</em> <span class="citation" data-cites="rodriguez2026fundamentos">(<a href="referencias.html#ref-rodriguez2026fundamentos" role="doc-biblioref">Rodríguez Escobedo 2026</a>)</span>.</p>
+</div>
+</div>
+<section id="objetivos-de-aprendizaje" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="objetivos-de-aprendizaje"><span class="header-section-number">12.1</span> Objetivos de aprendizaje</h2>
+<p>Al finalizar este capítulo podrás:</p>
+<ul>
+<li>explicar la estructura básica de una neurona artificial;</li>
+<li>interpretar entradas, pesos, sesgo y funciones de activación;</li>
+<li>describir el funcionamiento de una red neuronal multicapa;</li>
+<li>comprender la propagación hacia adelante y la retropropagación;</li>
+<li>distinguir entre clasificación binaria y multiclase;</li>
+<li>preparar correctamente los datos para una red neuronal;</li>
+<li>implementar una red sencilla desde cero en R;</li>
+<li>entrenar modelos con <code>neuralnet</code>;</li>
+<li>construir una red moderna con <code>keras</code>;</li>
+<li>evaluar el desempeño mediante matriz de confusión y métricas;</li>
+<li>reconocer sobreajuste, regularización y errores frecuentes.</li>
+</ul>
+</section>
+<section id="introducción" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="introducción"><span class="header-section-number">12.2</span> Introducción</h2>
+<p>Las <strong>redes neuronales artificiales</strong> son modelos computacionales inspirados, de forma muy simplificada, en la manera en que las neuronas biológicas reciben, transforman y transmiten señales.</p>
+<p>Una red neuronal puede aprender relaciones complejas entre variables de entrada y una variable de respuesta. Esto la hace útil para:</p>
+<ul>
+<li>clasificación;</li>
+<li>regresión;</li>
+<li>reconocimiento de imágenes;</li>
+<li>procesamiento de señales;</li>
+<li>detección de patrones;</li>
+<li>predicción de series;</li>
+<li>aplicaciones biomédicas y ambientales.</li>
+</ul>
+<p>La idea central es construir muchas unidades simples, llamadas <strong>neuronas artificiales</strong>, conectadas entre sí mediante pesos ajustables.</p>
+</section>
+<section id="la-neurona-artificial" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="la-neurona-artificial"><span class="header-section-number">12.3</span> La neurona artificial</h2>
+<p>Una neurona recibe varias entradas:</p>
+<p><span class="math display">\[
+x_1,x_2,\ldots,x_p
+\]</span></p>
+<p>Cada entrada tiene un peso:</p>
+<p><span class="math display">\[
+w_1,w_2,\ldots,w_p
+\]</span></p>
+<p>La neurona calcula una combinación lineal:</p>
+<p><span class="math display">\[
+z=w_1x_1+w_2x_2+\cdots+w_px_p+b
+\]</span></p>
+<p>donde <span class="math inline">\(b\)</span> es el <strong>sesgo</strong>.</p>
+<p>Después aplica una función de activación:</p>
+<p><span class="math display">\[
+a=f(z)
+\]</span></p>
+<p>El resultado <span class="math inline">\(a\)</span> se transmite a otras neuronas o se utiliza como salida.</p>
+<section id="interpretación" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="interpretación"><span class="header-section-number">12.3.1</span> Interpretación</h3>
+<ul>
+<li>Las entradas son las características del problema.</li>
+<li>Los pesos indican la importancia de cada entrada.</li>
+<li>El sesgo permite desplazar la frontera de decisión.</li>
+<li>La función de activación introduce no linealidad.</li>
+<li>La salida representa una predicción o una señal intermedia.</li>
+</ul>
+</section>
+</section>
+<section id="ejemplo-manual-de-una-neurona" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="ejemplo-manual-de-una-neurona"><span class="header-section-number">12.4</span> Ejemplo manual de una neurona</h2>
+<p>Supongamos que las entradas, los pesos y el sesgo son:</p>
+<p><span class="math display">\[
+\begin{aligned}
+x_1 &amp;= 0.8, &amp; x_2 &amp;= 0.4,\\
+w_1 &amp;= 1.2, &amp; w_2 &amp;= -0.7, &amp; b &amp;= 0.1.
+\end{aligned}
+\]</span></p>
+<p>La combinación lineal se obtiene sustituyendo los valores:</p>
+<p><span class="math display">\[
+\begin{aligned}
+z &amp;= w_1x_1+w_2x_2+b\\
+  &amp;= (1.2)(0.8)+(-0.7)(0.4)+0.1\\
+  &amp;= 0.96-0.28+0.1\\
+  &amp;= 0.78.
+\end{aligned}
+\]</span></p>
+<p>Si usamos la función sigmoide:</p>
+<p><span class="math display">\[
+\sigma(z)=\frac{1}{1+e^{-z}}
+\]</span></p>
+<p>obtenemos:</p>
+<p><span class="math display">\[
+\sigma(0.78)\approx0.686
+\]</span></p>
+<p>La neurona produce una salida cercana a 0.686.</p>
+</section>
+<section id="funciones-de-activación" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="funciones-de-activación"><span class="header-section-number">12.5</span> Funciones de activación</h2>
+<p>Las funciones de activación permiten que la red represente relaciones no lineales.</p>
+<section id="función-escalón" class="level3" data-number="12.5.1">
+<h3 data-number="12.5.1" class="anchored" data-anchor-id="función-escalón"><span class="header-section-number">12.5.1</span> Función escalón</h3>
+<p><span class="math display">\[
+f(z)=
+\begin{cases}
+1, &amp; z\geq0\\
+0, &amp; z&lt;0
+\end{cases}
+\]</span></p>
+<p>Fue utilizada en los primeros perceptrones.</p>
+</section>
+<section id="función-sigmoide" class="level3" data-number="12.5.2">
+<h3 data-number="12.5.2" class="anchored" data-anchor-id="función-sigmoide"><span class="header-section-number">12.5.2</span> Función sigmoide</h3>
+<p><span class="math display">\[
+\sigma(z)=\frac{1}{1+e^{-z}}
+\]</span></p>
+<p>Características:</p>
+<ul>
+<li>produce valores entre 0 y 1;</li>
+<li>es útil en clasificación binaria;</li>
+<li>puede interpretarse como probabilidad;</li>
+<li>puede saturarse para valores grandes.</li>
+</ul>
+</section>
+<section id="tangente-hiperbólica" class="level3" data-number="12.5.3">
+<h3 data-number="12.5.3" class="anchored" data-anchor-id="tangente-hiperbólica"><span class="header-section-number">12.5.3</span> Tangente hiperbólica</h3>
+<p><span class="math display">\[
+\tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}
+\]</span></p>
+<p>Produce valores entre -1 y 1.</p>
+</section>
+<section id="relu" class="level3" data-number="12.5.4">
+<h3 data-number="12.5.4" class="anchored" data-anchor-id="relu"><span class="header-section-number">12.5.4</span> ReLU</h3>
+<p><span class="math display">\[
+\operatorname{ReLU}(z)=\max(0,z)
+\]</span></p>
+<p>Es una de las activaciones más utilizadas en capas ocultas.</p>
+</section>
+<section id="softmax" class="level3" data-number="12.5.5">
+<h3 data-number="12.5.5" class="anchored" data-anchor-id="softmax"><span class="header-section-number">12.5.5</span> Softmax</h3>
+<p>Para clasificación multiclase:</p>
+<p><span class="math display">\[
+P(y=k)=\frac{e^{z_k}}{\sum_{j=1}^{K}e^{z_j}}
+\]</span></p>
+<p>Convierte las salidas en probabilidades que suman 1.</p>
+</section>
+</section>
+<section id="el-perceptrón" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="el-perceptrón"><span class="header-section-number">12.6</span> El perceptrón</h2>
+<p>El perceptrón es uno de los modelos neuronales más sencillos.</p>
+<p>Calcula:</p>
+<p><span class="math display">\[
+\widehat{y}=f(\mathbf{w}^{T}\mathbf{x}+b)
+\]</span></p>
+<p>y actualiza los pesos cuando comete errores.</p>
+<p>La regla básica de actualización es:</p>
+<p><span class="math display">\[
+w_j^{nuevo}=w_j^{anterior}+\eta(y-\widehat{y})x_j
+\]</span></p>
+<p>donde:</p>
+<ul>
+<li><span class="math inline">\(\eta\)</span> es la tasa de aprendizaje;</li>
+<li><span class="math inline">\(y\)</span> es la clase real;</li>
+<li><span class="math inline">\(\widehat{y}\)</span> es la predicción.</li>
+</ul>
+<section id="limitación" class="level3" data-number="12.6.1">
+<h3 data-number="12.6.1" class="anchored" data-anchor-id="limitación"><span class="header-section-number">12.6.1</span> Limitación</h3>
+<p>Un perceptrón simple solo resuelve problemas linealmente separables. El problema XOR es el ejemplo clásico que requiere una capa oculta.</p>
+</section>
+</section>
+<section id="estructura-de-una-red-multicapa" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="estructura-de-una-red-multicapa"><span class="header-section-number">12.7</span> Estructura de una red multicapa</h2>
+<p>Una red neuronal multicapa suele tener:</p>
+<ol type="1">
+<li>capa de entrada;</li>
+<li>una o más capas ocultas;</li>
+<li>capa de salida.</li>
+</ol>
+<p>Cada neurona de una capa puede conectarse con las neuronas de la siguiente.</p>
+<section id="capa-de-entrada" class="level3" data-number="12.7.1">
+<h3 data-number="12.7.1" class="anchored" data-anchor-id="capa-de-entrada"><span class="header-section-number">12.7.1</span> Capa de entrada</h3>
+<p>Recibe las variables predictoras.</p>
+</section>
+<section id="capas-ocultas" class="level3" data-number="12.7.2">
+<h3 data-number="12.7.2" class="anchored" data-anchor-id="capas-ocultas"><span class="header-section-number">12.7.2</span> Capas ocultas</h3>
+<p>Aprenden combinaciones intermedias de las características.</p>
+</section>
+<section id="capa-de-salida" class="level3" data-number="12.7.3">
+<h3 data-number="12.7.3" class="anchored" data-anchor-id="capa-de-salida"><span class="header-section-number">12.7.3</span> Capa de salida</h3>
+<p>Produce la predicción final.</p>
+<p>Ejemplos:</p>
+<ul>
+<li>una neurona sigmoide para clasificación binaria;</li>
+<li>varias neuronas softmax para clasificación multiclase;</li>
+<li>una neurona lineal para regresión.</li>
+</ul>
+</section>
+</section>
+<section id="propagación-hacia-adelante" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="propagación-hacia-adelante"><span class="header-section-number">12.8</span> Propagación hacia adelante</h2>
+<p>La <strong>propagación hacia adelante</strong> calcula la salida de la red a partir de las entradas.</p>
+<p>Para una capa oculta:</p>
+<p><span class="math display">\[
+\mathbf{h}=f(\mathbf{W}^{(1)}\mathbf{x}+\mathbf{b}^{(1)})
+\]</span></p>
+<p>Para la salida:</p>
+<p><span class="math display">\[
+\widehat{\mathbf{y}}=g(\mathbf{W}^{(2)}\mathbf{h}+\mathbf{b}^{(2)})
+\]</span></p>
+<p>La red transforma sucesivamente la información hasta producir una predicción.</p>
+</section>
+<section id="función-de-pérdida" class="level2" data-number="12.9">
+<h2 data-number="12.9" class="anchored" data-anchor-id="función-de-pérdida"><span class="header-section-number">12.9</span> Función de pérdida</h2>
+<p>La función de pérdida mide qué tan lejos está la predicción del valor real.</p>
+<section id="error-cuadrático-medio" class="level3" data-number="12.9.1">
+<h3 data-number="12.9.1" class="anchored" data-anchor-id="error-cuadrático-medio"><span class="header-section-number">12.9.1</span> Error cuadrático medio</h3>
+<p><span class="math display">\[
+MSE=\frac{1}{n}\sum_{i=1}^{n}(y_i-\widehat{y}_i)^2
+\]</span></p>
+<p>Se usa principalmente en regresión.</p>
+</section>
+<section id="entropía-cruzada-binaria" class="level3" data-number="12.9.2">
+<h3 data-number="12.9.2" class="anchored" data-anchor-id="entropía-cruzada-binaria"><span class="header-section-number">12.9.2</span> Entropía cruzada binaria</h3>
+<p><span class="math display">\[
+L=-\frac{1}{n}\sum_{i=1}^{n}
+\left[
+y_i\log(\widehat{p}_i)
++(1-y_i)\log(1-\widehat{p}_i)
+\right]
+\]</span></p>
+<p>Se utiliza en clasificación binaria.</p>
+</section>
+<section id="entropía-cruzada-categórica" class="level3" data-number="12.9.3">
+<h3 data-number="12.9.3" class="anchored" data-anchor-id="entropía-cruzada-categórica"><span class="header-section-number">12.9.3</span> Entropía cruzada categórica</h3>
+<p><span class="math display">\[
+L=-\frac{1}{n}\sum_{i=1}^{n}\sum_{k=1}^{K}
+y_{ik}\log(\widehat{p}_{ik})
+\]</span></p>
+<p>Se utiliza en clasificación multiclase.</p>
+</section>
+</section>
+<section id="descenso-de-gradiente" class="level2" data-number="12.10">
+<h2 data-number="12.10" class="anchored" data-anchor-id="descenso-de-gradiente"><span class="header-section-number">12.10</span> Descenso de gradiente</h2>
+<p>El entrenamiento busca valores de los pesos que minimicen la pérdida.</p>
+<p>La actualización general es:</p>
+<p><span class="math display">\[
+w^{\mathrm{nuevo}}
+=
+w^{\mathrm{anterior}}
+-
+\eta\frac{\partial L}{\partial w}
+\]</span></p>
+<p>donde <span class="math inline">\(\eta\)</span> es la tasa de aprendizaje.</p>
+<section id="tasa-demasiado-pequeña" class="level3" data-number="12.10.1">
+<h3 data-number="12.10.1" class="anchored" data-anchor-id="tasa-demasiado-pequeña"><span class="header-section-number">12.10.1</span> Tasa demasiado pequeña</h3>
+<ul>
+<li>aprendizaje lento;</li>
+<li>muchas iteraciones.</li>
+</ul>
+</section>
+<section id="tasa-demasiado-grande" class="level3" data-number="12.10.2">
+<h3 data-number="12.10.2" class="anchored" data-anchor-id="tasa-demasiado-grande"><span class="header-section-number">12.10.2</span> Tasa demasiado grande</h3>
+<ul>
+<li>oscilaciones;</li>
+<li>divergencia;</li>
+<li>pérdida inestable.</li>
+</ul>
+</section>
+</section>
+<section id="retropropagación" class="level2" data-number="12.11">
+<h2 data-number="12.11" class="anchored" data-anchor-id="retropropagación"><span class="header-section-number">12.11</span> Retropropagación</h2>
+<p>La <strong>retropropagación</strong> calcula cómo contribuye cada peso al error.</p>
+<p>El proceso es:</p>
+<ol type="1">
+<li>realizar propagación hacia adelante;</li>
+<li>calcular la pérdida;</li>
+<li>obtener derivadas mediante la regla de la cadena;</li>
+<li>propagar el error hacia atrás;</li>
+<li>actualizar pesos y sesgos;</li>
+<li>repetir.</li>
+</ol>
+<p>La retropropagación no es un modelo distinto, sino el mecanismo principal para entrenar redes multicapa.</p>
+</section>
+<section id="implementación-manual-de-una-neurona-en-r" class="level2" data-number="12.12">
+<h2 data-number="12.12" class="anchored" data-anchor-id="implementación-manual-de-una-neurona-en-r"><span class="header-section-number">12.12</span> Implementación manual de una neurona en R</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sigmoide <span class="ot">&lt;-</span> <span class="cf">function</span>(z) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>z))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.4</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.2</span>, <span class="sc">-</span><span class="fl">0.7</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">sum</span>(x <span class="sc">*</span> w) <span class="sc">+</span> b</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>salida <span class="ot">&lt;-</span> <span class="fu">sigmoide</span>(z)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>z</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.78</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>salida</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6856801</code></pre>
+</div>
+</div>
+</section>
+<section id="laboratorio-interactivo-construye-una-neurona-artificial" class="level2" data-number="12.13">
+<h2 data-number="12.13" class="anchored" data-anchor-id="laboratorio-interactivo-construye-una-neurona-artificial"><span class="header-section-number">12.13</span> Laboratorio interactivo: construye una neurona artificial</h2>
+<p>El siguiente laboratorio se ejecuta directamente en tu navegador mediante <strong>Shinylive</strong>. No requiere un servidor Shiny externo.</p>
+<p>Puedes modificar las entradas, los pesos, el sesgo, la función de activación y el umbral de clasificación.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 720
+#| components: [viewer]
+
+library(shiny)
+
+sigmoide &lt;- function(z) 1 / (1 + exp(-z))
+relu &lt;- function(z) pmax(0, z)
+
+app_ui &lt;- fluidPage(
+  tags$style(HTML("\n    body { background-color: #f7f9fc; }\n    .well { background-color: white; border-radius: 12px; border: 1px solid #d9e2ef; }\n    .resultado-grande { font-size: 1.25rem; font-weight: 700; padding: 12px; border-radius: 10px; background: #eef5ff; margin-bottom: 10px; }\n  ")),
+  titlePanel("Laboratorio interactivo: neurona artificial"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("x1", "Entrada x1", -5, 5, 0.8, 0.1),
+      sliderInput("x2", "Entrada x2", -5, 5, 0.4, 0.1),
+      sliderInput("w1", "Peso w1", -5, 5, 1.2, 0.1),
+      sliderInput("w2", "Peso w2", -5, 5, -0.7, 0.1),
+      sliderInput("b", "Sesgo b", -5, 5, 0.1, 0.1),
+      selectInput(
+        "activacion",
+        "Función de activación",
+        choices = c(
+          "Sigmoide" = "sigmoide",
+          "Tangente hiperbólica" = "tanh",
+          "ReLU" = "relu",
+          "Escalón" = "escalon",
+          "Lineal" = "lineal"
+        )
+      ),
+      sliderInput("umbral", "Umbral de clasificación", 0, 1, 0.5, 0.05)
+    ),
+    mainPanel(
+      div(class = "resultado-grande", textOutput("formula")),
+      fluidRow(
+        column(4, h4("Combinación lineal"), verbatimTextOutput("z")),
+        column(4, h4("Salida activada"), verbatimTextOutput("salida")),
+        column(4, h4("Clase predicha"), verbatimTextOutput("clase"))
+      ),
+      hr(),
+      plotOutput("grafica", height = "340px"),
+      hr(),
+      h4("Interpretación"),
+      textOutput("interpretacion")
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+  z_reactivo &lt;- reactive({
+    input$w1 * input$x1 + input$w2 * input$x2 + input$b
+  })
+
+  salida_reactiva &lt;- reactive({
+    z &lt;- z_reactivo()
+    switch(
+      input$activacion,
+      sigmoide = sigmoide(z),
+      tanh = tanh(z),
+      relu = relu(z),
+      escalon = ifelse(z &gt;= 0, 1, 0),
+      lineal = z
+    )
+  })
+
+  output$formula &lt;- renderText({
+    paste0(
+      "z = (", round(input$w1, 2), ")(", round(input$x1, 2), ") + (",
+      round(input$w2, 2), ")(", round(input$x2, 2), ") + ", round(input$b, 2)
+    )
+  })
+
+  output$z &lt;- renderText(round(z_reactivo(), 5))
+  output$salida &lt;- renderText(round(salida_reactiva(), 5))
+
+  output$clase &lt;- renderText({
+    salida &lt;- salida_reactiva()
+    if (input$activacion %in% c("sigmoide", "escalon")) {
+      ifelse(salida &gt;= input$umbral, "Clase 1", "Clase 0")
+    } else {
+      ifelse(salida &gt;= 0, "Clase positiva", "Clase negativa")
+    }
+  })
+
+  output$grafica &lt;- renderPlot({
+    valores_z &lt;- seq(-6, 6, length.out = 400)
+    valores_y &lt;- switch(
+      input$activacion,
+      sigmoide = sigmoide(valores_z),
+      tanh = tanh(valores_z),
+      relu = relu(valores_z),
+      escalon = ifelse(valores_z &gt;= 0, 1, 0),
+      lineal = valores_z
+    )
+    plot(
+      valores_z, valores_y, type = "l", lwd = 3,
+      xlab = "Valor de z", ylab = "Salida de la activación",
+      main = paste("Función de activación:", input$activacion)
+    )
+    grid()
+    points(z_reactivo(), salida_reactiva(), pch = 19, cex = 1.8)
+    abline(v = z_reactivo(), lty = 2)
+  })
+
+  output$interpretacion &lt;- renderText({
+    paste0(
+      "Con los valores actuales, la neurona calcula z = ",
+      round(z_reactivo(), 4),
+      " y produce una salida de ",
+      round(salida_reactiva(), 4),
+      ". Cambia un peso, una entrada o el sesgo para observar la respuesta."
+    )
+  })
+}
+
+shinyApp(app_ui, server)</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled" title="Actividad de exploración">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Actividad de exploración
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Mantén las entradas fijas y cambia solamente el sesgo.</li>
+<li>Cambia el signo de uno de los pesos.</li>
+<li>Compara sigmoide, ReLU y tangente hiperbólica.</li>
+<li>Coloca ambos pesos en cero.</li>
+<li>Modifica el umbral y observa si cambia la clase.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="perceptrón-desde-cero-en-r" class="level2" data-number="12.14">
+<h2 data-number="12.14" class="anchored" data-anchor-id="perceptrón-desde-cero-en-r"><span class="header-section-number">12.14</span> Perceptrón desde cero en R</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>entrenar_perceptron <span class="ot">&lt;-</span> <span class="cf">function</span>(X, y,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">eta =</span> <span class="fl">0.1</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">epocas =</span> <span class="dv">100</span>) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(X)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  pesos <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  sesgo <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (epoca <span class="cf">in</span> <span class="fu">seq_len</span>(epocas)) {</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(X))) {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      z <span class="ot">&lt;-</span> <span class="fu">sum</span>(X[i, ] <span class="sc">*</span> pesos) <span class="sc">+</span> sesgo</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      pred <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(z <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      error <span class="ot">&lt;-</span> y[i] <span class="sc">-</span> pred</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      pesos <span class="ot">&lt;-</span> pesos <span class="sc">+</span> eta <span class="sc">*</span> error <span class="sc">*</span> X[i, ]</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      sesgo <span class="ot">&lt;-</span> sesgo <span class="sc">+</span> eta <span class="sc">*</span> error</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">pesos =</span> pesos,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">sesgo =</span> sesgo</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Ejemplo con la compuerta AND:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X_and <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>y_and <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>modelo_and <span class="ot">&lt;-</span> <span class="fu">entrenar_perceptron</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  X_and,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  y_and,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> <span class="fl">0.1</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">epocas =</span> <span class="dv">20</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>modelo_and</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$pesos
+ x1  x2 
+0.2 0.1 
+
+$sesgo
+[1] -0.2</code></pre>
+</div>
+</div>
+<p>Función de predicción:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>predecir_perceptron <span class="ot">&lt;-</span> <span class="cf">function</span>(modelo, X) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(X)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    X <span class="sc">%*%</span> modelo<span class="sc">$</span>pesos <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      modelo<span class="sc">$</span>sesgo</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(z <span class="sc">&gt;=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">predecir_perceptron</span>(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  modelo_and,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  X_and</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 0 0 1</code></pre>
+</div>
+</div>
+</section>
+<section id="ejemplo-de-xor" class="level2" data-number="12.15">
+<h2 data-number="12.15" class="anchored" data-anchor-id="ejemplo-de-xor"><span class="header-section-number">12.15</span> Ejemplo de XOR</h2>
+<p>La compuerta XOR produce:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(x_1\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(x_2\)</span></th>
+<th style="text-align: right;">XOR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>No puede resolverse mediante una sola frontera lineal. Una capa oculta permite construir regiones más complejas.</p>
+</section>
+<section id="preparación-de-los-datos" class="level2" data-number="12.16">
+<h2 data-number="12.16" class="anchored" data-anchor-id="preparación-de-los-datos"><span class="header-section-number">12.16</span> Preparación de los datos</h2>
+<p>Antes de entrenar una red neuronal es recomendable:</p>
+<ul>
+<li>tratar valores faltantes;</li>
+<li>convertir categorías;</li>
+<li>separar entrenamiento, validación y prueba;</li>
+<li>normalizar variables numéricas;</li>
+<li>revisar desbalance;</li>
+<li>eliminar identificadores;</li>
+<li>evitar fuga de información.</li>
+</ul>
+</section>
+<section id="normalización" class="level2" data-number="12.17">
+<h2 data-number="12.17" class="anchored" data-anchor-id="normalización"><span class="header-section-number">12.17</span> Normalización</h2>
+<p>Las redes suelen entrenarse mejor cuando las variables tienen escalas comparables.</p>
+<section id="estandarización" class="level3" data-number="12.17.1">
+<h3 data-number="12.17.1" class="anchored" data-anchor-id="estandarización"><span class="header-section-number">12.17.1</span> Estandarización</h3>
+<p><span class="math display">\[
+z=\frac{x-\bar{x}}{s}
+\]</span></p>
+</section>
+<section id="mínimo-máximo" class="level3" data-number="12.17.2">
+<h3 data-number="12.17.2" class="anchored" data-anchor-id="mínimo-máximo"><span class="header-section-number">12.17.2</span> Mínimo-máximo</h3>
+<p><span class="math display">\[
+x^\ast=\frac{x-\min(x)}{\max(x)-\min(x)}
+\]</span></p>
+<p>Los parámetros deben calcularse solo con entrenamiento.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>indice <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_len</span>(<span class="fu">nrow</span>(iris)),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">round</span>(<span class="fl">0.70</span> <span class="sc">*</span> <span class="fu">nrow</span>(iris))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> iris[indice, ]</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> iris[<span class="sc">-</span>indice, ]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>medias <span class="ot">&lt;-</span> <span class="fu">sapply</span>(train[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], mean)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>desvios <span class="ot">&lt;-</span> <span class="fu">sapply</span>(train[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], sd)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>x_train <span class="ot">&lt;-</span> <span class="fu">scale</span>(</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  train[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>],</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">center =</span> medias,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> desvios</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>x_test <span class="ot">&lt;-</span> <span class="fu">scale</span>(</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  test[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>],</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">center =</span> medias,</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> desvios</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="clasificación-binaria-con-neuralnet" class="level2" data-number="12.18">
+<h2 data-number="12.18" class="anchored" data-anchor-id="clasificación-binaria-con-neuralnet"><span class="header-section-number">12.18</span> Clasificación binaria con neuralnet</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Ejecución de los ejemplos con neuralnet">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Ejecución de los ejemplos con neuralnet
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para que la generación del libro sea estable, los bloques que entrenan la red con <code>neuralnet</code> se muestran, pero no se ejecutan automáticamente durante el renderizado. Puedes ejecutarlos en RStudio después de instalar el paquete con <code>PREPARAR_PAQUETES_RED_NEURONAL.bat</code>.</p>
+</div>
+</div>
+<p>Crearemos un problema con dos especies de <code>iris</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>iris_bin <span class="ot">&lt;-</span> <span class="fu">subset</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  iris,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  Species <span class="sc">!=</span> <span class="st">"setosa"</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>iris_bin<span class="sc">$</span>clase <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  iris_bin<span class="sc">$</span>Species <span class="sc">==</span> <span class="st">"virginica"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>iris_bin<span class="sc">$</span>Species <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>División:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">321</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">seq_len</span>(<span class="fu">nrow</span>(iris_bin)),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">round</span>(<span class="fl">0.70</span> <span class="sc">*</span> <span class="fu">nrow</span>(iris_bin))</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>train_bin <span class="ot">&lt;-</span> iris_bin[idx, ]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>test_bin <span class="ot">&lt;-</span> iris_bin[<span class="sc">-</span>idx, ]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Normalización segura:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(train_bin),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"clase"</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>medias_bin <span class="ot">&lt;-</span> <span class="fu">sapply</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  train_bin[, variables],</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  mean</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>desvios_bin <span class="ot">&lt;-</span> <span class="fu">sapply</span>(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  train_bin[, variables],</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  sd</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>train_bin[, variables] <span class="ot">&lt;-</span> <span class="fu">scale</span>(</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  train_bin[, variables],</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">center =</span> medias_bin,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> desvios_bin</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>test_bin[, variables] <span class="ot">&lt;-</span> <span class="fu">scale</span>(</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  test_bin[, variables],</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">center =</span> medias_bin,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> desvios_bin</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Entrenamiento:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Instalar una sola vez fuera del renderizado:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("neuralnet", repos = "https://cloud.r-project.org")</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"neuralnet"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"El paquete 'neuralnet' no está instalado. "</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Ejecute PREPARAR_PAQUETES_RED_NEURONAL.bat."</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>formula_rna <span class="ot">&lt;-</span> clase <span class="sc">~</span> .</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>modelo_rna <span class="ot">&lt;-</span> neuralnet<span class="sc">::</span><span class="fu">neuralnet</span>(</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> formula_rna,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_bin,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">hidden =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">3</span>),</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">linear.output =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">lifesign =</span> <span class="st">"minimal"</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">stepmax =</span> <span class="fl">1e6</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>modelo_rna</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="predicción-con-neuralnet" class="level2" data-number="12.19">
+<h2 data-number="12.19" class="anchored" data-anchor-id="predicción-con-neuralnet"><span class="header-section-number">12.19</span> Predicción con neuralnet</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>probabilidades <span class="ot">&lt;-</span> neuralnet<span class="sc">::</span><span class="fu">compute</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  modelo_rna,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  test_bin[, variables]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>net.result</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>prediccion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  probabilidades <span class="sc">&gt;=</span> <span class="fl">0.5</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>matriz <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Real =</span> test_bin<span class="sc">$</span>clase,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicho =</span> prediccion</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>matriz</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="métricas-binarias" class="level2" data-number="12.20">
+<h2 data-number="12.20" class="anchored" data-anchor-id="métricas-binarias"><span class="header-section-number">12.20</span> Métricas binarias</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>metricas_binarias <span class="ot">&lt;-</span> <span class="cf">function</span>(real, predicho) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  vp <span class="ot">&lt;-</span> <span class="fu">sum</span>(real <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> predicho <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  vn <span class="ot">&lt;-</span> <span class="fu">sum</span>(real <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> predicho <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  fp <span class="ot">&lt;-</span> <span class="fu">sum</span>(real <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> predicho <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  fn <span class="ot">&lt;-</span> <span class="fu">sum</span>(real <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> predicho <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">exactitud =</span> (vp <span class="sc">+</span> vn) <span class="sc">/</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      (vp <span class="sc">+</span> vn <span class="sc">+</span> fp <span class="sc">+</span> fn),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>      vp <span class="sc">+</span> fn <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>      vp <span class="sc">/</span> (vp <span class="sc">+</span> fn)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>      vn <span class="sc">+</span> fp <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA</span>,</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>      vn <span class="sc">/</span> (vn <span class="sc">+</span> fp)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>      vp <span class="sc">+</span> fp <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA</span>,</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>      vp <span class="sc">/</span> (vp <span class="sc">+</span> fp)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="fu">metricas_binarias</span>(</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>  test_bin<span class="sc">$</span>clase,</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>  prediccion</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="selección-del-umbral" class="level2" data-number="12.21">
+<h2 data-number="12.21" class="anchored" data-anchor-id="selección-del-umbral"><span class="header-section-number">12.21</span> Selección del umbral</h2>
+<p>El umbral 0.5 no siempre es el mejor.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>umbrales <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.10</span>, <span class="fl">0.90</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>resultados_umbral <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">umbral =</span> umbrales,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">exactitud =</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sensibilidad =</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">especificidad =</span> <span class="cn">NA_real_</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(umbrales)) {</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  pred_i <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    probabilidades <span class="sc">&gt;=</span> umbrales[i],</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  met <span class="ot">&lt;-</span> <span class="fu">metricas_binarias</span>(</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    test_bin<span class="sc">$</span>clase,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    pred_i</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  resultados_umbral[i, <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>] <span class="ot">&lt;-</span> met[</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>      <span class="st">"exactitud"</span>,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>      <span class="st">"sensibilidad"</span>,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>      <span class="st">"especificidad"</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>resultados_umbral</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualizador-interactivo-de-una-red-neuronal" class="level2" data-number="12.22">
+<h2 data-number="12.22" class="anchored" data-anchor-id="visualizador-interactivo-de-una-red-neuronal"><span class="header-section-number">12.22</span> Visualizador interactivo de una red neuronal</h2>
+<p>Este laboratorio representa gráficamente una arquitectura similar a la que se especifica con el argumento <code>hidden</code> de <code>neuralnet</code>. Modifica el número de neuronas de las capas ocultas y observa cómo cambian la topología y el número de conexiones.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 760
+#| components: [viewer]
+
+library(shiny)
+
+dibujar_red &lt;- function(n_entrada, h1, h2, n_salida) {
+
+  capas &lt;- c(n_entrada, h1)
+  nombres &lt;- c("Entrada", "Oculta 1")
+
+  if (h2 &gt; 0) {
+    capas &lt;- c(capas, h2)
+    nombres &lt;- c(nombres, "Oculta 2")
+  }
+
+  capas &lt;- c(capas, n_salida)
+  nombres &lt;- c(nombres, "Salida")
+
+  xcapas &lt;- seq(0.08, 0.92, length.out = length(capas))
+  posiciones &lt;- vector("list", length(capas))
+
+  plot(
+    0, 0,
+    type = "n",
+    xlim = c(0, 1),
+    ylim = c(0, 1),
+    axes = FALSE,
+    xlab = "",
+    ylab = "",
+    main = "Arquitectura de la red neuronal"
+  )
+
+  for (j in seq_along(capas)) {
+    y &lt;- seq(0.15, 0.85, length.out = capas[j])
+    posiciones[[j]] &lt;- cbind(xcapas[j], y)
+  }
+
+  for (j in seq_len(length(capas) - 1)) {
+    desde &lt;- posiciones[[j]]
+    hacia &lt;- posiciones[[j + 1]]
+
+    for (a in seq_len(nrow(desde))) {
+      for (b in seq_len(nrow(hacia))) {
+        segments(
+          desde[a, 1], desde[a, 2],
+          hacia[b, 1], hacia[b, 2],
+          col = "gray70"
+        )
+      }
+    }
+  }
+
+  for (j in seq_along(posiciones)) {
+    puntos &lt;- posiciones[[j]]
+
+    symbols(
+      puntos[, 1],
+      puntos[, 2],
+      circles = rep(0.025, nrow(puntos)),
+      inches = FALSE,
+      add = TRUE,
+      bg = "white",
+      fg = "black"
+    )
+
+    text(
+      xcapas[j],
+      0.96,
+      nombres[j],
+      font = 2
+    )
+  }
+}
+
+ui &lt;- fluidPage(
+  titlePanel("Visualizador interactivo de una red neuronal"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        "entradas",
+        "Número de variables de entrada",
+        min = 2,
+        max = 6,
+        value = 4,
+        step = 1
+      ),
+
+      sliderInput(
+        "h1",
+        "Neuronas en la primera capa oculta",
+        min = 1,
+        max = 10,
+        value = 5,
+        step = 1
+      ),
+
+      sliderInput(
+        "h2",
+        "Neuronas en la segunda capa oculta",
+        min = 0,
+        max = 8,
+        value = 3,
+        step = 1
+      ),
+
+      sliderInput(
+        "salidas",
+        "Neuronas de salida",
+        min = 1,
+        max = 4,
+        value = 1,
+        step = 1
+      )
+    ),
+
+    mainPanel(
+      plotOutput("red", height = "520px"),
+      h4("Configuración equivalente en neuralnet"),
+      verbatimTextOutput("codigo"),
+      h4("Resumen"),
+      textOutput("resumen")
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+
+  output$red &lt;- renderPlot({
+    dibujar_red(
+      input$entradas,
+      input$h1,
+      input$h2,
+      input$salidas
+    )
+  })
+
+  output$codigo &lt;- renderText({
+    hidden &lt;- if (input$h2 == 0) {
+      as.character(input$h1)
+    } else {
+      paste0("c(", input$h1, ", ", input$h2, ")")
+    }
+
+    paste0(
+      "modelo &lt;- neuralnet(\n",
+      "  formula = clase ~ .,\n",
+      "  data = train,\n",
+      "  hidden = ", hidden, ",\n",
+      "  linear.output = FALSE\n",
+      ")\n\n",
+      "plot(modelo)"
+    )
+  })
+
+  output$resumen &lt;- renderText({
+    capas &lt;- if (input$h2 == 0) 3 else 4
+
+    conexiones &lt;- input$entradas * input$h1
+
+    if (input$h2 == 0) {
+      conexiones &lt;- conexiones +
+        input$h1 * input$salidas
+    } else {
+      conexiones &lt;- conexiones +
+        input$h1 * input$h2 +
+        input$h2 * input$salidas
+    }
+
+    paste0(
+      "La arquitectura tiene ",
+      capas,
+      " capas y aproximadamente ",
+      conexiones,
+      " conexiones entre neuronas, sin contar los sesgos."
+    )
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="Relación con neuralnet">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Relación con neuralnet
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El visualizador no entrena el modelo dentro del navegador. Su propósito es mostrar la arquitectura definida mediante <code>hidden</code>. Cuando ejecutes <code>plot(modelo_rna)</code> en RStudio, <code>neuralnet</code> dibujará además los pesos y sesgos aprendidos.</p>
+</div>
+</div>
+</section>
+<section id="arquitectura-de-la-red" class="level2" data-number="12.23">
+<h2 data-number="12.23" class="anchored" data-anchor-id="arquitectura-de-la-red"><span class="header-section-number">12.23</span> Arquitectura de la red</h2>
+<p>Una arquitectura se define por:</p>
+<ul>
+<li>número de capas ocultas;</li>
+<li>neuronas por capa;</li>
+<li>activaciones;</li>
+<li>conexiones;</li>
+<li>regularización.</li>
+</ul>
+<p>No existe una arquitectura universal.</p>
+<section id="red-muy-pequeña" class="level3" data-number="12.23.1">
+<h3 data-number="12.23.1" class="anchored" data-anchor-id="red-muy-pequeña"><span class="header-section-number">12.23.1</span> Red muy pequeña</h3>
+<p>Puede producir subajuste.</p>
+</section>
+<section id="red-demasiado-grande" class="level3" data-number="12.23.2">
+<h3 data-number="12.23.2" class="anchored" data-anchor-id="red-demasiado-grande"><span class="header-section-number">12.23.2</span> Red demasiado grande</h3>
+<p>Puede memorizar entrenamiento y sobreajustar.</p>
+<p>Una estrategia razonable es comenzar con una red pequeña y aumentar complejidad gradualmente.</p>
+</section>
+</section>
+<section id="épocas-lotes-y-optimizadores" class="level2" data-number="12.24">
+<h2 data-number="12.24" class="anchored" data-anchor-id="épocas-lotes-y-optimizadores"><span class="header-section-number">12.24</span> Épocas, lotes y optimizadores</h2>
+<section id="época" class="level3" data-number="12.24.1">
+<h3 data-number="12.24.1" class="anchored" data-anchor-id="época"><span class="header-section-number">12.24.1</span> Época</h3>
+<p>Una época representa una pasada completa por entrenamiento.</p>
+</section>
+<section id="lote" class="level3" data-number="12.24.2">
+<h3 data-number="12.24.2" class="anchored" data-anchor-id="lote"><span class="header-section-number">12.24.2</span> Lote</h3>
+<p>Un lote es un subconjunto utilizado para calcular una actualización.</p>
+</section>
+<section id="descenso-por-lotes" class="level3" data-number="12.24.3">
+<h3 data-number="12.24.3" class="anchored" data-anchor-id="descenso-por-lotes"><span class="header-section-number">12.24.3</span> Descenso por lotes</h3>
+<p>Usa todo el conjunto.</p>
+</section>
+<section id="descenso-estocástico" class="level3" data-number="12.24.4">
+<h3 data-number="12.24.4" class="anchored" data-anchor-id="descenso-estocástico"><span class="header-section-number">12.24.4</span> Descenso estocástico</h3>
+<p>Actualiza con una observación.</p>
+</section>
+<section id="mini-batch" class="level3" data-number="12.24.5">
+<h3 data-number="12.24.5" class="anchored" data-anchor-id="mini-batch"><span class="header-section-number">12.24.5</span> Mini-batch</h3>
+<p>Usa pequeños grupos y es la opción más común.</p>
+</section>
+<section id="optimizadores" class="level3" data-number="12.24.6">
+<h3 data-number="12.24.6" class="anchored" data-anchor-id="optimizadores"><span class="header-section-number">12.24.6</span> Optimizadores</h3>
+<p>Entre los más conocidos se encuentran:</p>
+<ul>
+<li>SGD;</li>
+<li>Momentum;</li>
+<li>RMSprop;</li>
+<li>Adam.</li>
+</ul>
+</section>
+</section>
+<section id="sobreajuste" class="level2" data-number="12.25">
+<h2 data-number="12.25" class="anchored" data-anchor-id="sobreajuste"><span class="header-section-number">12.25</span> Sobreajuste</h2>
+<p>Una red sobreajustada obtiene:</p>
+<ul>
+<li>error bajo en entrenamiento;</li>
+<li>error alto en validación o prueba.</li>
+</ul>
+<p>Señales:</p>
+<ul>
+<li>la pérdida de entrenamiento sigue bajando;</li>
+<li>la pérdida de validación comienza a subir;</li>
+<li>crece la diferencia entre ambas.</li>
+</ul>
+</section>
+<section id="regularización" class="level2" data-number="12.26">
+<h2 data-number="12.26" class="anchored" data-anchor-id="regularización"><span class="header-section-number">12.26</span> Regularización</h2>
+<section id="regularización-l2" class="level3" data-number="12.26.1">
+<h3 data-number="12.26.1" class="anchored" data-anchor-id="regularización-l2"><span class="header-section-number">12.26.1</span> Regularización L2</h3>
+<p>Agrega una penalización:</p>
+<p><span class="math display">\[
+L_{total}=L+\lambda\sum_j w_j^2
+\]</span></p>
+</section>
+<section id="regularización-l1" class="level3" data-number="12.26.2">
+<h3 data-number="12.26.2" class="anchored" data-anchor-id="regularización-l1"><span class="header-section-number">12.26.2</span> Regularización L1</h3>
+<p><span class="math display">\[
+L_{total}=L+\lambda\sum_j |w_j|
+\]</span></p>
+</section>
+<section id="dropout" class="level3" data-number="12.26.3">
+<h3 data-number="12.26.3" class="anchored" data-anchor-id="dropout"><span class="header-section-number">12.26.3</span> Dropout</h3>
+<p>Desactiva aleatoriamente una proporción de neuronas durante el entrenamiento.</p>
+</section>
+<section id="early-stopping" class="level3" data-number="12.26.4">
+<h3 data-number="12.26.4" class="anchored" data-anchor-id="early-stopping"><span class="header-section-number">12.26.4</span> Early stopping</h3>
+<p>Detiene el entrenamiento cuando la validación deja de mejorar.</p>
+</section>
+</section>
+<section id="implementación-moderna-con-keras" class="level2" data-number="12.27">
+<h2 data-number="12.27" class="anchored" data-anchor-id="implementación-moderna-con-keras"><span class="header-section-number">12.27</span> Implementación moderna con keras</h2>
+<p>El paquete <code>keras</code> permite construir redes utilizando una interfaz de alto nivel.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Entorno de ejecución">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Entorno de ejecución
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La instalación de <code>keras</code> y su motor puede variar según el equipo. Conviene ejecutar este ejemplo en un entorno configurado o en Google Colab.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>x_train_keras <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(x_train)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>x_test_keras <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(x_test)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>y_train_keras <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  train<span class="sc">$</span>Species</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>y_test_keras <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  test<span class="sc">$</span>Species</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">-</span> <span class="dv">1</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Modelo:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>modelo_keras <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">units =</span> <span class="dv">16</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">activation =</span> <span class="st">"relu"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">input_shape =</span> <span class="fu">ncol</span>(x_train_keras)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.20</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">units =</span> <span class="dv">8</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">activation =</span> <span class="st">"relu"</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">units =</span> <span class="dv">3</span>,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">activation =</span> <span class="st">"softmax"</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Compilación:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_keras <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compile</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">optimizer =</span> <span class="st">"adam"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="st">"sparse_categorical_crossentropy"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="st">"accuracy"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Entrenamiento:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>historia <span class="ot">&lt;-</span> modelo_keras <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> x_train_keras,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> y_train_keras,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">100</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">batch_size =</span> <span class="dv">16</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">validation_split =</span> <span class="fl">0.20</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="dv">0</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Evaluación:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>modelo_keras <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">evaluate</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    x_test_keras,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    y_test_keras,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="dv">0</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="curvas-de-aprendizaje" class="level2" data-number="12.28">
+<h2 data-number="12.28" class="anchored" data-anchor-id="curvas-de-aprendizaje"><span class="header-section-number">12.28</span> Curvas de aprendizaje</h2>
+<p>Las curvas de pérdida y exactitud ayudan a diagnosticar el entrenamiento.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(historia)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Debe compararse:</p>
+<ul>
+<li>desempeño de entrenamiento;</li>
+<li>desempeño de validación;</li>
+<li>punto donde comienza el sobreajuste.</li>
+</ul>
+</section>
+<section id="clasificación-multiclase" class="level2" data-number="12.29">
+<h2 data-number="12.29" class="anchored" data-anchor-id="clasificación-multiclase"><span class="header-section-number">12.29</span> Clasificación multiclase</h2>
+<p>En un problema con <span class="math inline">\(K\)</span> clases:</p>
+<ul>
+<li>la capa de salida suele tener <span class="math inline">\(K\)</span> neuronas;</li>
+<li>se utiliza softmax;</li>
+<li>la clase predicha es la de mayor probabilidad.</li>
+</ul>
+<p><span class="math display">\[
+\widehat{y}=
+\arg\max_k P(y=k\mid\mathbf{x})
+\]</span></p>
+</section>
+<section id="codificación-de-la-respuesta" class="level2" data-number="12.30">
+<h2 data-number="12.30" class="anchored" data-anchor-id="codificación-de-la-respuesta"><span class="header-section-number">12.30</span> Codificación de la respuesta</h2>
+<p>Para clasificación multiclase pueden emplearse:</p>
+<ul>
+<li>enteros de 0 a <span class="math inline">\(K-1\)</span>;</li>
+<li>variables indicadoras one-hot.</li>
+</ul>
+<p>Ejemplo one-hot:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Clase</th>
+<th style="text-align: right;">Neurona 1</th>
+<th style="text-align: right;">Neurona 2</th>
+<th style="text-align: right;">Neurona 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inicialización-de-pesos" class="level2" data-number="12.31">
+<h2 data-number="12.31" class="anchored" data-anchor-id="inicialización-de-pesos"><span class="header-section-number">12.31</span> Inicialización de pesos</h2>
+<p>Todos los pesos no deben comenzar con el mismo valor, porque las neuronas aprenderían exactamente lo mismo.</p>
+<p>Las inicializaciones modernas buscan:</p>
+<ul>
+<li>romper simetría;</li>
+<li>mantener estable la varianza;</li>
+<li>mejorar el flujo de gradientes.</li>
+</ul>
+</section>
+<section id="gradientes-que-desaparecen-o-explotan" class="level2" data-number="12.32">
+<h2 data-number="12.32" class="anchored" data-anchor-id="gradientes-que-desaparecen-o-explotan"><span class="header-section-number">12.32</span> Gradientes que desaparecen o explotan</h2>
+<p>En redes profundas, los gradientes pueden:</p>
+<ul>
+<li>aproximarse a cero;</li>
+<li>crecer excesivamente.</li>
+</ul>
+<p>Consecuencias:</p>
+<ul>
+<li>aprendizaje muy lento;</li>
+<li>inestabilidad;</li>
+<li>pesos extremos.</li>
+</ul>
+<p>Soluciones comunes:</p>
+<ul>
+<li>ReLU;</li>
+<li>inicialización adecuada;</li>
+<li>normalización;</li>
+<li>arquitecturas apropiadas;</li>
+<li>control de la tasa de aprendizaje.</li>
+</ul>
+</section>
+<section id="importancia-de-la-reproducibilidad" class="level2" data-number="12.33">
+<h2 data-number="12.33" class="anchored" data-anchor-id="importancia-de-la-reproducibilidad"><span class="header-section-number">12.33</span> Importancia de la reproducibilidad</h2>
+<p>Para reproducir resultados:</p>
+<ul>
+<li>fijar semillas;</li>
+<li>registrar arquitectura;</li>
+<li>guardar parámetros;</li>
+<li>documentar divisiones;</li>
+<li>conservar versiones;</li>
+<li>guardar modelos entrenados;</li>
+<li>anotar métricas y umbrales.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="interpretabilidad" class="level2" data-number="12.34">
+<h2 data-number="12.34" class="anchored" data-anchor-id="interpretabilidad"><span class="header-section-number">12.34</span> Interpretabilidad</h2>
+<p>Las redes neuronales suelen considerarse menos interpretables que:</p>
+<ul>
+<li>regresión logística;</li>
+<li>árboles de decisión;</li>
+<li>modelos lineales.</li>
+</ul>
+<p>Herramientas posibles:</p>
+<ul>
+<li>importancia por permutación;</li>
+<li>análisis de sensibilidad;</li>
+<li>gráficos de dependencia;</li>
+<li>SHAP;</li>
+<li>LIME;</li>
+<li>inspección de activaciones.</li>
+</ul>
+<p>La interpretación debe acompañarse de validación y conocimiento del dominio.</p>
+</section>
+<section id="aplicación-biomédica" class="level2" data-number="12.35">
+<h2 data-number="12.35" class="anchored" data-anchor-id="aplicación-biomédica"><span class="header-section-number">12.35</span> Aplicación biomédica</h2>
+<p>Ejemplo: clasificar pacientes según riesgo de enfermedad.</p>
+<p>Variables:</p>
+<ul>
+<li>edad;</li>
+<li>presión arterial;</li>
+<li>glucosa;</li>
+<li>colesterol;</li>
+<li>frecuencia cardiaca.</li>
+</ul>
+<p>Respuesta:</p>
+<ul>
+<li>riesgo bajo;</li>
+<li>riesgo alto.</li>
+</ul>
+<p>Debe prestarse especial atención a:</p>
+<ul>
+<li>sensibilidad;</li>
+<li>falsos negativos;</li>
+<li>calidad de los datos;</li>
+<li>validación externa;</li>
+<li>sesgo de selección;</li>
+<li>explicabilidad.</li>
+</ul>
+</section>
+<section id="aplicación-ambiental" class="level2" data-number="12.36">
+<h2 data-number="12.36" class="anchored" data-anchor-id="aplicación-ambiental"><span class="header-section-number">12.36</span> Aplicación ambiental</h2>
+<p>Ejemplo: clasificar niveles de contaminación.</p>
+<p>Variables:</p>
+<ul>
+<li>PM10;</li>
+<li>ozono;</li>
+<li>temperatura;</li>
+<li>humedad;</li>
+<li>velocidad del viento;</li>
+<li>hora;</li>
+<li>estación.</li>
+</ul>
+<p>Respuesta:</p>
+<ul>
+<li>aceptable;</li>
+<li>no aceptable.</li>
+</ul>
+<p>La red puede capturar relaciones no lineales, pero debe compararse con modelos más simples.</p>
+</section>
+<section id="comparación-con-otros-algoritmos" class="level2" data-number="12.37">
+<h2 data-number="12.37" class="anchored" data-anchor-id="comparación-con-otros-algoritmos"><span class="header-section-number">12.37</span> Comparación con otros algoritmos</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspecto</th>
+<th>Red neuronal</th>
+<th>Regresión logística</th>
+<th>Árbol</th>
+<th>Random Forest</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No linealidad</td>
+<td>Alta</td>
+<td>Limitada</td>
+<td>Alta</td>
+<td>Alta</td>
+</tr>
+<tr class="even">
+<td>Interpretación</td>
+<td>Baja</td>
+<td>Alta</td>
+<td>Alta</td>
+<td>Media</td>
+</tr>
+<tr class="odd">
+<td>Preparación</td>
+<td>Alta</td>
+<td>Media</td>
+<td>Media</td>
+<td>Media</td>
+</tr>
+<tr class="even">
+<td>Escalamiento</td>
+<td>Importante</td>
+<td>Recomendable</td>
+<td>Poco importante</td>
+<td>Poco importante</td>
+</tr>
+<tr class="odd">
+<td>Datos requeridos</td>
+<td>Frecuentemente muchos</td>
+<td>Menos</td>
+<td>Moderados</td>
+<td>Moderados</td>
+</tr>
+<tr class="even">
+<td>Costo</td>
+<td>Puede ser alto</td>
+<td>Bajo</td>
+<td>Bajo</td>
+<td>Moderado</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ventajas" class="level2" data-number="12.38">
+<h2 data-number="12.38" class="anchored" data-anchor-id="ventajas"><span class="header-section-number">12.38</span> Ventajas</h2>
+<ul>
+<li>modelan relaciones complejas;</li>
+<li>representan no linealidades;</li>
+<li>se adaptan a clasificación y regresión;</li>
+<li>pueden aprender características internas;</li>
+<li>escalan a problemas de gran dimensión;</li>
+<li>son base de aprendizaje profundo.</li>
+</ul>
+</section>
+<section id="limitaciones" class="level2" data-number="12.39">
+<h2 data-number="12.39" class="anchored" data-anchor-id="limitaciones"><span class="header-section-number">12.39</span> Limitaciones</h2>
+<ul>
+<li>requieren preparación cuidadosa;</li>
+<li>pueden necesitar muchos datos;</li>
+<li>implican varios hiperparámetros;</li>
+<li>pueden sobreajustar;</li>
+<li>son menos interpretables;</li>
+<li>el entrenamiento puede ser costoso;</li>
+<li>los resultados dependen de arquitectura e inicialización.</li>
+</ul>
+</section>
+<section id="errores-frecuentes" class="level2" data-number="12.40">
+<h2 data-number="12.40" class="anchored" data-anchor-id="errores-frecuentes"><span class="header-section-number">12.40</span> Errores frecuentes</h2>
+<ol type="1">
+<li>No normalizar variables.</li>
+<li>Usar el conjunto de prueba para ajustar.</li>
+<li>Entrenar demasiadas épocas sin validación.</li>
+<li>Usar una red enorme para pocos datos.</li>
+<li>Evaluar solo exactitud.</li>
+<li>Ignorar el desbalance.</li>
+<li>No fijar semilla.</li>
+<li>No guardar la arquitectura.</li>
+<li>Interpretar probabilidades como certezas.</li>
+<li>Comparar modelos con particiones diferentes.</li>
+<li>Dejar identificadores como predictores.</li>
+<li>No comparar contra un modelo simple.</li>
+</ol>
+</section>
+<section id="flujo-de-trabajo-recomendado" class="level2" data-number="12.41">
+<h2 data-number="12.41" class="anchored" data-anchor-id="flujo-de-trabajo-recomendado"><span class="header-section-number">12.41</span> Flujo de trabajo recomendado</h2>
+<ol type="1">
+<li>Definir el objetivo.</li>
+<li>Preparar los datos.</li>
+<li>Separar entrenamiento, validación y prueba.</li>
+<li>Normalizar con entrenamiento.</li>
+<li>Construir una arquitectura pequeña.</li>
+<li>Entrenar y revisar curvas.</li>
+<li>Ajustar hiperparámetros.</li>
+<li>Aplicar regularización.</li>
+<li>Evaluar en prueba una sola vez.</li>
+<li>Comparar con modelos base.</li>
+<li>Interpretar errores.</li>
+<li>Documentar y guardar el modelo.</li>
+</ol>
+</section>
+<section id="actividad-guiada" class="level2" data-number="12.42">
+<h2 data-number="12.42" class="anchored" data-anchor-id="actividad-guiada"><span class="header-section-number">12.42</span> Actividad guiada</h2>
+<p>Utiliza <code>iris</code> para clasificación multiclase.</p>
+<ol type="1">
+<li>Divide los datos en entrenamiento y prueba.</li>
+<li>Normaliza las cuatro variables.</li>
+<li>Diseña una red con una capa oculta.</li>
+<li>Entrena el modelo.</li>
+<li>Obtén probabilidades.</li>
+<li>Asigna la clase más probable.</li>
+<li>Construye la matriz de confusión.</li>
+<li>Calcula exactitud.</li>
+<li>Repite con más neuronas.</li>
+<li>Compara los resultados.</li>
+<li>Describe si existe sobreajuste.</li>
+<li>Compara contra k-NN o Random Forest.</li>
+</ol>
+</section>
+<section id="ejercicios" class="level2" data-number="12.43">
+<h2 data-number="12.43" class="anchored" data-anchor-id="ejercicios"><span class="header-section-number">12.43</span> Ejercicios</h2>
+<section id="ejercicio-1" class="level3" data-number="12.43.1">
+<h3 data-number="12.43.1" class="anchored" data-anchor-id="ejercicio-1"><span class="header-section-number">12.43.1</span> Ejercicio 1</h3>
+<p>Calcula manualmente la salida de una neurona sigmoide.</p>
+</section>
+<section id="ejercicio-2" class="level3" data-number="12.43.2">
+<h3 data-number="12.43.2" class="anchored" data-anchor-id="ejercicio-2"><span class="header-section-number">12.43.2</span> Ejercicio 2</h3>
+<p>Programa una neurona ReLU en R.</p>
+</section>
+<section id="ejercicio-3" class="level3" data-number="12.43.3">
+<h3 data-number="12.43.3" class="anchored" data-anchor-id="ejercicio-3"><span class="header-section-number">12.43.3</span> Ejercicio 3</h3>
+<p>Entrena un perceptrón para la compuerta OR.</p>
+</section>
+<section id="ejercicio-4" class="level3" data-number="12.43.4">
+<h3 data-number="12.43.4" class="anchored" data-anchor-id="ejercicio-4"><span class="header-section-number">12.43.4</span> Ejercicio 4</h3>
+<p>Explica por qué XOR requiere una capa oculta.</p>
+</section>
+<section id="ejercicio-5" class="level3" data-number="12.43.5">
+<h3 data-number="12.43.5" class="anchored" data-anchor-id="ejercicio-5"><span class="header-section-number">12.43.5</span> Ejercicio 5</h3>
+<p>Entrena una red binaria con <code>neuralnet</code>.</p>
+</section>
+<section id="ejercicio-6" class="level3" data-number="12.43.6">
+<h3 data-number="12.43.6" class="anchored" data-anchor-id="ejercicio-6"><span class="header-section-number">12.43.6</span> Ejercicio 6</h3>
+<p>Compara arquitecturas <code>hidden = 3</code>, <code>hidden = 5</code> y <code>hidden = c(5,3)</code>.</p>
+</section>
+<section id="ejercicio-7" class="level3" data-number="12.43.7">
+<h3 data-number="12.43.7" class="anchored" data-anchor-id="ejercicio-7"><span class="header-section-number">12.43.7</span> Ejercicio 7</h3>
+<p>Modifica el umbral de clasificación y analiza sensibilidad y especificidad.</p>
+</section>
+<section id="ejercicio-8" class="level3" data-number="12.43.8">
+<h3 data-number="12.43.8" class="anchored" data-anchor-id="ejercicio-8"><span class="header-section-number">12.43.8</span> Ejercicio 8</h3>
+<p>Construye una red multiclase con <code>keras</code>.</p>
+</section>
+<section id="ejercicio-9" class="level3" data-number="12.43.9">
+<h3 data-number="12.43.9" class="anchored" data-anchor-id="ejercicio-9"><span class="header-section-number">12.43.9</span> Ejercicio 9</h3>
+<p>Compara la red con regresión logística.</p>
+</section>
+<section id="ejercicio-10" class="level3" data-number="12.43.10">
+<h3 data-number="12.43.10" class="anchored" data-anchor-id="ejercicio-10"><span class="header-section-number">12.43.10</span> Ejercicio 10</h3>
+<p>Describe tres medidas para reducir sobreajuste.</p>
+</section>
+</section>
+<section id="preguntas-de-reflexión" class="level2" data-number="12.44">
+<h2 data-number="12.44" class="anchored" data-anchor-id="preguntas-de-reflexión"><span class="header-section-number">12.44</span> Preguntas de reflexión</h2>
+<ul>
+<li>¿Qué función cumple el sesgo?</li>
+<li>¿Por qué se necesitan activaciones no lineales?</li>
+<li>¿Qué diferencia existe entre propagación hacia adelante y retropropagación?</li>
+<li>¿Por qué debe separarse validación de prueba?</li>
+<li>¿Qué indica una pérdida de validación creciente?</li>
+<li>¿Cuándo conviene usar una red neuronal?</li>
+<li>¿Cuándo sería preferible un modelo más simple?</li>
+<li>¿Por qué las probabilidades deben interpretarse con cautela?</li>
+</ul>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="12.45">
+<h2 data-number="12.45" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">12.45</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="12.45.1">
+<h3 data-number="12.45.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">12.45.1</span> Video del capítulo</h3>
+<iframe width="100%" height="420" src="https://www.youtube.com/embed/gk3bt0h3WUU" title="Capítulo 12. Redes neuronales artificiales" frameborder="0" allowfullscreen="">
+</iframe>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Recurso</th>
+<th>Descripción</th>
+<th>Abrir o descargar</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Presentación en PDF</td>
+<td>Síntesis del capítulo para lectura o exposición.</td>
+<td><a href="recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pdf" target="_blank">Abrir PDF</a></td>
+</tr>
+<tr class="even">
+<td>Presentación editable</td>
+<td>Diapositivas en PowerPoint.</td>
+<td><a href="recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pptx">Descargar PPTX</a></td>
+</tr>
+<tr class="odd">
+<td>Infografía</td>
+<td>Resumen visual del capítulo.</td>
+<td><a href="recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png" target="_blank">Abrir infografía</a></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png" class="img-fluid figure-img" style="width:85.0%" alt="Capítulo 12. Redes neuronales artificiales"></p>
+<figcaption>Infografía del capítulo 12</figcaption>
+</figure>
+</div>
+<p>Los materiales fueron creados con apoyo de NotebookLM de Google a partir del contenido del libro y revisados y adaptados por el autor.</p>
+</section>
+</section>
+<section id="conclusión" class="level2" data-number="12.46">
+<h2 data-number="12.46" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">12.46</span> Conclusión</h2>
+<p>Las redes neuronales artificiales combinan neuronas simples para aprender relaciones complejas.</p>
+<p>Sus componentes fundamentales son:</p>
+<ul>
+<li>entradas;</li>
+<li>pesos;</li>
+<li>sesgos;</li>
+<li>funciones de activación;</li>
+<li>capas;</li>
+<li>función de pérdida;</li>
+<li>optimización;</li>
+<li>retropropagación.</li>
+</ul>
+<p>Una red efectiva no depende solamente de aumentar capas o neuronas. También requiere:</p>
+<ul>
+<li>datos de calidad;</li>
+<li>normalización correcta;</li>
+<li>validación;</li>
+<li>regularización;</li>
+<li>selección cuidadosa de arquitectura;</li>
+<li>evaluación con métricas apropiadas;</li>
+<li>comparación con modelos más sencillos.</li>
+</ul>
+<p>En el siguiente capítulo podremos abordar métodos no supervisados, comenzando con <strong>agrupamiento k-means</strong>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-rodriguez2026fundamentos" class="csl-entry" role="listitem">
+Rodríguez Escobedo, Jesús Gilberto. 2026. <em>Fundamentos Matemáticos del Aprendizaje Automático: Teoría, demostraciones y formulación rigurosa de los métodos de regresión, clasificación y análisis de datos</em>. Primera edición digital. San Luis Potosí, México.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./10-naive-bayes.html" class="pagination-link" aria-label="Clasificador Naive Bayes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Clasificador Naive Bayes</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./12-kmeans.html" class="pagination-link" aria-label="Agrupamiento con k-means">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Agrupamiento con k-means</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
