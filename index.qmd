@@ -5,7 +5,7 @@
 ### Un enfoque práctico con datos abiertos reales {.unnumbered}
 
 **Autor:** Jesús Gilberto Rodríguez Escobedo  
-**Versión:** 0.14.2
+**Versión:** 0.14.2  
 **Modalidad:** Libro abierto, práctico e interactivo  
 **Tecnologías:** R · Quarto · Machine Learning · Shinylive · Google Colab · YouTube · GitHub Pages
 
@@ -25,6 +25,7 @@ navegador.
 [Comenzar el libro](01-introduccion.qmd){.btn .btn-primary .btn-lg}
 [Curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger .btn-lg}
 [Cuaderno Google Colab](00-cuaderno-google-colab.qmd){.btn .btn-outline-primary .btn-lg}
+[Descargar PDF](Aprendizaje-y-Clasificacion-Automatica-con-R.pdf){.btn .btn-outline-secondary .btn-lg target="_blank"}
 
 ![Portada del libro](imagenes/portada-libro-carta.png){fig-alt="Portada del libro Aprendizaje y Clasificación Automática con R" width="58%"}
 
@@ -36,7 +37,7 @@ navegador.
 
 Este libro introduce el aprendizaje automático (*Machine Learning*) mediante ejemplos claros, didácticos y prácticos desarrollados principalmente en **R**.
 
-La intención no es escribir un tratado matemático extenso, sino construir una guía aplicada para aprender haciendo con datos abiertos reales. En esta versión trabajamos con datos de accidentes de tránsito de México y los usamos como hilo conductor para explicar preparación de datos, análisis exploratorio y modelos de clasificación.
+La intención no es escribir un tratado matemático extenso, sino construir una guía aplicada para aprender haciendo con datos abiertos reales. En esta versión trabajamos con dos rutas de datos abiertos de México: **ATUS**, con accidentes de tránsito, y **COVID-19**, con registros históricos preparados para fines educativos. Ambas rutas se utilizan para explicar preparación de datos, análisis exploratorio, regresión, clasificación y evaluación de modelos.
 
 ::: {.callout-note}
 ## Enfoque del libro
@@ -90,7 +91,7 @@ Este video ofrece una introducción general a la presentación, la licencia de u
 El libro cuenta con una lista oficial de reproducción en YouTube, donde se
 reúnen el video de presentación y los videos complementarios de cada capítulo.
 
-[▶ Ver el curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger .btn-lg target="_blank"}
+[▶ Ver el curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q)
 
 Enlace directo:
 
@@ -104,11 +105,12 @@ Presentación general y videos complementarios de los capítulos.
 
 El libro cuenta con una lista oficial de reproducción en YouTube, donde se reúnen los videos de presentación y de cada capítulo.
 
-[▶ Ver el curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger .btn-lg target="_blank"}
+[▶ Ver el curso completo en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q)
 
 Enlace directo: <https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
 
 :::
+
 ::: {.content-visible when-format="html"}
 <div class="playlist-card">
   <div>
@@ -180,4 +182,4 @@ Los capítulos están diseñados para leerse y ejecutarse paso a paso. Cada bloq
 
 ## Fuente principal de los datos {.unnumbered}
 
-Los ejemplos aplicados utilizan información de la Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas del INEGI [@inegi_atus_2024]. Cuando una tabla o gráfica se elabora con estos datos, se indica expresamente la fuente y se distingue el procesamiento realizado por el autor.
+Los ejemplos aplicados utilizan información de la Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas del INEGI [@inegi_atus_2024] y una base educativa preparada a partir de los cierres históricos de COVID-19 de la Secretaría de Salud de México. Cuando una tabla o gráfica se elabora con estos datos, se indica la fuente y se distingue el procesamiento realizado por el autor.
