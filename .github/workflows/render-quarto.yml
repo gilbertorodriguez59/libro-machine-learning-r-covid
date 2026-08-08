@@ -89,20 +89,29 @@ jobs:
             exit 1
           fi
 
-      - name: Restore PDF and verify outputs
+      - name: Normalize PDF link and keep one PDF
         run: |
           cp /tmp/libro-final.pdf docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
-          cp /tmp/libro-final.pdf docs/libro-machine-learning-r.pdf
+
+          find docs -type f -name '*.html' -print0 | xargs -0 sed -i \
+            's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
+
+          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
+          rm -f "docs/libro-machine-learning-r.pdf"
+
           test -f docs/index.html
           test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
+          test ! -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
+          test ! -f "docs/libro-machine-learning-r.pdf"
           test -f docs/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
           grep -qi "shinylive" docs/04-regresion-logistica.html
+          grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
 
       - name: Commit rendered site
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs
+          git add -A docs
           if git diff --cached --quiet; then
             echo "No hay cambios renderizados para publicar"
           else
