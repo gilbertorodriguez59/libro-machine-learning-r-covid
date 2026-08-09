@@ -1,21 +1,15 @@
-name: Render Quarto book
+name: Publicar capítulos HTML actualizados
 
 on:
   push:
     branches: [main]
     paths:
-      - "*.qmd"
-      - "*.yml"
-      - "*.yaml"
-      - "*.R"
-      - "*.ipynb"
-      - "latex/**"
-      - "imagenes/**"
-      - "recursos/**"
-      - "recursos_colab/**"
+      - "05-knn.qmd"
+      - "06-arboles-decision.qmd"
+      - "07-random-forest.qmd"
+      - "_quarto.yml"
+      - "util_graficas.R"
       - "datos/covid19/procesados/**"
-      - "datos/covid19/muestras/**"
-      - "datos/covid19/diccionarios/**"
       - "_extensions/**"
       - ".github/workflows/render-quarto.yml"
   workflow_dispatch:
@@ -24,7 +18,7 @@ permissions:
   contents: write
 
 jobs:
-  render:
+  render-html:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,33 +33,12 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Setup TinyTeX
-        uses: r-lib/actions/setup-tinytex@v2
-
-      - name: Install system libraries
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libssl-dev \
-            libxml2-dev \
-            libfontconfig1-dev \
-            libharfbuzz-dev \
-            libfribidi-dev \
-            libfreetype6-dev \
-            libpng-dev \
-            libtiff-dev \
-            libjpeg-dev
-
-      - name: Install R packages
+      - name: Install required R packages
         shell: Rscript {0}
         run: |
           pkgs <- c(
             "rmarkdown", "knitr", "ggplot2", "readr", "dplyr", "tidyr",
-            "stringr", "data.table", "shiny", "shinylive", "ranger",
-            "rpart", "randomForest", "e1071", "naivebayes", "neuralnet",
-            "cluster", "class", "plotly", "DT", "caret", "factoextra",
-            "htmltools", "jsonlite", "fs"
+            "shiny", "shinylive", "rpart", "ranger", "class"
           )
           faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
           if (length(faltan)) {
@@ -76,54 +49,30 @@ jobs:
             )
           }
 
-      - name: Render PDF
+      - name: Render only chapters 6 to 8 as HTML
         run: |
-          rm -rf docs .quarto _freeze
-          quarto render --profile pdf --to pdf --no-cache 2>&1 | tee render-pdf.log
-          if grep -E "\[WARNING\].*Div at line.*unclosed" render-pdf.log; then
-            echo "Se detectaron Div sin cerrar en el PDF"
-            exit 1
-          fi
-          test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
-          cp docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf /tmp/libro-final.pdf
+          quarto render 05-knn.qmd --to html --no-cache
+          quarto render 06-arboles-decision.qmd --to html --no-cache
+          quarto render 07-random-forest.qmd --to html --no-cache
 
-      - name: Render web
+      - name: Normalize PDF links and verify COVID sections
         run: |
-          quarto render --no-cache 2>&1 | tee render-web.log
-          if grep -E "\[WARNING\].*Div at line.*unclosed" render-web.log; then
-            echo "Se detectaron Div sin cerrar en la web"
-            exit 1
-          fi
+          for f in docs/05-knn.html docs/06-arboles-decision.html docs/07-random-forest.html; do
+            sed -i 's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g' "$f"
+          done
 
-      - name: Normalize PDF link and keep one PDF
-        run: |
-          cp /tmp/libro-final.pdf docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
-
-          find docs -type f -name '*.html' -print0 | xargs -0 sed -i \
-            's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
-
-          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
-          rm -f "docs/libro-machine-learning-r.pdf"
-
-          test -f docs/index.html
-          test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
-          test ! -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
-          test ! -f "docs/libro-machine-learning-r.pdf"
-          test -f docs/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
-          grep -qi "shinylive" docs/04-regresion-logistica.html
-          grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
           grep -q "Caso aplicado B: k-NN con COVID-19" docs/05-knn.html
           grep -q "Caso aplicado B: árbol de decisión con COVID-19" docs/06-arboles-decision.html
           grep -q "Caso aplicado B: Random Forest con COVID-19" docs/07-random-forest.html
 
-      - name: Commit rendered site
+      - name: Commit updated HTML chapters
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A docs
+          git add -A docs/05-knn.html docs/06-arboles-decision.html docs/07-random-forest.html docs/site_libs
           if git diff --cached --quiet; then
-            echo "No hay cambios renderizados para publicar"
+            echo "No hay cambios HTML para publicar"
           else
-            git commit -m "Actualizar sitio con casos COVID capítulos 6-8 [skip ci]"
+            git commit -m "Publicar capítulos 6-8 con casos COVID [skip ci]"
             git push
           fi
