@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -190,7 +193,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -383,12 +386,13 @@ window.Quarto = {
   <li><a href="#predicción-y-métricas" id="toc-predicción-y-métricas" class="nav-link" data-scroll-target="#predicción-y-métricas"><span class="header-section-number">8.9</span> Predicción y métricas</a></li>
   <li><a href="#distribución-de-probabilidades-predichas" id="toc-distribución-de-probabilidades-predichas" class="nav-link" data-scroll-target="#distribución-de-probabilidades-predichas"><span class="header-section-number">8.10</span> Distribución de probabilidades predichas</a></li>
   <li><a href="#laboratorio-interactivo-votación-de-un-bosque" id="toc-laboratorio-interactivo-votación-de-un-bosque" class="nav-link" data-scroll-target="#laboratorio-interactivo-votación-de-un-bosque"><span class="header-section-number">8.11</span> Laboratorio interactivo: votación de un bosque</a></li>
-  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">8.12</span> Materiales complementarios del capítulo</a>
+  <li><a href="#caso-aplicado-b-random-forest-con-covid-19" id="toc-caso-aplicado-b-random-forest-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-random-forest-con-covid-19"><span class="header-section-number">8.12</span> Caso aplicado B: Random Forest con COVID-19</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">8.13</span> Materiales complementarios del capítulo</a>
   <ul class="collapse">
-  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">8.12.1</span> Video del capítulo</a></li>
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">8.13.1</span> Video del capítulo</a></li>
   </ul></li>
-  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">8.13</span> Conclusión</a></li>
-  <li><a href="#referencias-fundamentales-de-random-forest" id="toc-referencias-fundamentales-de-random-forest" class="nav-link" data-scroll-target="#referencias-fundamentales-de-random-forest"><span class="header-section-number">8.14</span> Referencias fundamentales de Random Forest</a></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">8.14</span> Conclusión</a></li>
+  <li><a href="#referencias-fundamentales-de-random-forest" id="toc-referencias-fundamentales-de-random-forest" class="nav-link" data-scroll-target="#referencias-fundamentales-de-random-forest"><span class="header-section-number">8.15</span> Referencias fundamentales de Random Forest</a></li>
   </ul>
 </nav>
     </div>
@@ -449,7 +453,7 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'dplyr'</code></pre>
+Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -466,7 +470,7 @@ Adjuntando el paquete: 'dplyr'</code></pre>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'scales'</code></pre>
+Attaching package: 'scales'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:readr':
@@ -810,10 +814,130 @@ server &lt;- function(input, output, session) {
 
 shinyApp(ui, server)</code></pre>
 </section>
-<section id="materiales-complementarios-del-capítulo" class="level2" data-number="8.12">
-<h2 data-number="8.12" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">8.12</span> Materiales complementarios del capítulo</h2>
-<section id="video-del-capítulo" class="level3" data-number="8.12.1">
-<h3 data-number="8.12.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">8.12.1</span> Video del capítulo</h3>
+<section id="caso-aplicado-b-random-forest-con-covid-19" class="level2" data-number="8.12">
+<h2 data-number="8.12" class="anchored" data-anchor-id="caso-aplicado-b-random-forest-con-covid-19"><span class="header-section-number">8.12</span> Caso aplicado B: Random Forest con COVID-19</h2>
+<p>Ahora aplicamos un bosque aleatorio a la misma muestra COVID utilizada en k-NN y árboles. Esto permite comparar un árbol individual con un ensamble de muchos árboles.</p>
+<blockquote class="blockquote">
+<p><strong>Uso académico:</strong> las importancias y predicciones corresponden a una muestra educativa y no deben usarse para decisiones médicas.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ruta_covid <span class="ot">&lt;-</span> <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_covid)) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  covid_rf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ruta_covid, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>           OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) <span class="sc">|&gt;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">drop_na</span>()</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  covid_rf <span class="ot">&lt;-</span> covid_rf <span class="sc">|&gt;</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">12000</span>, <span class="fu">nrow</span>(covid_rf))) <span class="sc">|&gt;</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">MURIO =</span> <span class="fu">factor</span>(MURIO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>)))</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  idx_covid <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(covid_rf)), <span class="at">size =</span> <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">nrow</span>(covid_rf)))</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  covid_train <span class="ot">&lt;-</span> covid_rf[idx_covid, ]</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  covid_test <span class="ot">&lt;-</span> covid_rf[<span class="sc">-</span>idx_covid, ]</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"covid_train"</span>)) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  rf_covid <span class="ot">&lt;-</span> <span class="fu">ranger</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span> OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> covid_train,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">num.trees =</span> <span class="dv">300</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> <span class="dv">3</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="dv">20</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">importance =</span> <span class="st">"impurity"</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">probability =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">2026</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  rf_covid</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ranger result
+
+Call:
+ ranger(MURIO ~ EDAD + NEUMONIA + DIABETES + HIPERTENSION + OBESIDAD +      RENAL_CRONICA + NUM_COMORBILIDADES, data = covid_train, num.trees = 300,      mtry = 3, min.node.size = 20, importance = "impurity", probability = TRUE,      seed = 2026) 
+
+Type:                             Probability estimation 
+Number of trees:                  300 
+Sample size:                      9600 
+Number of independent variables:  7 
+Mtry:                             3 
+Target node size:                 20 
+Variable importance mode:         impurity 
+Splitrule:                        gini 
+OOB prediction error (Brier s.):  0.05949489 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"rf_covid"</span>)) {</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  imp_covid_rf <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">variable =</span> <span class="fu">names</span>(rf_covid<span class="sc">$</span>variable.importance),</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">importancia =</span> <span class="fu">as.numeric</span>(rf_covid<span class="sc">$</span>variable.importance)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(importancia))</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  imp_covid_rf</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(imp_covid_rf, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(variable, importancia), <span class="at">y =</span> importancia)) <span class="sc">+</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">fill =</span> col_azul, <span class="at">width =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Importancia de variables: Random Forest COVID-19"</span>, <span class="at">x =</span> <span class="st">"Variable"</span>, <span class="at">y =</span> <span class="st">"Importancia"</span>) <span class="sc">+</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tema_libro</span>()</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07-random-forest_files/figure-html/covid-rf-importancia-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"rf_covid"</span>)) {</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  pred_prob_covid_rf <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_covid, <span class="at">data =</span> covid_test)<span class="sc">$</span>predictions</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  pred_clase_covid_rf <span class="ot">&lt;-</span> <span class="fu">colnames</span>(pred_prob_covid_rf)[<span class="fu">max.col</span>(pred_prob_covid_rf, <span class="at">ties.method =</span> <span class="st">"first"</span>)]</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  matriz_covid_rf <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Real =</span> <span class="fu">factor</span>(covid_test<span class="sc">$</span>MURIO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>)),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Predicho =</span> <span class="fu">factor</span>(pred_clase_covid_rf, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>))</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  matriz_covid_rf</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  VP <span class="ot">&lt;-</span> matriz_covid_rf[<span class="dv">1</span>,<span class="dv">1</span>]; FN <span class="ot">&lt;-</span> matriz_covid_rf[<span class="dv">1</span>,<span class="dv">2</span>]</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  FP <span class="ot">&lt;-</span> matriz_covid_rf[<span class="dv">2</span>,<span class="dv">1</span>]; VN <span class="ot">&lt;-</span> matriz_covid_rf[<span class="dv">2</span>,<span class="dv">2</span>]</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">exactitud =</span> (VP <span class="sc">+</span> VN) <span class="sc">/</span> <span class="fu">sum</span>(matriz_covid_rf),</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> <span class="fu">ifelse</span>(VP <span class="sc">+</span> FN <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, VP <span class="sc">/</span> (VP <span class="sc">+</span> FN)),</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> <span class="fu">ifelse</span>(VN <span class="sc">+</span> FP <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, VN <span class="sc">/</span> (VN <span class="sc">+</span> FP))</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud sensibilidad especificidad
+1     0.915    0.8265162     0.9520993</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Random Forest suele ser más estable que un árbol individual porque combina muchas decisiones parcialmente distintas. La comparación de métricas con el árbol del capítulo anterior permite observar esa ganancia de estabilidad.</p>
+</div>
+</div>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="8.13">
+<h2 data-number="8.13" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">8.13</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="8.13.1">
+<h3 data-number="8.13.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">8.13.1</span> Video del capítulo</h3>
 <iframe width="100%" height="420" src="https://www.youtube.com/embed/KELSgYttifs" title="Capítulo 8. Random Forest para clasificación" frameborder="0" allowfullscreen="">
 </iframe>
 <table class="caption-top table">
@@ -851,12 +975,12 @@ shinyApp(ui, server)</code></pre>
 <p>Los materiales fueron creados con apoyo de NotebookLM de Google a partir del contenido del libro y revisados y adaptados por el autor.</p>
 </section>
 </section>
-<section id="conclusión" class="level2" data-number="8.13">
-<h2 data-number="8.13" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">8.13</span> Conclusión</h2>
+<section id="conclusión" class="level2" data-number="8.14">
+<h2 data-number="8.14" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">8.14</span> Conclusión</h2>
 <p>Random Forest mejora la estabilidad y la capacidad predictiva de un solo árbol al combinar muchos árboles. Es uno de los métodos más útiles para clasificación aplicada.</p>
 </section>
-<section id="referencias-fundamentales-de-random-forest" class="level2" data-number="8.14">
-<h2 data-number="8.14" class="anchored" data-anchor-id="referencias-fundamentales-de-random-forest"><span class="header-section-number">8.14</span> Referencias fundamentales de Random Forest</h2>
+<section id="referencias-fundamentales-de-random-forest" class="level2" data-number="8.15">
+<h2 data-number="8.15" class="anchored" data-anchor-id="referencias-fundamentales-de-random-forest"><span class="header-section-number">8.15</span> Referencias fundamentales de Random Forest</h2>
 <p>El algoritmo Random Forest fue formalizado por <span class="citation" data-cites="breiman2001random">Breiman (<a href="referencias.html#ref-breiman2001random" role="doc-biblioref">2001</a>)</span> como un ensamble de árboles construido mediante remuestreo y selección aleatoria de variables. Una explicación didáctica y comparativa puede consultarse también en <span class="citation" data-cites="james2021islr">James et&nbsp;al. (<a href="referencias.html#ref-james2021islr" role="doc-biblioref">2021</a>)</span>.</p>
 
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -190,7 +193,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -379,12 +382,13 @@ window.Quarto = {
   <li><a href="#modelo-k-nn" id="toc-modelo-k-nn" class="nav-link" data-scroll-target="#modelo-k-nn"><span class="header-section-number">6.5</span> Modelo k-NN</a></li>
   <li><a href="#comparación-de-valores-de-k" id="toc-comparación-de-valores-de-k" class="nav-link" data-scroll-target="#comparación-de-valores-de-k"><span class="header-section-number">6.6</span> Comparación de valores de k</a></li>
   <li><a href="#laboratorio-interactivo-k-nn" id="toc-laboratorio-interactivo-k-nn" class="nav-link" data-scroll-target="#laboratorio-interactivo-k-nn"><span class="header-section-number">6.7</span> Laboratorio interactivo: k-NN</a></li>
-  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">6.8</span> Materiales complementarios del capítulo</a>
+  <li><a href="#caso-aplicado-b-k-nn-con-covid-19" id="toc-caso-aplicado-b-k-nn-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-k-nn-con-covid-19"><span class="header-section-number">6.8</span> Caso aplicado B: k-NN con COVID-19</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">6.9</span> Materiales complementarios del capítulo</a>
   <ul class="collapse">
-  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">6.8.1</span> Video del capítulo</a></li>
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">6.9.1</span> Video del capítulo</a></li>
   </ul></li>
-  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">6.9</span> Conclusión</a></li>
-  <li><a href="#referencias-fundamentales-de-k-nn" id="toc-referencias-fundamentales-de-k-nn" class="nav-link" data-scroll-target="#referencias-fundamentales-de-k-nn"><span class="header-section-number">6.10</span> Referencias fundamentales de k-NN</a></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">6.10</span> Conclusión</a></li>
+  <li><a href="#referencias-fundamentales-de-k-nn" id="toc-referencias-fundamentales-de-k-nn" class="nav-link" data-scroll-target="#referencias-fundamentales-de-k-nn"><span class="header-section-number">6.11</span> Referencias fundamentales de k-NN</a></li>
   </ul>
 </nav>
     </div>
@@ -436,7 +440,7 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'dplyr'</code></pre>
+Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -453,7 +457,7 @@ Adjuntando el paquete: 'dplyr'</code></pre>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'scales'</code></pre>
+Attaching package: 'scales'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:readr':
@@ -785,10 +789,111 @@ server &lt;- function(input, output, session) {
 
 shinyApp(ui, server)</code></pre>
 </section>
-<section id="materiales-complementarios-del-capítulo" class="level2" data-number="6.8">
-<h2 data-number="6.8" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">6.8</span> Materiales complementarios del capítulo</h2>
-<section id="video-del-capítulo" class="level3" data-number="6.8.1">
-<h3 data-number="6.8.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">6.8.1</span> Video del capítulo</h3>
+<section id="caso-aplicado-b-k-nn-con-covid-19" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="caso-aplicado-b-k-nn-con-covid-19"><span class="header-section-number">6.8</span> Caso aplicado B: k-NN con COVID-19</h2>
+<p>En esta segunda ruta aplicada usamos la misma muestra educativa de COVID-19 México 2022 empleada en los capítulos anteriores. El objetivo es clasificar <code>MURIO</code> a partir de edad, neumonía, diabetes, hipertensión, obesidad, enfermedad renal crónica y número de comorbilidades.</p>
+<blockquote class="blockquote">
+<p><strong>Uso académico:</strong> este ejercicio permite estudiar el comportamiento de k-NN. No es una calculadora clínica ni un instrumento de diagnóstico.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ruta_covid <span class="ot">&lt;-</span> <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_covid)) {</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  covid_knn <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ruta_covid, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>           OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drop_na</span>()</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  covid_knn <span class="ot">&lt;-</span> covid_knn <span class="sc">|&gt;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">12000</span>, <span class="fu">nrow</span>(covid_knn))) <span class="sc">|&gt;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">MURIO =</span> <span class="fu">factor</span>(MURIO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>))</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  X_covid <span class="ot">&lt;-</span> covid_knn <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>MURIO) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  y_covid <span class="ot">&lt;-</span> covid_knn<span class="sc">$</span>MURIO</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  idx_covid <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(X_covid)), <span class="at">size =</span> <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">nrow</span>(X_covid)))</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  x_train_covid <span class="ot">&lt;-</span> X_covid[idx_covid, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  x_test_covid <span class="ot">&lt;-</span> X_covid[<span class="sc">-</span>idx_covid, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  y_train_covid <span class="ot">&lt;-</span> y_covid[idx_covid]</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  y_test_covid <span class="ot">&lt;-</span> y_covid[<span class="sc">-</span>idx_covid]</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  medias_covid <span class="ot">&lt;-</span> <span class="fu">apply</span>(x_train_covid, <span class="dv">2</span>, mean)</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  desv_covid <span class="ot">&lt;-</span> <span class="fu">apply</span>(x_train_covid, <span class="dv">2</span>, sd)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  desv_covid[desv_covid <span class="sc">==</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>  x_train_covid_z <span class="ot">&lt;-</span> <span class="fu">scale</span>(x_train_covid, <span class="at">center =</span> medias_covid, <span class="at">scale =</span> desv_covid)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  x_test_covid_z <span class="ot">&lt;-</span> <span class="fu">scale</span>(x_test_covid, <span class="at">center =</span> medias_covid, <span class="at">scale =</span> desv_covid)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>La estandarización es especialmente importante en k-NN porque la distancia euclidiana sería dominada por variables con escalas mayores, como la edad.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"x_train_covid_z"</span>)) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  pred_covid_knn <span class="ot">&lt;-</span> <span class="fu">knn</span>(<span class="at">train =</span> x_train_covid_z, <span class="at">test =</span> x_test_covid_z, <span class="at">cl =</span> y_train_covid, <span class="at">k =</span> <span class="dv">11</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  matriz_covid_knn <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Real =</span> <span class="fu">factor</span>(y_test_covid, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>)),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Predicho =</span> <span class="fu">factor</span>(pred_covid_knn, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  matriz_covid_knn</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Predicho
+Real            Defunción Sin defunción
+  Defunción           579           130
+  Sin defunción        82          1609</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"x_train_covid_z"</span>)) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  evaluar_knn_covid <span class="ot">&lt;-</span> <span class="cf">function</span>(k) {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">knn</span>(x_train_covid_z, x_test_covid_z, y_train_covid, <span class="at">k =</span> k)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">Real =</span> <span class="fu">factor</span>(y_test_covid, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>)),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">Predicho =</span> <span class="fu">factor</span>(p, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    VP <span class="ot">&lt;-</span> m[<span class="dv">1</span>,<span class="dv">1</span>]; FN <span class="ot">&lt;-</span> m[<span class="dv">1</span>,<span class="dv">2</span>]; FP <span class="ot">&lt;-</span> m[<span class="dv">2</span>,<span class="dv">1</span>]; VN <span class="ot">&lt;-</span> m[<span class="dv">2</span>,<span class="dv">2</span>]</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">k =</span> k,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">exactitud =</span> (VP <span class="sc">+</span> VN) <span class="sc">/</span> <span class="fu">sum</span>(m),</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">sensibilidad =</span> <span class="fu">ifelse</span>(VP <span class="sc">+</span> FN <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, VP <span class="sc">/</span> (VP <span class="sc">+</span> FN)),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">especificidad =</span> <span class="fu">ifelse</span>(VN <span class="sc">+</span> FP <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA</span>, VN <span class="sc">/</span> (VN <span class="sc">+</span> FP))</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  resultados_k_covid <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">11</span>, <span class="dv">21</span>), evaluar_knn_covid))</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  resultados_k_covid</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   k exactitud sensibilidad especificidad
+1  3 0.9091667    0.8124118     0.9497339
+2  5 0.9104167    0.8152327     0.9503253
+3 11 0.9112500    0.8152327     0.9515080
+4 21 0.9187500    0.8377997     0.9526907</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El valor de <span class="math inline">\(k\)</span> controla cuánto se suaviza la decisión. Valores pequeños reaccionan más a observaciones locales; valores mayores producen fronteras más estables. En datos desbalanceados conviene mirar sensibilidad y especificidad, no solo exactitud.</p>
+</div>
+</div>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">6.9</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="6.9.1">
+<h3 data-number="6.9.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">6.9.1</span> Video del capítulo</h3>
 <div class="video-responsive">
 <iframe src="https://www.youtube.com/embed/NLJj0QAWomU" title="Capítulo 6. k vecinos más cercanos, k-NN" frameborder="0" allowfullscreen="">
 </iframe>
@@ -828,12 +933,12 @@ shinyApp(ui, server)</code></pre>
 <p>Los materiales fueron creados con apoyo de NotebookLM de Google a partir del contenido del libro y revisados y adaptados por el autor.</p>
 </section>
 </section>
-<section id="conclusión" class="level2" data-number="6.9">
-<h2 data-number="6.9" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">6.9</span> Conclusión</h2>
+<section id="conclusión" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">6.10</span> Conclusión</h2>
 <p>k-NN es un método intuitivo basado en similitud. Su desempeño depende del valor de <span class="math inline">\(k\)</span>, del escalamiento y de la calidad de las variables predictoras.</p>
 </section>
-<section id="referencias-fundamentales-de-k-nn" class="level2" data-number="6.10">
-<h2 data-number="6.10" class="anchored" data-anchor-id="referencias-fundamentales-de-k-nn"><span class="header-section-number">6.10</span> Referencias fundamentales de k-NN</h2>
+<section id="referencias-fundamentales-de-k-nn" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="referencias-fundamentales-de-k-nn"><span class="header-section-number">6.11</span> Referencias fundamentales de k-NN</h2>
 <p>El método de los vecinos más cercanos tiene como antecedente clásico el informe de <span class="citation" data-cites="fix1951discriminatory">Fix y Hodges (<a href="referencias.html#ref-fix1951discriminatory" role="doc-biblioref">1951</a>)</span>. Sus propiedades de clasificación y cotas de error fueron estudiadas por <span class="citation" data-cites="cover1967nearest">Cover y Hart (<a href="referencias.html#ref-cover1967nearest" role="doc-biblioref">1967</a>)</span>. Una exposición moderna, acompañada de aplicaciones en R, puede consultarse en <span class="citation" data-cites="james2021islr">James et&nbsp;al. (<a href="referencias.html#ref-james2021islr" role="doc-biblioref">2021</a>)</span>.</p>
 
 
