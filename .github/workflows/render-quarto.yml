@@ -28,39 +28,39 @@ jobs:
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Setup R estable
+      - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.5.2'
+          r-version: 'release'
           use-public-rspm: true
 
-      - name: Install and verify rmarkdown
+      - name: Install R dependencies with pak
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::rmarkdown
+            any::knitr
+            any::ggplot2
+            any::readr
+            any::dplyr
+            any::tidyr
+            any::shiny
+            any::shinylive
+            any::rpart
+            any::ranger
+            any::class
+          cache-version: 2
+
+      - name: Verify R packages
         shell: Rscript {0}
         run: |
-          options(repos = c(CRAN = "https://cloud.r-project.org"))
-          install.packages(c("rmarkdown", "knitr"), dependencies = c("Depends", "Imports", "LinkingTo"))
-          stopifnot(requireNamespace("rmarkdown", quietly = TRUE))
-          stopifnot(requireNamespace("knitr", quietly = TRUE))
+          pkgs <- c("rmarkdown", "knitr", "ggplot2", "readr", "dplyr", "tidyr",
+                    "shiny", "shinylive", "rpart", "ranger", "class")
+          faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+          if (length(faltan)) stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
+          cat("R:", R.version.string, "\n")
           cat("rmarkdown:", as.character(packageVersion("rmarkdown")), "\n")
           cat("knitr:", as.character(packageVersion("knitr")), "\n")
-
-      - name: Install required R packages
-        shell: Rscript {0}
-        run: |
-          options(repos = c(CRAN = "https://cloud.r-project.org"))
-          pkgs <- c(
-            "ggplot2", "readr", "dplyr", "tidyr",
-            "shiny", "shinylive", "rpart", "ranger", "class"
-          )
-          faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
-          if (length(faltan)) {
-            install.packages(
-              faltan,
-              dependencies = c("Depends", "Imports", "LinkingTo")
-            )
-          }
-          faltan2 <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
-          if (length(faltan2)) stop("No se pudieron instalar: ", paste(faltan2, collapse = ", "))
 
       - name: Render only chapters 6 to 8 as HTML
         run: |
