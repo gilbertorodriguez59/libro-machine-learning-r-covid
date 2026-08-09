@@ -360,6 +360,80 @@ división de las especies de `iris` y comparar la impureza de Gini de los nodos.
 
 :::
 
+## Caso aplicado B: árbol de decisión con COVID-19
+
+Usamos la misma muestra común de hasta 12 000 registros de COVID-19 México 2022 y la misma semilla `2026`. El árbol permite observar reglas de decisión fáciles de interpretar.
+
+> **Uso académico:** las reglas encontradas describen el comportamiento de esta muestra y no deben interpretarse como reglas clínicas.
+
+```{r covid-arbol-preparar}
+ruta_covid <- "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"
+
+if (file.exists(ruta_covid)) {
+  covid_arbol <- read_csv(ruta_covid, show_col_types = FALSE) |>
+    select(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,
+           OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) |>
+    tidyr::drop_na()
+
+  set.seed(2026)
+  covid_arbol <- covid_arbol |>
+    sample_n(min(12000, nrow(covid_arbol))) |>
+    mutate(MURIO = factor(MURIO, levels = c(1, 0), labels = c("Defunción", "Sin defunción")))
+
+  set.seed(2026)
+  idx_covid <- sample(seq_len(nrow(covid_arbol)), size = floor(0.80 * nrow(covid_arbol)))
+  covid_train <- covid_arbol[idx_covid, ]
+  covid_test <- covid_arbol[-idx_covid, ]
+}
+```
+
+```{r covid-arbol-modelo}
+if (exists("covid_train")) {
+  arbol_covid <- rpart(
+    MURIO ~ EDAD + NEUMONIA + DIABETES + HIPERTENSION + OBESIDAD + RENAL_CRONICA + NUM_COMORBILIDADES,
+    data = covid_train,
+    method = "class",
+    control = rpart.control(cp = 0.002, minsplit = 80, minbucket = 30, maxdepth = 5)
+  )
+  printcp(arbol_covid)
+}
+```
+
+```{r covid-arbol-importancia}
+if (exists("arbol_covid")) {
+  imp_covid_arbol <- arbol_covid$variable.importance
+  if (!is.null(imp_covid_arbol)) {
+    data.frame(variable = names(imp_covid_arbol), importancia = as.numeric(imp_covid_arbol)) |>
+      arrange(desc(importancia))
+  }
+}
+```
+
+```{r covid-arbol-metricas}
+if (exists("arbol_covid")) {
+  pred_covid_arbol <- predict(arbol_covid, covid_test, type = "class")
+  matriz_covid_arbol <- table(
+    Real = factor(covid_test$MURIO, levels = c("Defunción", "Sin defunción")),
+    Predicho = factor(pred_covid_arbol, levels = c("Defunción", "Sin defunción"))
+  )
+  matriz_covid_arbol
+
+  VP <- matriz_covid_arbol[1,1]; FN <- matriz_covid_arbol[1,2]
+  FP <- matriz_covid_arbol[2,1]; VN <- matriz_covid_arbol[2,2]
+
+  data.frame(
+    exactitud = (VP + VN) / sum(matriz_covid_arbol),
+    sensibilidad = ifelse(VP + FN == 0, NA, VP / (VP + FN)),
+    especificidad = ifelse(VN + FP == 0, NA, VN / (VN + FP))
+  )
+}
+```
+
+::: {.callout-tip}
+## Interpretación
+La principal ventaja del árbol es que transforma el modelo en una secuencia visible de decisiones. Su desventaja es que un solo árbol puede cambiar bastante ante pequeñas variaciones de la muestra; esto motiva Random Forest.
+:::
+
 ## Materiales complementarios del capítulo
 
 ::: {.content-visible when-format="html"}
