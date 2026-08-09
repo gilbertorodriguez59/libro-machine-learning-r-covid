@@ -295,6 +295,89 @@ El lector puede cambiar el valor de $k$, mover una observación nueva y visualiz
 
 :::
 
+## Caso aplicado B: k-NN con COVID-19
+
+En esta segunda ruta aplicada usamos la misma muestra educativa de COVID-19 México 2022 empleada en los capítulos anteriores. El objetivo es clasificar `MURIO` a partir de edad, neumonía, diabetes, hipertensión, obesidad, enfermedad renal crónica y número de comorbilidades.
+
+> **Uso académico:** este ejercicio permite estudiar el comportamiento de k-NN. No es una calculadora clínica ni un instrumento de diagnóstico.
+
+```{r covid-knn-preparar}
+ruta_covid <- "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"
+
+if (file.exists(ruta_covid)) {
+  covid_knn <- read_csv(ruta_covid, show_col_types = FALSE) |>
+    select(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,
+           OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) |>
+    drop_na()
+
+  set.seed(2026)
+  covid_knn <- covid_knn |>
+    sample_n(min(12000, nrow(covid_knn))) |>
+    mutate(
+      MURIO = factor(MURIO, levels = c(1, 0), labels = c("Defunción", "Sin defunción"))
+    )
+
+  X_covid <- covid_knn |> select(-MURIO) |> as.matrix()
+  y_covid <- covid_knn$MURIO
+
+  set.seed(2026)
+  idx_covid <- sample(seq_len(nrow(X_covid)), size = floor(0.80 * nrow(X_covid)))
+
+  x_train_covid <- X_covid[idx_covid, , drop = FALSE]
+  x_test_covid <- X_covid[-idx_covid, , drop = FALSE]
+  y_train_covid <- y_covid[idx_covid]
+  y_test_covid <- y_covid[-idx_covid]
+
+  medias_covid <- apply(x_train_covid, 2, mean)
+  desv_covid <- apply(x_train_covid, 2, sd)
+  desv_covid[desv_covid == 0] <- 1
+
+  x_train_covid_z <- scale(x_train_covid, center = medias_covid, scale = desv_covid)
+  x_test_covid_z <- scale(x_test_covid, center = medias_covid, scale = desv_covid)
+}
+```
+
+La estandarización es especialmente importante en k-NN porque la distancia euclidiana sería dominada por variables con escalas mayores, como la edad.
+
+```{r covid-knn-modelo}
+if (exists("x_train_covid_z")) {
+  pred_covid_knn <- knn(train = x_train_covid_z, test = x_test_covid_z, cl = y_train_covid, k = 11)
+
+  matriz_covid_knn <- table(
+    Real = factor(y_test_covid, levels = c("Defunción", "Sin defunción")),
+    Predicho = factor(pred_covid_knn, levels = c("Defunción", "Sin defunción"))
+  )
+  matriz_covid_knn
+}
+```
+
+```{r covid-knn-comparar-k}
+if (exists("x_train_covid_z")) {
+  evaluar_knn_covid <- function(k) {
+    p <- knn(x_train_covid_z, x_test_covid_z, y_train_covid, k = k)
+    m <- table(
+      Real = factor(y_test_covid, levels = c("Defunción", "Sin defunción")),
+      Predicho = factor(p, levels = c("Defunción", "Sin defunción"))
+    )
+    VP <- m[1,1]; FN <- m[1,2]; FP <- m[2,1]; VN <- m[2,2]
+    data.frame(
+      k = k,
+      exactitud = (VP + VN) / sum(m),
+      sensibilidad = ifelse(VP + FN == 0, NA, VP / (VP + FN)),
+      especificidad = ifelse(VN + FP == 0, NA, VN / (VN + FP))
+    )
+  }
+
+  resultados_k_covid <- do.call(rbind, lapply(c(3, 5, 11, 21), evaluar_knn_covid))
+  resultados_k_covid
+}
+```
+
+::: {.callout-tip}
+## Interpretación
+El valor de $k$ controla cuánto se suaviza la decisión. Valores pequeños reaccionan más a observaciones locales; valores mayores producen fronteras más estables. En datos desbalanceados conviene mirar sensibilidad y especificidad, no solo exactitud.
+:::
+
 ## Materiales complementarios del capítulo
 
 ::: {.content-visible when-format="html"}
