@@ -745,6 +745,98 @@ observar el hiperplano, los márgenes y la clase predicha.
 
 :::
 
+
+## Caso aplicado B: SVM con COVID-19
+
+En esta segunda ruta aplicada usamos datos abiertos de COVID-19 México 2022. El objetivo educativo es clasificar la variable `MURIO`, donde **1 representa defunción registrada y 0 ausencia de defunción registrada**, a partir de edad, neumonía, diabetes, hipertensión, obesidad, enfermedad renal crónica y número de comorbilidades.
+
+> **Uso académico:** este ejercicio ilustra el funcionamiento de SVM. No debe interpretarse como herramienta clínica, pronóstico individual ni diagnóstico.
+
+```{r covid-svm-preparar}
+ruta_covid <- "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"
+
+if (file.exists(ruta_covid)) {
+  covid_svm <- readr::read_csv(ruta_covid, show_col_types = FALSE) |>
+    dplyr::select(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,
+                  OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) |>
+    tidyr::drop_na() |>
+    dplyr::mutate(
+      MURIO = factor(MURIO, levels = c(0, 1),
+                     labels = c("Sin defunción", "Defunción"))
+    )
+
+  set.seed(2026)
+  covid_svm <- covid_svm |>
+    dplyr::sample_n(min(8000, nrow(covid_svm)))
+
+  set.seed(2026)
+  idx_svm_covid <- unlist(lapply(
+    split(seq_len(nrow(covid_svm)), covid_svm$MURIO),
+    function(i) sample(i, floor(0.80 * length(i)))
+  ))
+
+  train_svm_covid <- covid_svm[idx_svm_covid, ]
+  test_svm_covid <- covid_svm[-idx_svm_covid, ]
+}
+```
+
+La división es estratificada para conservar aproximadamente la proporción de ambas clases. Además, `scale = TRUE` estandariza los predictores numéricos dentro de `svm()`.
+
+```{r covid-svm-modelos}
+if (exists("train_svm_covid")) {
+  frec_covid <- table(train_svm_covid$MURIO)
+  pesos_covid <- sum(frec_covid) / (length(frec_covid) * frec_covid)
+
+  modelo_svm_covid_lineal <- e1071::svm(
+    MURIO ~ ., data = train_svm_covid,
+    kernel = "linear", cost = 1,
+    class.weights = pesos_covid,
+    scale = TRUE
+  )
+
+  modelo_svm_covid_radial <- e1071::svm(
+    MURIO ~ ., data = train_svm_covid,
+    kernel = "radial", cost = 1,
+    gamma = 1 / (ncol(train_svm_covid) - 1),
+    class.weights = pesos_covid,
+    scale = TRUE
+  )
+
+  pred_lin <- predict(modelo_svm_covid_lineal, test_svm_covid)
+  pred_rad <- predict(modelo_svm_covid_radial, test_svm_covid)
+}
+```
+
+```{r covid-svm-metricas}
+metricas_covid_binarias <- function(real, predicho, positiva = "Defunción") {
+  real <- factor(real, levels = c("Sin defunción", "Defunción"))
+  predicho <- factor(predicho, levels = levels(real))
+  m <- table(Real = real, Predicho = predicho)
+  VP <- m[positiva, positiva]
+  FN <- m[positiva, "Sin defunción"]
+  FP <- m["Sin defunción", positiva]
+  VN <- m["Sin defunción", "Sin defunción"]
+  div <- function(a,b) ifelse(b == 0, NA_real_, as.numeric(a/b))
+  data.frame(
+    exactitud = div(VP+VN, sum(m)),
+    sensibilidad = div(VP, VP+FN),
+    especificidad = div(VN, VN+FP)
+  )
+}
+
+if (exists("pred_lin")) {
+  comparacion_svm_covid <- dplyr::bind_rows(
+    cbind(modelo = "SVM lineal", metricas_covid_binarias(test_svm_covid$MURIO, pred_lin)),
+    cbind(modelo = "SVM radial", metricas_covid_binarias(test_svm_covid$MURIO, pred_rad))
+  )
+  comparacion_svm_covid
+}
+```
+
+::: {.callout-tip title="Interpretación"}
+La comparación permite estudiar si una frontera no lineal aporta una ventaja real sobre la SVM lineal. En una respuesta desbalanceada, sensibilidad y especificidad deben revisarse junto con la exactitud.
+:::
+
 ## Materiales complementarios del capítulo
 
 ::: {.content-visible when-format="html"}

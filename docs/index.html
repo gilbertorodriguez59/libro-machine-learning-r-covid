@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -13,10 +13,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -60,10 +63,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -121,7 +124,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -346,7 +349,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Fecha de publicación</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">7 de agosto de 2026</p>
+      <p class="date">10 de agosto de 2026</p>
     </div>
   </div>
   
@@ -365,7 +368,8 @@ div.csl-indent {
 <section id="un-enfoque-práctico-con-datos-abiertos-reales" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="un-enfoque-práctico-con-datos-abiertos-reales">Un enfoque práctico con datos abiertos reales</h3>
 <p><strong>Autor:</strong> Jesús Gilberto Rodríguez Escobedo<br>
-<strong>Versión:</strong> 0.14.2 <strong>Modalidad:</strong> Libro abierto, práctico e interactivo<br>
+<strong>Versión:</strong> 0.14.2<br>
+<strong>Modalidad:</strong> Libro abierto, práctico e interactivo<br>
 <strong>Tecnologías:</strong> R · Quarto · Machine Learning · Shinylive · Google Colab · YouTube · GitHub Pages</p>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -379,7 +383,7 @@ div.csl-indent {
 <section id="aprende-machine-learning-haciendo" class="level3 callout-body-container callout-body">
 <h3 class="anchored" data-anchor-id="aprende-machine-learning-haciendo">Aprende Machine Learning haciendo</h3>
 <p>Libro abierto con código en <strong>R</strong>, datos reales, videos, presentaciones, infografías, Google Colab y laboratorios que se ejecutan directamente en el navegador.</p>
-<p><a href="./01-introduccion.html" class="btn btn-primary btn-lg">Comenzar el libro</a> <a href="https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q" class="btn btn-danger btn-lg">Curso completo en YouTube</a> <a href="./00-cuaderno-google-colab.html" class="btn btn-outline-primary btn-lg">Cuaderno Google Colab</a></p>
+<p><a href="./01-introduccion.html" class="btn btn-primary btn-lg">Comenzar el libro</a> <a href="https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q" class="btn btn-danger btn-lg">Curso completo en YouTube</a> <a href="./00-cuaderno-google-colab.html" class="btn btn-outline-primary btn-lg">Cuaderno Google Colab</a> <a href="Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" class="btn btn-outline-secondary btn-lg" target="_blank">Descargar PDF</a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="imagenes/portada-libro-carta.png" class="img-fluid figure-img" style="width:58.0%" alt="Portada del libro Aprendizaje y Clasificación Automática con R"></p>
@@ -390,7 +394,7 @@ div.csl-indent {
 </section>
 </div>
 <p>Este libro introduce el aprendizaje automático (<em>Machine Learning</em>) mediante ejemplos claros, didácticos y prácticos desarrollados principalmente en <strong>R</strong>.</p>
-<p>La intención no es escribir un tratado matemático extenso, sino construir una guía aplicada para aprender haciendo con datos abiertos reales. En esta versión trabajamos con datos de accidentes de tránsito de México y los usamos como hilo conductor para explicar preparación de datos, análisis exploratorio y modelos de clasificación.</p>
+<p>La intención no es escribir un tratado matemático extenso, sino construir una guía aplicada para aprender haciendo con datos abiertos reales. En esta versión trabajamos con dos rutas de datos abiertos de México: <strong>ATUS</strong>, con accidentes de tránsito, y <strong>COVID-19</strong>, con registros históricos preparados para fines educativos. Ambas rutas se utilizan para explicar preparación de datos, análisis exploratorio, regresión, clasificación y evaluación de modelos.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -549,7 +553,7 @@ Presentación general y videos complementarios de los capítulos.</code></pre>
 </section>
 <section id="fuente-principal-de-los-datos" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="fuente-principal-de-los-datos">Fuente principal de los datos</h2>
-<p>Los ejemplos aplicados utilizan información de la Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas del INEGI <span class="citation" data-cites="inegi_atus_2024">(<a href="referencias.html#ref-inegi_atus_2024" role="doc-biblioref">Instituto Nacional de Estadística y Geografía 2025</a>)</span>. Cuando una tabla o gráfica se elabora con estos datos, se indica expresamente la fuente y se distingue el procesamiento realizado por el autor.</p>
+<p>Los ejemplos aplicados utilizan información de la Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas del INEGI <span class="citation" data-cites="inegi_atus_2024">(<a href="referencias.html#ref-inegi_atus_2024" role="doc-biblioref">Instituto Nacional de Estadística y Geografía 2025</a>)</span> y una base educativa preparada a partir de los cierres históricos de COVID-19 de la Secretaría de Salud de México. Cuando una tabla o gráfica se elabora con estos datos, se indica la fuente y se distingue el procesamiento realizado por el autor.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">

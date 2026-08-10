@@ -507,6 +507,87 @@ Permite modificar probabilidades previas y condicionales.
 :::
 
 
+
+## Caso aplicado B: Naive Bayes con COVID-19
+
+Ahora aplicamos Naive Bayes a COVID-19 México 2022. La variable objetivo es `MURIO` y utilizamos la misma familia de predictores empleada en los capítulos anteriores.
+
+> **Uso académico:** las probabilidades estimadas por este modelo no deben interpretarse como riesgo clínico individual.
+
+```{r covid-nb-preparar}
+ruta_covid <- "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"
+
+if (file.exists(ruta_covid)) {
+  covid_nb <- readr::read_csv(ruta_covid, show_col_types = FALSE) |>
+    dplyr::select(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,
+                  OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) |>
+    tidyr::drop_na() |>
+    dplyr::mutate(
+      MURIO = factor(MURIO, levels = c(0, 1),
+                     labels = c("Sin defunción", "Defunción")),
+      NEUMONIA = factor(NEUMONIA),
+      DIABETES = factor(DIABETES),
+      HIPERTENSION = factor(HIPERTENSION),
+      OBESIDAD = factor(OBESIDAD),
+      RENAL_CRONICA = factor(RENAL_CRONICA)
+    )
+
+  set.seed(2026)
+  covid_nb <- covid_nb |>
+    dplyr::sample_n(min(12000, nrow(covid_nb)))
+
+  set.seed(2026)
+  idx_nb_covid <- unlist(lapply(
+    split(seq_len(nrow(covid_nb)), covid_nb$MURIO),
+    function(i) sample(i, floor(0.80 * length(i)))
+  ))
+
+  train_nb_covid <- covid_nb[idx_nb_covid, ]
+  test_nb_covid <- covid_nb[-idx_nb_covid, ]
+}
+```
+
+En este ejemplo las comorbilidades binarias se tratan como variables categóricas, mientras que `EDAD` y `NUM_COMORBILIDADES` se modelan como numéricas.
+
+```{r covid-nb-modelo}
+if (exists("train_nb_covid")) {
+  modelo_nb_covid <- e1071::naiveBayes(
+    MURIO ~ ., data = train_nb_covid,
+    laplace = 1
+  )
+
+  pred_nb_covid <- predict(modelo_nb_covid, test_nb_covid, type = "class")
+  prob_nb_covid <- predict(modelo_nb_covid, test_nb_covid, type = "raw")
+
+  matriz_nb_covid <- table(
+    Real = test_nb_covid$MURIO,
+    Predicho = pred_nb_covid
+  )
+  matriz_nb_covid
+  head(prob_nb_covid)
+}
+```
+
+```{r covid-nb-metricas}
+if (exists("matriz_nb_covid")) {
+  VP <- matriz_nb_covid["Defunción", "Defunción"]
+  FN <- matriz_nb_covid["Defunción", "Sin defunción"]
+  FP <- matriz_nb_covid["Sin defunción", "Defunción"]
+  VN <- matriz_nb_covid["Sin defunción", "Sin defunción"]
+  div <- function(a,b) ifelse(b == 0, NA_real_, as.numeric(a/b))
+  data.frame(
+    exactitud = div(VP+VN, sum(matriz_nb_covid)),
+    sensibilidad = div(VP, VP+FN),
+    especificidad = div(VN, VN+FP),
+    precision = div(VP, VP+FP)
+  )
+}
+```
+
+::: {.callout-note title="Qué aporta este ejemplo"}
+Naive Bayes permite observar directamente probabilidades previas y condicionales. Eso lo convierte en un excelente modelo didáctico para conectar el teorema de Bayes con un problema real de clasificación.
+:::
+
 ## Materiales complementarios del capítulo
 
 ::: {.content-visible when-format="html"}

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -190,7 +193,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -400,9 +403,10 @@ window.Quarto = {
   <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">11.26</span> Conclusiones</a></li>
   <li><a href="#referencias-fundamentales-de-naive-bayes" id="toc-referencias-fundamentales-de-naive-bayes" class="nav-link" data-scroll-target="#referencias-fundamentales-de-naive-bayes"><span class="header-section-number">11.27</span> Referencias fundamentales de Naive Bayes</a></li>
   <li><a href="#laboratorio-interactivo-probabilidades-posteriores-naive-bayes" id="toc-laboratorio-interactivo-probabilidades-posteriores-naive-bayes" class="nav-link" data-scroll-target="#laboratorio-interactivo-probabilidades-posteriores-naive-bayes"><span class="header-section-number">11.28</span> Laboratorio interactivo: probabilidades posteriores Naive Bayes</a></li>
-  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">11.29</span> Materiales complementarios del capítulo</a>
+  <li><a href="#caso-aplicado-b-naive-bayes-con-covid-19" id="toc-caso-aplicado-b-naive-bayes-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-naive-bayes-con-covid-19"><span class="header-section-number">11.29</span> Caso aplicado B: Naive Bayes con COVID-19</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">11.30</span> Materiales complementarios del capítulo</a>
   <ul class="collapse">
-  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">11.29.1</span> Video del capítulo</a></li>
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">11.30.1</span> Video del capítulo</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -656,7 +660,7 @@ X_j\mid C=c\sim N(\mu_{jc},\sigma_{jc}^{2})
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'dplyr'</code></pre>
+Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -672,7 +676,7 @@ Adjuntando el paquete: 'dplyr'</code></pre>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(e1071)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'e1071'</code></pre>
+Attaching package: 'e1071'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:ggplot2':
@@ -682,7 +686,7 @@ Adjuntando el paquete: 'e1071'</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'scales'</code></pre>
+Attaching package: 'scales'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:readr':
@@ -1204,10 +1208,109 @@ server &lt;- function(input, output, session) {
 
 shinyApp(ui, server)</code></pre>
 </section>
-<section id="materiales-complementarios-del-capítulo" class="level2" data-number="11.29">
-<h2 data-number="11.29" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">11.29</span> Materiales complementarios del capítulo</h2>
-<section id="video-del-capítulo" class="level3" data-number="11.29.1">
-<h3 data-number="11.29.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">11.29.1</span> Video del capítulo</h3>
+<section id="caso-aplicado-b-naive-bayes-con-covid-19" class="level2" data-number="11.29">
+<h2 data-number="11.29" class="anchored" data-anchor-id="caso-aplicado-b-naive-bayes-con-covid-19"><span class="header-section-number">11.29</span> Caso aplicado B: Naive Bayes con COVID-19</h2>
+<p>Ahora aplicamos Naive Bayes a COVID-19 México 2022. La variable objetivo es <code>MURIO</code> y utilizamos la misma familia de predictores empleada en los capítulos anteriores.</p>
+<blockquote class="blockquote">
+<p><strong>Uso académico:</strong> las probabilidades estimadas por este modelo no deben interpretarse como riesgo clínico individual.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>ruta_covid <span class="ot">&lt;-</span> <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_covid)) {</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  covid_nb <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(ruta_covid, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>                  OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) <span class="sc">|&gt;</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">MURIO =</span> <span class="fu">factor</span>(MURIO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>)),</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">NEUMONIA =</span> <span class="fu">factor</span>(NEUMONIA),</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">DIABETES =</span> <span class="fu">factor</span>(DIABETES),</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">HIPERTENSION =</span> <span class="fu">factor</span>(HIPERTENSION),</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">OBESIDAD =</span> <span class="fu">factor</span>(OBESIDAD),</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">RENAL_CRONICA =</span> <span class="fu">factor</span>(RENAL_CRONICA)</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>  covid_nb <span class="ot">&lt;-</span> covid_nb <span class="sc">|&gt;</span></span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">12000</span>, <span class="fu">nrow</span>(covid_nb)))</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>  idx_nb_covid <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">split</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(covid_nb)), covid_nb<span class="sc">$</span>MURIO),</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(i) <span class="fu">sample</span>(i, <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">length</span>(i)))</span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>  train_nb_covid <span class="ot">&lt;-</span> covid_nb[idx_nb_covid, ]</span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>  test_nb_covid <span class="ot">&lt;-</span> covid_nb[<span class="sc">-</span>idx_nb_covid, ]</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>En este ejemplo las comorbilidades binarias se tratan como variables categóricas, mientras que <code>EDAD</code> y <code>NUM_COMORBILIDADES</code> se modelan como numéricas.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_nb_covid"</span>)) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  modelo_nb_covid <span class="ot">&lt;-</span> e1071<span class="sc">::</span><span class="fu">naiveBayes</span>(</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> ., <span class="at">data =</span> train_nb_covid,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">laplace =</span> <span class="dv">1</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  pred_nb_covid <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_nb_covid, test_nb_covid, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  prob_nb_covid <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_nb_covid, test_nb_covid, <span class="at">type =</span> <span class="st">"raw"</span>)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  matriz_nb_covid <span class="ot">&lt;-</span> <span class="fu">table</span>(</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Real =</span> test_nb_covid<span class="sc">$</span>MURIO,</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Predicho =</span> pred_nb_covid</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  matriz_nb_covid</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(prob_nb_covid)</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Sin defunción    Defunción
+[1,]     0.9953022 0.0046978305
+[2,]     0.9995698 0.0004301658
+[3,]     0.7079535 0.2920465485
+[4,]     0.9986242 0.0013758017
+[5,]     0.9951208 0.0048792211
+[6,]     0.9926900 0.0073099551</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"matriz_nb_covid"</span>)) {</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  VP <span class="ot">&lt;-</span> matriz_nb_covid[<span class="st">"Defunción"</span>, <span class="st">"Defunción"</span>]</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  FN <span class="ot">&lt;-</span> matriz_nb_covid[<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>]</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  FP <span class="ot">&lt;-</span> matriz_nb_covid[<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>]</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  VN <span class="ot">&lt;-</span> matriz_nb_covid[<span class="st">"Sin defunción"</span>, <span class="st">"Sin defunción"</span>]</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  div <span class="ot">&lt;-</span> <span class="cf">function</span>(a,b) <span class="fu">ifelse</span>(b <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">as.numeric</span>(a<span class="sc">/</span>b))</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">exactitud =</span> <span class="fu">div</span>(VP<span class="sc">+</span>VN, <span class="fu">sum</span>(matriz_nb_covid)),</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> <span class="fu">div</span>(VP, VP<span class="sc">+</span>FN),</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> <span class="fu">div</span>(VN, VN<span class="sc">+</span>FP),</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="fu">div</span>(VP, VP<span class="sc">+</span>FP)</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  exactitud sensibilidad especificidad precision
+1  0.881716    0.8030942     0.9147929 0.7986014</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Qué aporta este ejemplo">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Qué aporta este ejemplo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Naive Bayes permite observar directamente probabilidades previas y condicionales. Eso lo convierte en un excelente modelo didáctico para conectar el teorema de Bayes con un problema real de clasificación.</p>
+</div>
+</div>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="11.30">
+<h2 data-number="11.30" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">11.30</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="11.30.1">
+<h3 data-number="11.30.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">11.30.1</span> Video del capítulo</h3>
 <iframe width="100%" height="420" src="https://www.youtube.com/embed/UbfJ3bLDwUI" title="Capítulo 11. Clasificador Naive Bayes" frameborder="0" allowfullscreen="">
 </iframe>
 <table class="caption-top table">

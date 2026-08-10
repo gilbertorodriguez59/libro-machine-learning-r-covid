@@ -1499,6 +1499,101 @@ Describe tres medidas para reducir sobreajuste.
 - ¿Cuándo sería preferible un modelo más simple?
 - ¿Por qué las probabilidades deben interpretarse con cautela?
 
+
+## Caso aplicado B: red neuronal con COVID-19
+
+En este ejemplo entrenamos una red neuronal pequeña para clasificar `MURIO` con datos de COVID-19 México 2022. Se utiliza una arquitectura deliberadamente sencilla para que el objetivo sea comprender el procedimiento y no construir un sistema clínico.
+
+> **Uso académico:** la salida de la red es una predicción estadística sobre esta muestra y no un pronóstico médico individual.
+
+```{r covid-nn-preparar}
+ruta_covid <- "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"
+
+if (file.exists(ruta_covid)) {
+  covid_nn <- readr::read_csv(ruta_covid, show_col_types = FALSE) |>
+    dplyr::select(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,
+                  OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) |>
+    tidyr::drop_na()
+
+  set.seed(2026)
+  covid_nn <- covid_nn |>
+    dplyr::sample_n(min(8000, nrow(covid_nn)))
+
+  set.seed(2026)
+  idx_nn_covid <- unlist(lapply(
+    split(seq_len(nrow(covid_nn)), covid_nn$MURIO),
+    function(i) sample(i, floor(0.80 * length(i)))
+  ))
+
+  train_nn_covid <- covid_nn[idx_nn_covid, ]
+  test_nn_covid <- covid_nn[-idx_nn_covid, ]
+
+  predictores_nn <- c("EDAD", "NEUMONIA", "DIABETES", "HIPERTENSION",
+                      "OBESIDAD", "RENAL_CRONICA", "NUM_COMORBILIDADES")
+
+  medias_nn <- sapply(train_nn_covid[predictores_nn], mean)
+  desv_nn <- sapply(train_nn_covid[predictores_nn], sd)
+  desv_nn[desv_nn == 0] <- 1
+
+  train_nn_covid[predictores_nn] <- scale(
+    train_nn_covid[predictores_nn], center = medias_nn, scale = desv_nn
+  )
+  test_nn_covid[predictores_nn] <- scale(
+    test_nn_covid[predictores_nn], center = medias_nn, scale = desv_nn
+  )
+}
+```
+
+La estandarización se calcula exclusivamente con el conjunto de entrenamiento y después se aplica al conjunto de prueba. Esto evita utilizar información de prueba durante el aprendizaje.
+
+```{r covid-nn-modelo}
+if (exists("train_nn_covid")) {
+  set.seed(2026)
+  modelo_nn_covid <- neuralnet::neuralnet(
+    MURIO ~ EDAD + NEUMONIA + DIABETES + HIPERTENSION +
+      OBESIDAD + RENAL_CRONICA + NUM_COMORBILIDADES,
+    data = train_nn_covid,
+    hidden = c(5, 3),
+    linear.output = FALSE,
+    lifesign = "none",
+    stepmax = 1e6
+  )
+
+  prob_nn_covid <- as.numeric(
+    neuralnet::compute(
+      modelo_nn_covid,
+      test_nn_covid[predictores_nn]
+    )$net.result[, 1]
+  )
+
+  pred_nn_covid <- ifelse(prob_nn_covid >= 0.50, 1, 0)
+  matriz_nn_covid <- table(
+    Real = factor(test_nn_covid$MURIO, levels = c(0,1), labels = c("Sin defunción", "Defunción")),
+    Predicho = factor(pred_nn_covid, levels = c(0,1), labels = c("Sin defunción", "Defunción"))
+  )
+  matriz_nn_covid
+}
+```
+
+```{r covid-nn-metricas}
+if (exists("matriz_nn_covid")) {
+  VP <- matriz_nn_covid["Defunción", "Defunción"]
+  FN <- matriz_nn_covid["Defunción", "Sin defunción"]
+  FP <- matriz_nn_covid["Sin defunción", "Defunción"]
+  VN <- matriz_nn_covid["Sin defunción", "Sin defunción"]
+  div <- function(a,b) ifelse(b == 0, NA_real_, as.numeric(a/b))
+  data.frame(
+    exactitud = div(VP+VN, sum(matriz_nn_covid)),
+    sensibilidad = div(VP, VP+FN),
+    especificidad = div(VN, VN+FP)
+  )
+}
+```
+
+::: {.callout-tip title="Interpretación"}
+La red puede representar relaciones no lineales entre edad y comorbilidades, pero eso no garantiza que supere a modelos más simples. La comparación con regresión logística, k-NN, árboles, Random Forest, SVM y Naive Bayes será más importante que observar una sola métrica.
+:::
+
 ## Materiales complementarios del capítulo
 
 ::: {.content-visible when-format="html"}

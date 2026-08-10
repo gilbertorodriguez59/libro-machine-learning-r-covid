@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -190,7 +193,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -408,9 +411,10 @@ window.Quarto = {
   <li><a href="#conclusiones" id="toc-conclusiones" class="nav-link" data-scroll-target="#conclusiones"><span class="header-section-number">10.30</span> Conclusiones</a></li>
   <li><a href="#referencias-fundamentales-de-svm" id="toc-referencias-fundamentales-de-svm" class="nav-link" data-scroll-target="#referencias-fundamentales-de-svm"><span class="header-section-number">10.31</span> Referencias fundamentales de SVM</a></li>
   <li><a href="#laboratorio-interactivo-margen-e-hiperplano" id="toc-laboratorio-interactivo-margen-e-hiperplano" class="nav-link" data-scroll-target="#laboratorio-interactivo-margen-e-hiperplano"><span class="header-section-number">10.32</span> Laboratorio interactivo: margen e hiperplano</a></li>
-  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">10.33</span> Materiales complementarios del capítulo</a>
+  <li><a href="#caso-aplicado-b-svm-con-covid-19" id="toc-caso-aplicado-b-svm-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-svm-con-covid-19"><span class="header-section-number">10.33</span> Caso aplicado B: SVM con COVID-19</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">10.34</span> Materiales complementarios del capítulo</a>
   <ul class="collapse">
-  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">10.33.1</span> Video del capítulo</a></li>
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">10.34.1</span> Video del capítulo</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -582,7 +586,7 @@ y_i(\mathbf{w}^{T}\mathbf{x}_i+b)\geq 1
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(e1071)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'e1071'</code></pre>
+Attaching package: 'e1071'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:ggplot2':
@@ -823,7 +827,7 @@ K(\mathbf{x}_i,\mathbf{x}_j)=
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'readr'</code></pre>
+Attaching package: 'readr'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:scales':
@@ -833,7 +837,7 @@ Adjuntando el paquete: 'readr'</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'dplyr'</code></pre>
+Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -1419,10 +1423,112 @@ server &lt;- function(input, output, session) {
 
 shinyApp(ui, server)</code></pre>
 </section>
-<section id="materiales-complementarios-del-capítulo" class="level2" data-number="10.33">
-<h2 data-number="10.33" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">10.33</span> Materiales complementarios del capítulo</h2>
-<section id="video-del-capítulo" class="level3" data-number="10.33.1">
-<h3 data-number="10.33.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">10.33.1</span> Video del capítulo</h3>
+<section id="caso-aplicado-b-svm-con-covid-19" class="level2" data-number="10.33">
+<h2 data-number="10.33" class="anchored" data-anchor-id="caso-aplicado-b-svm-con-covid-19"><span class="header-section-number">10.33</span> Caso aplicado B: SVM con COVID-19</h2>
+<p>En esta segunda ruta aplicada usamos datos abiertos de COVID-19 México 2022. El objetivo educativo es clasificar la variable <code>MURIO</code>, donde <strong>1 representa defunción registrada y 0 ausencia de defunción registrada</strong>, a partir de edad, neumonía, diabetes, hipertensión, obesidad, enfermedad renal crónica y número de comorbilidades.</p>
+<blockquote class="blockquote">
+<p><strong>Uso académico:</strong> este ejercicio ilustra el funcionamiento de SVM. No debe interpretarse como herramienta clínica, pronóstico individual ni diagnóstico.</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>ruta_covid <span class="ot">&lt;-</span> <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_covid)) {</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  covid_svm <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(ruta_covid, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                  OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES) <span class="sc">|&gt;</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">MURIO =</span> <span class="fu">factor</span>(MURIO, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>))</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>  covid_svm <span class="ot">&lt;-</span> covid_svm <span class="sc">|&gt;</span></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">8000</span>, <span class="fu">nrow</span>(covid_svm)))</span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>  idx_svm_covid <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(</span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">split</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(covid_svm)), covid_svm<span class="sc">$</span>MURIO),</span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(i) <span class="fu">sample</span>(i, <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">length</span>(i)))</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>  train_svm_covid <span class="ot">&lt;-</span> covid_svm[idx_svm_covid, ]</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>  test_svm_covid <span class="ot">&lt;-</span> covid_svm[<span class="sc">-</span>idx_svm_covid, ]</span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>La división es estratificada para conservar aproximadamente la proporción de ambas clases. Además, <code>scale = TRUE</code> estandariza los predictores numéricos dentro de <code>svm()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_svm_covid"</span>)) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  frec_covid <span class="ot">&lt;-</span> <span class="fu">table</span>(train_svm_covid<span class="sc">$</span>MURIO)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  pesos_covid <span class="ot">&lt;-</span> <span class="fu">sum</span>(frec_covid) <span class="sc">/</span> (<span class="fu">length</span>(frec_covid) <span class="sc">*</span> frec_covid)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  modelo_svm_covid_lineal <span class="ot">&lt;-</span> e1071<span class="sc">::</span><span class="fu">svm</span>(</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> ., <span class="at">data =</span> train_svm_covid,</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="st">"linear"</span>, <span class="at">cost =</span> <span class="dv">1</span>,</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">class.weights =</span> pesos_covid,</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="cn">TRUE</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>  modelo_svm_covid_radial <span class="ot">&lt;-</span> e1071<span class="sc">::</span><span class="fu">svm</span>(</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> ., <span class="at">data =</span> train_svm_covid,</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="st">"radial"</span>, <span class="at">cost =</span> <span class="dv">1</span>,</span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma =</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="fu">ncol</span>(train_svm_covid) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">class.weights =</span> pesos_covid,</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="cn">TRUE</span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>  pred_lin <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_svm_covid_lineal, test_svm_covid)</span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>  pred_rad <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_svm_covid_radial, test_svm_covid)</span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>metricas_covid_binarias <span class="ot">&lt;-</span> <span class="cf">function</span>(real, predicho, <span class="at">positiva =</span> <span class="st">"Defunción"</span>) {</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  real <span class="ot">&lt;-</span> <span class="fu">factor</span>(real, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>))</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  predicho <span class="ot">&lt;-</span> <span class="fu">factor</span>(predicho, <span class="at">levels =</span> <span class="fu">levels</span>(real))</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Real =</span> real, <span class="at">Predicho =</span> predicho)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  VP <span class="ot">&lt;-</span> m[positiva, positiva]</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  FN <span class="ot">&lt;-</span> m[positiva, <span class="st">"Sin defunción"</span>]</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  FP <span class="ot">&lt;-</span> m[<span class="st">"Sin defunción"</span>, positiva]</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  VN <span class="ot">&lt;-</span> m[<span class="st">"Sin defunción"</span>, <span class="st">"Sin defunción"</span>]</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  div <span class="ot">&lt;-</span> <span class="cf">function</span>(a,b) <span class="fu">ifelse</span>(b <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">as.numeric</span>(a<span class="sc">/</span>b))</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">exactitud =</span> <span class="fu">div</span>(VP<span class="sc">+</span>VN, <span class="fu">sum</span>(m)),</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> <span class="fu">div</span>(VP, VP<span class="sc">+</span>FN),</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> <span class="fu">div</span>(VN, VN<span class="sc">+</span>FP)</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"pred_lin"</span>)) {</span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>  comparacion_svm_covid <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"SVM lineal"</span>, <span class="fu">metricas_covid_binarias</span>(test_svm_covid<span class="sc">$</span>MURIO, pred_lin)),</span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"SVM radial"</span>, <span class="fu">metricas_covid_binarias</span>(test_svm_covid<span class="sc">$</span>MURIO, pred_rad))</span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>  comparacion_svm_covid</span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      modelo exactitud sensibilidad especificidad
+1 SVM lineal 0.9206746    0.8912134     0.9332146
+2 SVM radial 0.9188007    0.8953975     0.9287622</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Interpretación">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpretación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La comparación permite estudiar si una frontera no lineal aporta una ventaja real sobre la SVM lineal. En una respuesta desbalanceada, sensibilidad y especificidad deben revisarse junto con la exactitud.</p>
+</div>
+</div>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="10.34">
+<h2 data-number="10.34" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">10.34</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="10.34.1">
+<h3 data-number="10.34.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">10.34.1</span> Video del capítulo</h3>
 <iframe width="100%" height="420" src="https://www.youtube.com/embed/upiQi4xIBrQ" title="Capítulo 10. Máquinas de vectores de soporte" frameborder="0" allowfullscreen="">
 </iframe>
 <table class="caption-top table">
