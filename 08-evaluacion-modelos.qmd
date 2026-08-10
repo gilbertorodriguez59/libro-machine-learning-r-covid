@@ -490,8 +490,10 @@ resumen_cv <- resultados_cv |>
   summarise(
     across(
       where(is.numeric) & !matches("pliegue"),
-      list(media = mean, desviacion = sd),
-      na.rm = TRUE
+      list(
+        media = ~ mean(.x, na.rm = TRUE),
+        desviacion = ~ sd(.x, na.rm = TRUE)
+      )
     )
   )
 
