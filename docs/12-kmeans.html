@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -190,7 +193,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -391,11 +394,22 @@ window.Quarto = {
   <li><a href="#aplicación-con-datos-reales" id="toc-aplicación-con-datos-reales" class="nav-link" data-scroll-target="#aplicación-con-datos-reales"><span class="header-section-number">13.17</span> Aplicación con datos reales</a></li>
   <li><a href="#actividad-guiada" id="toc-actividad-guiada" class="nav-link" data-scroll-target="#actividad-guiada"><span class="header-section-number">13.18</span> Actividad guiada</a></li>
   <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">13.19</span> Ejercicios</a></li>
-  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">13.20</span> Materiales complementarios del capítulo</a>
+  <li><a href="#caso-aplicado-b-k-means-con-covid-19" id="toc-caso-aplicado-b-k-means-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-k-means-con-covid-19"><span class="header-section-number">13.20</span> Caso aplicado B: k-means con COVID-19</a>
   <ul class="collapse">
-  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">13.20.1</span> Video del capítulo</a></li>
+  <li><a href="#preparar-las-variables-para-agrupamiento" id="toc-preparar-las-variables-para-agrupamiento" class="nav-link" data-scroll-target="#preparar-las-variables-para-agrupamiento"><span class="header-section-number">13.20.1</span> Preparar las variables para agrupamiento</a></li>
+  <li><a href="#explorar-el-número-de-grupos-con-el-método-del-codo" id="toc-explorar-el-número-de-grupos-con-el-método-del-codo" class="nav-link" data-scroll-target="#explorar-el-número-de-grupos-con-el-método-del-codo"><span class="header-section-number">13.20.2</span> Explorar el número de grupos con el método del codo</a></li>
+  <li><a href="#comparar-silhouette" id="toc-comparar-silhouette" class="nav-link" data-scroll-target="#comparar-silhouette"><span class="header-section-number">13.20.3</span> Comparar silhouette</a></li>
+  <li><a href="#ajustar-una-solución-didáctica-con-tres-clusters" id="toc-ajustar-una-solución-didáctica-con-tres-clusters" class="nav-link" data-scroll-target="#ajustar-una-solución-didáctica-con-tres-clusters"><span class="header-section-number">13.20.4</span> Ajustar una solución didáctica con tres clusters</a></li>
+  <li><a href="#interpretar-los-centroides" id="toc-interpretar-los-centroides" class="nav-link" data-scroll-target="#interpretar-los-centroides"><span class="header-section-number">13.20.5</span> Interpretar los centroides</a></li>
+  <li><a href="#perfil-descriptivo-en-unidades-originales" id="toc-perfil-descriptivo-en-unidades-originales" class="nav-link" data-scroll-target="#perfil-descriptivo-en-unidades-originales"><span class="header-section-number">13.20.6</span> Perfil descriptivo en unidades originales</a></li>
+  <li><a href="#observar-murio-después-de-formar-los-grupos" id="toc-observar-murio-después-de-formar-los-grupos" class="nav-link" data-scroll-target="#observar-murio-después-de-formar-los-grupos"><span class="header-section-number">13.20.7</span> Observar <code>MURIO</code> después de formar los grupos</a></li>
+  <li><a href="#visualización-bidimensional-mediante-pca" id="toc-visualización-bidimensional-mediante-pca" class="nav-link" data-scroll-target="#visualización-bidimensional-mediante-pca"><span class="header-section-number">13.20.8</span> Visualización bidimensional mediante PCA</a></li>
   </ul></li>
-  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">13.21</span> Conclusión</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">13.21</span> Materiales complementarios del capítulo</a>
+  <ul class="collapse">
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">13.21.1</span> Video del capítulo</a></li>
+  </ul></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">13.22</span> Conclusión</a></li>
   </ul>
 </nav>
     </div>
@@ -817,10 +831,290 @@ shinyApp(ui, server)</code></pre>
 <li>Aplica k-means a datos ambientales o de accidentes.</li>
 </ol>
 </section>
-<section id="materiales-complementarios-del-capítulo" class="level2" data-number="13.20">
-<h2 data-number="13.20" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">13.20</span> Materiales complementarios del capítulo</h2>
-<section id="video-del-capítulo" class="level3" data-number="13.20.1">
-<h3 data-number="13.20.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">13.20.1</span> Video del capítulo</h3>
+<section id="caso-aplicado-b-k-means-con-covid-19" class="level2" data-number="13.20">
+<h2 data-number="13.20" class="anchored" data-anchor-id="caso-aplicado-b-k-means-con-covid-19"><span class="header-section-number">13.20</span> Caso aplicado B: k-means con COVID-19</h2>
+<p>En esta segunda ruta aplicada usamos datos abiertos de COVID-19 México 2022 para descubrir <strong>perfiles de observaciones semejantes</strong>. A diferencia de los capítulos de clasificación, k-means es un método no supervisado: por ello la variable <code>MURIO</code> <strong>no participa en la formación de los grupos</strong>.</p>
+<blockquote class="blockquote">
+<p><strong>Uso académico:</strong> los clusters representan patrones estadísticos dentro de esta muestra. No son categorías clínicas, diagnósticos ni niveles de riesgo médico.</p>
+</blockquote>
+<section id="preparar-las-variables-para-agrupamiento" class="level3" data-number="13.20.1">
+<h3 data-number="13.20.1" class="anchored" data-anchor-id="preparar-las-variables-para-agrupamiento"><span class="header-section-number">13.20.1</span> Preparar las variables para agrupamiento</h3>
+<p>Usamos variables numéricas relacionadas con edad y comorbilidades. Las variables binarias se mantienen como 0/1 y todas se estandarizan para evitar que una escala domine las distancias.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ruta_covid <span class="ot">&lt;-</span> <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_covid)) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  covid_km <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(ruta_covid, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">drop_na</span>()</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  covid_km <span class="ot">&lt;-</span> covid_km <span class="sc">|&gt;</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">sample_n</span>(<span class="fu">min</span>(<span class="dv">12000</span>, <span class="fu">nrow</span>(covid_km)))</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  variables_km <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EDAD"</span>, <span class="st">"NEUMONIA"</span>, <span class="st">"DIABETES"</span>, <span class="st">"HIPERTENSION"</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OBESIDAD"</span>, <span class="st">"RENAL_CRONICA"</span>, <span class="st">"NUM_COMORBILIDADES"</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  X_covid_km <span class="ot">&lt;-</span> <span class="fu">scale</span>(covid_km[variables_km])</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="MURIO queda fuera del agrupamiento">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>MURIO queda fuera del agrupamiento
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>MURIO</code> se conserva únicamente para una interpretación posterior. No se incluye en <code>X_covid_km</code>, de modo que los clusters se forman sin conocer la variable de defunción.</p>
+</div>
+</div>
+</section>
+<section id="explorar-el-número-de-grupos-con-el-método-del-codo" class="level3" data-number="13.20.2">
+<h3 data-number="13.20.2" class="anchored" data-anchor-id="explorar-el-número-de-grupos-con-el-método-del-codo"><span class="header-section-number">13.20.2</span> Explorar el número de grupos con el método del codo</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"X_covid_km"</span>)) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  valores_k_covid <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  wss_covid <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(valores_k_covid))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(valores_k_covid)) {</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    ajuste <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      X_covid_km,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">centers =</span> valores_k_covid[i],</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">nstart =</span> <span class="dv">30</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">iter.max =</span> <span class="dv">100</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    wss_covid[i] <span class="ot">&lt;-</span> ajuste<span class="sc">$</span>tot.withinss</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    valores_k_covid, wss_covid,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">"Número de clusters k"</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">"Suma de cuadrados interna"</span>,</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="st">"COVID-19: método del codo"</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-kmeans_files/figure-html/covid-kmeans-codo-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>El método del codo no elige automáticamente un valor perfecto de (k); ayuda a identificar cuándo agregar más clusters produce mejoras cada vez menores.</p>
+</section>
+<section id="comparar-silhouette" class="level3" data-number="13.20.3">
+<h3 data-number="13.20.3" class="anchored" data-anchor-id="comparar-silhouette"><span class="header-section-number">13.20.3</span> Comparar silhouette</h3>
+<p>Para que el cálculo de distancias sea ligero, se evalúa silhouette sobre una submuestra reproducible.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"X_covid_km"</span>)) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  n_sil <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="dv">2500</span>, <span class="fu">nrow</span>(X_covid_km))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  idx_sil <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(X_covid_km)), n_sil)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  X_sil <span class="ot">&lt;-</span> X_covid_km[idx_sil, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  dist_sil <span class="ot">&lt;-</span> <span class="fu">dist</span>(X_sil)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  sil_promedio <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>, <span class="cf">function</span>(k_actual) {</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    km_tmp <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(X_sil, <span class="at">centers =</span> k_actual, <span class="at">nstart =</span> <span class="dv">30</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    sil_tmp <span class="ot">&lt;-</span> cluster<span class="sc">::</span><span class="fu">silhouette</span>(km_tmp<span class="sc">$</span>cluster, dist_sil)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(sil_tmp[, <span class="st">"sil_width"</span>])</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">silhouette_promedio =</span> sil_promedio</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  k silhouette_promedio
+1 2           0.5277500
+2 3           0.5198425
+3 4           0.5350873
+4 5           0.5420838
+5 6           0.5604206</code></pre>
+</div>
+</div>
+</section>
+<section id="ajustar-una-solución-didáctica-con-tres-clusters" class="level3" data-number="13.20.4">
+<h3 data-number="13.20.4" class="anchored" data-anchor-id="ajustar-una-solución-didáctica-con-tres-clusters"><span class="header-section-number">13.20.4</span> Ajustar una solución didáctica con tres clusters</h3>
+<p>Para mantener la interpretación sencilla usamos (k=3). En un análisis formal, este valor debería justificarse conjuntamente con el codo, silhouette, estabilidad e interpretabilidad.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"X_covid_km"</span>)) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  modelo_covid_km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    X_covid_km,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">centers =</span> <span class="dv">3</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">nstart =</span> <span class="dv">50</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">iter.max =</span> <span class="dv">100</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  covid_km<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(modelo_covid_km<span class="sc">$</span>cluster)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">table</span>(covid_km<span class="sc">$</span>cluster)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2    3 
+8883  511 2606 </code></pre>
+</div>
+</div>
+</section>
+<section id="interpretar-los-centroides" class="level3" data-number="13.20.5">
+<h3 data-number="13.20.5" class="anchored" data-anchor-id="interpretar-los-centroides"><span class="header-section-number">13.20.5</span> Interpretar los centroides</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"modelo_covid_km"</span>)) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  centroides_covid <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(modelo_covid_km<span class="sc">$</span>centers)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  centroides_covid<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(centroides_covid)))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  centroides_covid</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        EDAD   NEUMONIA   DIABETES HIPERTENSION   OBESIDAD RENAL_CRONICA
+1 -0.3227348 -0.2733729 -0.3930733   -0.4894327 -0.1425604    -0.2108877
+2  0.7134309  0.9248242  1.3175046    1.4036882  0.2051934     4.7414652
+3  0.9602035  0.7504937  1.0815140    1.3930722  0.4457062    -0.2108877
+  NUM_COMORBILIDADES cluster
+1         -0.4814294       1
+2          2.2334499       2
+3          1.2030867       3</code></pre>
+</div>
+</div>
+<p>Como los datos están estandarizados, un centroide positivo indica que el cluster presenta, en promedio, valores superiores a la media de la muestra para esa variable; un valor negativo indica valores inferiores.</p>
+</section>
+<section id="perfil-descriptivo-en-unidades-originales" class="level3" data-number="13.20.6">
+<h3 data-number="13.20.6" class="anchored" data-anchor-id="perfil-descriptivo-en-unidades-originales"><span class="header-section-number">13.20.6</span> Perfil descriptivo en unidades originales</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"modelo_covid_km"</span>)) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  perfiles_covid <span class="ot">&lt;-</span> covid_km <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">edad_media =</span> <span class="fu">mean</span>(EDAD),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">neumonia_pct =</span> <span class="fu">mean</span>(NEUMONIA) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">diabetes_pct =</span> <span class="fu">mean</span>(DIABETES) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">hipertension_pct =</span> <span class="fu">mean</span>(HIPERTENSION) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">obesidad_pct =</span> <span class="fu">mean</span>(OBESIDAD) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">renal_cronica_pct =</span> <span class="fu">mean</span>(RENAL_CRONICA) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">comorbilidades_media =</span> <span class="fu">mean</span>(NUM_COMORBILIDADES),</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  perfiles_covid</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 9
+  cluster     n edad_media neumonia_pct diabetes_pct hipertension_pct
+  &lt;fct&gt;   &lt;int&gt;      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;
+1 1        8883       40.5         8.86         1.23            0.597
+2 2         511       62.6        56.6         63.0            76.7  
+3 3        2606       67.9        49.6         54.5            76.3  
+# ℹ 3 more variables: obesidad_pct &lt;dbl&gt;, renal_cronica_pct &lt;dbl&gt;,
+#   comorbilidades_media &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="observar-murio-después-de-formar-los-grupos" class="level3" data-number="13.20.7">
+<h3 data-number="13.20.7" class="anchored" data-anchor-id="observar-murio-después-de-formar-los-grupos"><span class="header-section-number">13.20.7</span> Observar <code>MURIO</code> después de formar los grupos</h3>
+<p>Ahora sí usamos la variable <code>MURIO</code>, pero únicamente como una <strong>descripción externa</strong> de los clusters ya construidos.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"modelo_covid_km"</span>)) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  mortalidad_por_cluster <span class="ot">&lt;-</span> covid_km <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">casos =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">defunciones_registradas =</span> <span class="fu">sum</span>(MURIO <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">porcentaje_defuncion =</span> <span class="fu">mean</span>(MURIO <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  mortalidad_por_cluster</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  cluster casos defunciones_registradas porcentaje_defuncion
+  &lt;fct&gt;   &lt;int&gt;                   &lt;int&gt;                &lt;dbl&gt;
+1 1        8883                    1290                 14.5
+2 2         511                     463                 90.6
+3 3        2606                    1799                 69.0</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="Interpretación correcta">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Interpretación correcta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una diferencia en el porcentaje de defunción entre clusters <strong>no demuestra causalidad</strong> y tampoco convierte k-means en un modelo predictivo. Los grupos fueron definidos únicamente por semejanza en las variables de entrada.</p>
+</div>
+</div>
+</section>
+<section id="visualización-bidimensional-mediante-pca" class="level3" data-number="13.20.8">
+<h3 data-number="13.20.8" class="anchored" data-anchor-id="visualización-bidimensional-mediante-pca"><span class="header-section-number">13.20.8</span> Visualización bidimensional mediante PCA</h3>
+<p>La siguiente gráfica usa PCA solo para proyectar los clusters en dos dimensiones y facilitar su visualización; el agrupamiento continúa siendo el realizado en el espacio estandarizado original.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"modelo_covid_km"</span>)) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  pca_covid_km <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(X_covid_km, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale. =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  grafica_covid_km <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">PC1 =</span> pca_covid_km<span class="sc">$</span>x[, <span class="dv">1</span>],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">PC2 =</span> pca_covid_km<span class="sc">$</span>x[, <span class="dv">2</span>],</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cluster =</span> covid_km<span class="sc">$</span>cluster</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    grafica_covid_km,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> cluster)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.35</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Perfiles COVID-19 obtenidos con k-means"</span>,</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">subtitle =</span> <span class="st">"Proyección PCA para visualizar los clusters"</span>,</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Componente principal 1"</span>,</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Componente principal 2"</span>,</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">color =</span> <span class="st">"Cluster"</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">theme_minimal</span>()</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="12-kmeans_files/figure-html/covid-kmeans-pca-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Qué aprendemos con este caso">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Qué aprendemos con este caso
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Este ejercicio muestra una diferencia fundamental: en clasificación usamos una etiqueta para aprender a predecirla; en clustering buscamos estructura sin etiqueta. Después podemos relacionar los grupos con variables externas para describirlos, pero no para afirmar que esas variables causaron los clusters.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="13.21">
+<h2 data-number="13.21" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">13.21</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="13.21.1">
+<h3 data-number="13.21.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">13.21.1</span> Video del capítulo</h3>
 <iframe width="100%" height="420" src="https://www.youtube.com/embed/mZgUlnSxrgA" title="Capítulo 13. Agrupamiento con k-means" frameborder="0" allowfullscreen="">
 </iframe>
 <table class="caption-top table">
@@ -858,10 +1152,10 @@ shinyApp(ui, server)</code></pre>
 <p>Los materiales fueron creados con apoyo de NotebookLM de Google a partir del contenido del libro y revisados y adaptados por el autor.</p>
 </section>
 </section>
-<section id="conclusión" class="level2" data-number="13.21">
-<h2 data-number="13.21" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">13.21</span> Conclusión</h2>
+<section id="conclusión" class="level2" data-number="13.22">
+<h2 data-number="13.22" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">13.22</span> Conclusión</h2>
 <p>k-means descubre grupos mediante distancias y centroides. Su utilidad depende de una preparación adecuada, una selección razonada de <span class="math inline">\(k\)</span> y una interpretación basada en los perfiles de cada cluster.</p>
-<p>En el siguiente capítulo estudiaremos el <strong>Análisis de Componentes Principales (PCA)</strong> como técnica de reducción de dimensión.</p>
+<p>Con este capítulo cerramos la ruta principal de algoritmos del libro. Los apéndices reúnen el glosario, las referencias y los índices para consulta.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">

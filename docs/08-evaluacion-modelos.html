@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -95,10 +98,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12eeb4b20e9f5a2b0bfc604bfaf942bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -133,7 +136,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -190,7 +193,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Aprendizaje y Clasificación Automática con R</a> 
         <div class="sidebar-tools-main">
-    <a href="./Aprendizaje-y-Clasificación-Automática-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="./Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" title="Descargar PDF" class="quarto-navigation-tool px-1" aria-label="Descargar PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -413,6 +416,20 @@ window.Quarto = {
   <li><a href="#métricas" id="toc-métricas" class="nav-link" data-scroll-target="#métricas"><span class="header-section-number">9.23.1</span> Métricas</a></li>
   <li><a href="#comparación-de-umbrales" id="toc-comparación-de-umbrales" class="nav-link" data-scroll-target="#comparación-de-umbrales"><span class="header-section-number">9.23.2</span> Comparación de umbrales</a></li>
   </ul></li>
+  <li><a href="#comparación-integrada-de-modelos-con-covid-19" id="toc-comparación-integrada-de-modelos-con-covid-19" class="nav-link" data-scroll-target="#comparación-integrada-de-modelos-con-covid-19"><span class="header-section-number">9.24</span> Comparación integrada de modelos con COVID-19</a>
+  <ul class="collapse">
+  <li><a href="#una-muestra-balanceada-para-comparar-algoritmos" id="toc-una-muestra-balanceada-para-comparar-algoritmos" class="nav-link" data-scroll-target="#una-muestra-balanceada-para-comparar-algoritmos"><span class="header-section-number">9.24.1</span> Una muestra balanceada para comparar algoritmos</a></li>
+  <li><a href="#función-común-de-métricas" id="toc-función-común-de-métricas" class="nav-link" data-scroll-target="#función-común-de-métricas"><span class="header-section-number">9.24.2</span> Función común de métricas</a></li>
+  <li><a href="#regresión-logística" id="toc-regresión-logística" class="nav-link" data-scroll-target="#regresión-logística"><span class="header-section-number">9.24.3</span> 1. Regresión logística</a></li>
+  <li><a href="#k-nn" id="toc-k-nn" class="nav-link" data-scroll-target="#k-nn"><span class="header-section-number">9.24.4</span> 2. k-NN</a></li>
+  <li><a href="#árbol-de-decisión" id="toc-árbol-de-decisión" class="nav-link" data-scroll-target="#árbol-de-decisión"><span class="header-section-number">9.24.5</span> 3. Árbol de decisión</a></li>
+  <li><a href="#random-forest" id="toc-random-forest" class="nav-link" data-scroll-target="#random-forest"><span class="header-section-number">9.24.6</span> 4. Random Forest</a></li>
+  <li><a href="#svm-radial" id="toc-svm-radial" class="nav-link" data-scroll-target="#svm-radial"><span class="header-section-number">9.24.7</span> 5. SVM radial</a></li>
+  <li><a href="#naive-bayes" id="toc-naive-bayes" class="nav-link" data-scroll-target="#naive-bayes"><span class="header-section-number">9.24.8</span> 6. Naive Bayes</a></li>
+  <li><a href="#red-neuronal" id="toc-red-neuronal" class="nav-link" data-scroll-target="#red-neuronal"><span class="header-section-number">9.24.9</span> 7. Red neuronal</a></li>
+  <li><a href="#tabla-comparativa-final" id="toc-tabla-comparativa-final" class="nav-link" data-scroll-target="#tabla-comparativa-final"><span class="header-section-number">9.24.10</span> Tabla comparativa final</a></li>
+  <li><a href="#lectura-recomendada-de-la-tabla" id="toc-lectura-recomendada-de-la-tabla" class="nav-link" data-scroll-target="#lectura-recomendada-de-la-tabla"><span class="header-section-number">9.24.11</span> Lectura recomendada de la tabla</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -477,7 +494,7 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'dplyr'</code></pre>
+Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following objects are masked from 'package:stats':
@@ -493,7 +510,7 @@ Adjuntando el paquete: 'dplyr'</code></pre>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"util_graficas.R"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
-Adjuntando el paquete: 'scales'</code></pre>
+Attaching package: 'scales'</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>The following object is masked from 'package:readr':
@@ -1571,6 +1588,375 @@ Tip
 <p>En un problema de detección de riesgo, disminuir el umbral suele aumentar la sensibilidad, pero también puede generar más falsos positivos. El umbral no es una constante universal: depende del objetivo y del costo de cada error.</p>
 </div>
 </div>
+</section>
+</section>
+<section id="comparación-integrada-de-modelos-con-covid-19" class="level2" data-number="9.24">
+<h2 data-number="9.24" class="anchored" data-anchor-id="comparación-integrada-de-modelos-con-covid-19"><span class="header-section-number">9.24</span> Comparación integrada de modelos con COVID-19</h2>
+<p>Los capítulos anteriores aplicaron distintos algoritmos a COVID-19. Para compararlos de manera más coherente construiremos ahora un <strong>benchmark didáctico común</strong>: todos los modelos usarán las mismas variables, la misma muestra, la misma partición de entrenamiento/prueba y las mismas métricas.</p>
+<blockquote class="blockquote">
+<p><strong>Uso académico:</strong> esta comparación sirve para estudiar diferencias entre algoritmos. No es una evaluación clínica ni debe utilizarse para pronóstico individual.</p>
+</blockquote>
+<section id="una-muestra-balanceada-para-comparar-algoritmos" class="level3" data-number="9.24.1">
+<h3 data-number="9.24.1" class="anchored" data-anchor-id="una-muestra-balanceada-para-comparar-algoritmos"><span class="header-section-number">9.24.1</span> Una muestra balanceada para comparar algoritmos</h3>
+<p>La variable <code>MURIO</code> está muy desbalanceada en la base original. Si evaluáramos únicamente exactitud sobre una muestra aleatoria, un modelo podría obtener un valor alto simplemente prediciendo casi siempre la clase mayoritaria.</p>
+<p>Para este ejercicio tomamos, de forma reproducible, hasta 2 500 observaciones de cada clase. Esto produce un banco de pruebas balanceado. <strong>Las métricas obtenidas describen este benchmark educativo y no la prevalencia de defunción en la población.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>ruta_covid <span class="ot">&lt;-</span> <span class="st">"datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(ruta_covid)) {</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  covid_comp_base <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(ruta_covid, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>      MURIO, EDAD, NEUMONIA, DIABETES, HIPERTENSION,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>      OBESIDAD, RENAL_CRONICA, NUM_COMORBILIDADES</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">MURIO =</span> <span class="fu">factor</span>(</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>        MURIO,</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>  n_por_clase <span class="ot">&lt;-</span> <span class="fu">min</span>(</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2500</span>,</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">min</span>(<span class="fu">table</span>(covid_comp_base<span class="sc">$</span>MURIO))</span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>  covid_comp <span class="ot">&lt;-</span> covid_comp_base <span class="sc">|&gt;</span></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(MURIO) <span class="sc">|&gt;</span></span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_por_clase) <span class="sc">|&gt;</span></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a>  idx_train <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(</span>
+<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">split</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(covid_comp)), covid_comp<span class="sc">$</span>MURIO),</span>
+<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(i) <span class="fu">sample</span>(i, <span class="fu">floor</span>(<span class="fl">0.80</span> <span class="sc">*</span> <span class="fu">length</span>(i)))</span>
+<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a>  train_comp <span class="ot">&lt;-</span> covid_comp[idx_train, ]</span>
+<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a>  test_comp <span class="ot">&lt;-</span> covid_comp[<span class="sc">-</span>idx_train, ]</span>
+<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prop.table</span>(<span class="fu">table</span>(train_comp<span class="sc">$</span>MURIO))</span>
+<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prop.table</span>(<span class="fu">table</span>(test_comp<span class="sc">$</span>MURIO))</span>
+<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Sin defunción     Defunción 
+          0.5           0.5 </code></pre>
+</div>
+</div>
+</section>
+<section id="función-común-de-métricas" class="level3" data-number="9.24.2">
+<h3 data-number="9.24.2" class="anchored" data-anchor-id="función-común-de-métricas"><span class="header-section-number">9.24.2</span> Función común de métricas</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>metricas_covid_comunes <span class="ot">&lt;-</span> <span class="cf">function</span>(real, predicho) {</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  niveles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  real <span class="ot">&lt;-</span> <span class="fu">factor</span>(real, <span class="at">levels =</span> niveles)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  predicho <span class="ot">&lt;-</span> <span class="fu">factor</span>(predicho, <span class="at">levels =</span> niveles)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">Real =</span> real, <span class="at">Predicho =</span> predicho)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  VP <span class="ot">&lt;-</span> m[<span class="st">"Defunción"</span>, <span class="st">"Defunción"</span>]</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  FN <span class="ot">&lt;-</span> m[<span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>]</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  FP <span class="ot">&lt;-</span> m[<span class="st">"Sin defunción"</span>, <span class="st">"Defunción"</span>]</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  VN <span class="ot">&lt;-</span> m[<span class="st">"Sin defunción"</span>, <span class="st">"Sin defunción"</span>]</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>  div <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.na</span>(b) <span class="sc">||</span> b <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="cn">NA_real_</span>)</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(a <span class="sc">/</span> b)</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>  exactitud <span class="ot">&lt;-</span> <span class="fu">div</span>(VP <span class="sc">+</span> VN, <span class="fu">sum</span>(m))</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>  sensibilidad <span class="ot">&lt;-</span> <span class="fu">div</span>(VP, VP <span class="sc">+</span> FN)</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>  especificidad <span class="ot">&lt;-</span> <span class="fu">div</span>(VN, VN <span class="sc">+</span> FP)</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>  precision <span class="ot">&lt;-</span> <span class="fu">div</span>(VP, VP <span class="sc">+</span> FP)</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>  f1 <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">is.na</span>(precision) <span class="sc">||</span> <span class="fu">is.na</span>(sensibilidad) <span class="sc">||</span></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>            precision <span class="sc">+</span> sensibilidad <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA_real_</span></span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span> <span class="sc">*</span> precision <span class="sc">*</span> sensibilidad <span class="sc">/</span> (precision <span class="sc">+</span> sensibilidad)</span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">exactitud =</span> exactitud,</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">sensibilidad =</span> sensibilidad,</span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">especificidad =</span> especificidad,</span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> precision,</span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">f1 =</span> f1</span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="regresión-logística" class="level3" data-number="9.24.3">
+<h3 data-number="9.24.3" class="anchored" data-anchor-id="regresión-logística"><span class="header-section-number">9.24.3</span> 1. Regresión logística</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  modelo_log_comp <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>      OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> train_comp,</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> binomial</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  prob_log_comp <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_log_comp, test_comp, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  pred_log_comp <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(prob_log_comp <span class="sc">&gt;=</span> <span class="fl">0.50</span>, <span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>),</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">levels</span>(train_comp<span class="sc">$</span>MURIO)</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="k-nn" class="level3" data-number="9.24.4">
+<h3 data-number="9.24.4" class="anchored" data-anchor-id="k-nn"><span class="header-section-number">9.24.4</span> 2. k-NN</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  vars_comp <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"EDAD"</span>, <span class="st">"NEUMONIA"</span>, <span class="st">"DIABETES"</span>, <span class="st">"HIPERTENSION"</span>,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OBESIDAD"</span>, <span class="st">"RENAL_CRONICA"</span>, <span class="st">"NUM_COMORBILIDADES"</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  X_train <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(train_comp[vars_comp])</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  X_test <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(test_comp[vars_comp])</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  medias <span class="ot">&lt;-</span> <span class="fu">apply</span>(X_train, <span class="dv">2</span>, mean)</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  desv <span class="ot">&lt;-</span> <span class="fu">apply</span>(X_train, <span class="dv">2</span>, sd)</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>  desv[desv <span class="sc">==</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  X_train_z <span class="ot">&lt;-</span> <span class="fu">scale</span>(X_train, <span class="at">center =</span> medias, <span class="at">scale =</span> desv)</span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  X_test_z <span class="ot">&lt;-</span> <span class="fu">scale</span>(X_test, <span class="at">center =</span> medias, <span class="at">scale =</span> desv)</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>  pred_knn_comp <span class="ot">&lt;-</span> class<span class="sc">::</span><span class="fu">knn</span>(</span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">train =</span> X_train_z,</span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">test =</span> X_test_z,</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">cl =</span> train_comp<span class="sc">$</span>MURIO,</span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> <span class="dv">11</span></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="árbol-de-decisión" class="level3" data-number="9.24.5">
+<h3 data-number="9.24.5" class="anchored" data-anchor-id="árbol-de-decisión"><span class="header-section-number">9.24.5</span> 3. Árbol de decisión</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  modelo_arbol_comp <span class="ot">&lt;-</span> rpart<span class="sc">::</span><span class="fu">rpart</span>(</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>      OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> train_comp,</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"class"</span>,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> rpart<span class="sc">::</span><span class="fu">rpart.control</span>(</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">cp =</span> <span class="fl">0.002</span>,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">minsplit =</span> <span class="dv">60</span>,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">minbucket =</span> <span class="dv">20</span>,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">maxdepth =</span> <span class="dv">5</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  pred_arbol_comp <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>    modelo_arbol_comp,</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>    test_comp,</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"class"</span></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="random-forest" class="level3" data-number="9.24.6">
+<h3 data-number="9.24.6" class="anchored" data-anchor-id="random-forest"><span class="header-section-number">9.24.6</span> 4. Random Forest</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  modelo_rf_comp <span class="ot">&lt;-</span> ranger<span class="sc">::</span><span class="fu">ranger</span>(</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>      OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> train_comp,</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">num.trees =</span> <span class="dv">300</span>,</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mtry =</span> <span class="dv">3</span>,</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.node.size =</span> <span class="dv">20</span>,</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">classification =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">probability =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">2026</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>  pred_rf_comp <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_rf_comp, test_comp)<span class="sc">$</span>predictions</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="svm-radial" class="level3" data-number="9.24.7">
+<h3 data-number="9.24.7" class="anchored" data-anchor-id="svm-radial"><span class="header-section-number">9.24.7</span> 5. SVM radial</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  modelo_svm_comp <span class="ot">&lt;-</span> e1071<span class="sc">::</span><span class="fu">svm</span>(</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>      OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> train_comp,</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="st">"radial"</span>,</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost =</span> <span class="dv">1</span>,</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">7</span>,</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">scale =</span> <span class="cn">TRUE</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  pred_svm_comp <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_svm_comp, test_comp)</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="naive-bayes" class="level3" data-number="9.24.8">
+<h3 data-number="9.24.8" class="anchored" data-anchor-id="naive-bayes"><span class="header-section-number">9.24.8</span> 6. Naive Bayes</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  train_nb_comp <span class="ot">&lt;-</span> train_comp <span class="sc">|&gt;</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">NEUMONIA =</span> <span class="fu">factor</span>(NEUMONIA),</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">DIABETES =</span> <span class="fu">factor</span>(DIABETES),</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">HIPERTENSION =</span> <span class="fu">factor</span>(HIPERTENSION),</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">OBESIDAD =</span> <span class="fu">factor</span>(OBESIDAD),</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">RENAL_CRONICA =</span> <span class="fu">factor</span>(RENAL_CRONICA)</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  test_nb_comp <span class="ot">&lt;-</span> test_comp <span class="sc">|&gt;</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">NEUMONIA =</span> <span class="fu">factor</span>(NEUMONIA, <span class="at">levels =</span> <span class="fu">levels</span>(train_nb_comp<span class="sc">$</span>NEUMONIA)),</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">DIABETES =</span> <span class="fu">factor</span>(DIABETES, <span class="at">levels =</span> <span class="fu">levels</span>(train_nb_comp<span class="sc">$</span>DIABETES)),</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">HIPERTENSION =</span> <span class="fu">factor</span>(HIPERTENSION, <span class="at">levels =</span> <span class="fu">levels</span>(train_nb_comp<span class="sc">$</span>HIPERTENSION)),</span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">OBESIDAD =</span> <span class="fu">factor</span>(OBESIDAD, <span class="at">levels =</span> <span class="fu">levels</span>(train_nb_comp<span class="sc">$</span>OBESIDAD)),</span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">RENAL_CRONICA =</span> <span class="fu">factor</span>(RENAL_CRONICA, <span class="at">levels =</span> <span class="fu">levels</span>(train_nb_comp<span class="sc">$</span>RENAL_CRONICA))</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>  modelo_nb_comp <span class="ot">&lt;-</span> e1071<span class="sc">::</span><span class="fu">naiveBayes</span>(</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>    MURIO <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span></span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>      OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> train_nb_comp,</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">laplace =</span> <span class="dv">1</span></span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>  pred_nb_comp <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_nb_comp, test_nb_comp, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="red-neuronal" class="level3" data-number="9.24.9">
+<h3 data-number="9.24.9" class="anchored" data-anchor-id="red-neuronal"><span class="header-section-number">9.24.9</span> 7. Red neuronal</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"train_comp"</span>)) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  train_nn_comp <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(X_train_z)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  test_nn_comp <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(X_test_z)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  train_nn_comp<span class="sc">$</span>MURIO_NUM <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(train_comp<span class="sc">$</span>MURIO <span class="sc">==</span> <span class="st">"Defunción"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  modelo_nn_comp <span class="ot">&lt;-</span> neuralnet<span class="sc">::</span><span class="fu">neuralnet</span>(</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    MURIO_NUM <span class="sc">~</span> EDAD <span class="sc">+</span> NEUMONIA <span class="sc">+</span> DIABETES <span class="sc">+</span> HIPERTENSION <span class="sc">+</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>      OBESIDAD <span class="sc">+</span> RENAL_CRONICA <span class="sc">+</span> NUM_COMORBILIDADES,</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> train_nn_comp,</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">hidden =</span> <span class="dv">5</span>,</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">linear.output =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">lifesign =</span> <span class="st">"none"</span>,</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">stepmax =</span> <span class="fl">1e6</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>  prob_nn_comp <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>    neuralnet<span class="sc">::</span><span class="fu">compute</span>(</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>      modelo_nn_comp,</span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>      test_nn_comp[vars_comp]</span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>    )<span class="sc">$</span>net.result[, <span class="dv">1</span>]</span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>  pred_nn_comp <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(prob_nn_comp <span class="sc">&gt;=</span> <span class="fl">0.50</span>, <span class="st">"Defunción"</span>, <span class="st">"Sin defunción"</span>),</span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">levels</span>(train_comp<span class="sc">$</span>MURIO)</span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="tabla-comparativa-final" class="level3" data-number="9.24.10">
+<h3 data-number="9.24.10" class="anchored" data-anchor-id="tabla-comparativa-final"><span class="header-section-number">9.24.10</span> Tabla comparativa final</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"pred_nn_comp"</span>)) {</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  comparacion_covid_modelos <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"Regresión logística"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_log_comp)),</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"k-NN (k=11)"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_knn_comp)),</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"Árbol de decisión"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_arbol_comp)),</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"Random Forest"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_rf_comp)),</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"SVM radial"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_svm_comp)),</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"Naive Bayes"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_nb_comp)),</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cbind</span>(<span class="at">modelo =</span> <span class="st">"Red neuronal"</span>, <span class="fu">metricas_covid_comunes</span>(test_comp<span class="sc">$</span>MURIO, pred_nn_comp))</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  comparacion_covid_modelos <span class="sc">|&gt;</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(exactitud, sensibilidad, especificidad, precision, f1),</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>        <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>)</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               modelo exactitud sensibilidad especificidad precision    f1
+1 Regresión logística     0.900        0.890         0.910     0.908 0.899
+2         k-NN (k=11)     0.902        0.898         0.906     0.905 0.902
+3   Árbol de decisión     0.904        0.906         0.902     0.902 0.904
+4       Random Forest     0.905        0.910         0.900     0.901 0.905
+5          SVM radial     0.903        0.902         0.904     0.904 0.903
+6         Naive Bayes     0.868        0.858         0.878     0.876 0.867
+7        Red neuronal     0.906        0.902         0.910     0.909 0.906</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"comparacion_covid_modelos"</span>)) {</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  comp_larga <span class="ot">&lt;-</span> comparacion_covid_modelos <span class="sc">|&gt;</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">c</span>(exactitud, sensibilidad, especificidad, precision, f1),</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"metrica"</span>,</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"valor"</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>    comp_larga,</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> modelo, <span class="at">y =</span> valor, <span class="at">fill =</span> metrica)</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Comparación común de modelos con COVID-19"</span>,</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">subtitle =</span> <span class="st">"Misma muestra balanceada, mismas variables y misma partición 80/20"</span>,</span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Valor de la métrica"</span>,</span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Métrica"</span></span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tema_libro</span>()</span>
+<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="08-evaluacion-modelos_files/figure-html/covid-comparacion-grafica-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="No existe un ganador universal">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>No existe un ganador universal
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El modelo con mayor exactitud no necesariamente es el mejor para todos los objetivos. La sensibilidad prioriza detectar defunciones; la especificidad prioriza reconocer correctamente los casos sin defunción; precisión y F1 ofrecen otras perspectivas. Además, aquí se usaron hiperparámetros didácticos fijos, no una búsqueda exhaustiva de optimización.</p>
+</div>
+</div>
+</section>
+<section id="lectura-recomendada-de-la-tabla" class="level3" data-number="9.24.11">
+<h3 data-number="9.24.11" class="anchored" data-anchor-id="lectura-recomendada-de-la-tabla"><span class="header-section-number">9.24.11</span> Lectura recomendada de la tabla</h3>
+<p>Al comparar los modelos conviene preguntar:</p>
+<ol type="1">
+<li>¿Cuál ofrece el mejor equilibrio entre sensibilidad y especificidad?</li>
+<li>¿Algún modelo gana en exactitud pero pierde mucha sensibilidad?</li>
+<li>¿La mayor complejidad de Random Forest, SVM o la red neuronal produce una mejora suficiente frente a la regresión logística?</li>
+<li>¿Un modelo sencillo sería preferible si ofrece resultados parecidos y mayor interpretabilidad?</li>
+<li>¿Cambiaría la conclusión si la muestra conservara la fuerte desproporción original entre clases?</li>
+</ol>
+<p>Esta comparación cierra la ruta supervisada del caso COVID-19 y conecta los capítulos de algoritmos con una evaluación común y reproducible.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
