@@ -1,16 +1,14 @@
-name: Publicar capítulos HTML actualizados
+name: Publicar comparación COVID capítulo 9
 
 on:
   push:
     branches: [main]
     paths:
-      - "12-kmeans.qmd"
-      - "index.qmd"
+      - "08-evaluacion-modelos.qmd"
+      - "scripts/agregar_comparacion_covid_capitulo_9.py"
+      - "datos/covid19/procesados/**"
       - "_quarto.yml"
       - "util_graficas.R"
-      - "scripts/agregar_covid_kmeans.py"
-      - "datos/covid19/procesados/**"
-      - "datos/covid19/diccionarios/**"
       - "_extensions/**"
       - ".github/workflows/render-quarto.yml"
   workflow_dispatch:
@@ -26,9 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply COVID section to k-means
+      - name: Apply integrated COVID comparison to chapter 9
         run: |
-          python scripts/agregar_covid_kmeans.py
+          python scripts/agregar_comparacion_covid_capitulo_9.py
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -49,42 +47,45 @@ jobs:
             any::readr
             any::dplyr
             any::tidyr
-            any::shiny
-            any::shinylive
-            any::cluster
-          cache-version: 4
+            any::scales
+            any::class
+            any::rpart
+            any::ranger
+            any::e1071
+            any::neuralnet
+          cache-version: 5
 
       - name: Verify R packages
         shell: Rscript {0}
         run: |
           pkgs <- c("rmarkdown", "knitr", "ggplot2", "readr", "dplyr", "tidyr",
-                    "shiny", "shinylive", "cluster")
+                    "scales", "class", "rpart", "ranger", "e1071", "neuralnet")
           faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
           if (length(faltan)) stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
           cat("R:", R.version.string, "\n")
 
-      - name: Render cover and k-means chapter as HTML
+      - name: Render chapter 9 as HTML
         run: |
-          quarto render index.qmd --to html --no-cache
-          quarto render 12-kmeans.qmd --to html --no-cache
+          quarto render 08-evaluacion-modelos.qmd --to html --no-cache
 
-      - name: Normalize PDF links and verify COVID section
+      - name: Normalize PDF link and verify comparison
         run: |
-          for f in docs/index.html docs/12-kmeans.html; do
-            sed -i 's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g' "$f"
-          done
-
-          grep -q "Caso aplicado B: k-means con COVID-19" docs/12-kmeans.html
-          grep -q "MURIO queda fuera del agrupamiento" docs/12-kmeans.html
+          sed -i 's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g' docs/08-evaluacion-modelos.html
+          grep -q "Comparación integrada de modelos con COVID-19" docs/08-evaluacion-modelos.html
+          grep -q "Regresión logística" docs/08-evaluacion-modelos.html
+          grep -q "Random Forest" docs/08-evaluacion-modelos.html
+          grep -q "SVM radial" docs/08-evaluacion-modelos.html
+          grep -q "Naive Bayes" docs/08-evaluacion-modelos.html
+          grep -q "Red neuronal" docs/08-evaluacion-modelos.html
 
       - name: Commit updated source and HTML chapter
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A 12-kmeans.qmd docs/index.html docs/12-kmeans.html docs/site_libs
+          git add -A 08-evaluacion-modelos.qmd docs/08-evaluacion-modelos.html docs/site_libs
           if git diff --cached --quiet; then
             echo "No hay cambios para publicar"
           else
-            git commit -m "Publicar capítulo 13 k-means con caso COVID [skip ci]"
+            git commit -m "Publicar comparación integrada de modelos COVID [skip ci]"
             git push
           fi
