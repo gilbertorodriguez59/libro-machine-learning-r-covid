@@ -19,6 +19,7 @@ CHAPTERS = [
 
 OUT = Path("Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb")
 REPO = "https://github.com/gilbertorodriguez59/libro-machine-learning-r-covid"
+RAW = "https://raw.githubusercontent.com/gilbertorodriguez59/libro-machine-learning-r-covid/main"
 
 
 def md_cell(text):
@@ -38,13 +39,11 @@ def code_cell(code):
 
 
 def clean_markdown(text):
-    # Quarto-only structural divs and attributes are not useful in Colab Markdown.
     text = re.sub(r'^:::\s*\{[^\n]*\}\s*$', '', text, flags=re.M)
     text = re.sub(r'^:::\s*$', '', text, flags=re.M)
     text = re.sub(r'\{target="_blank"\}', '', text)
     text = re.sub(r'\{fig-alt="[^"]*"[^}]*\}', '', text)
     text = re.sub(r'\{width="?[0-9.%]+"?\}', '', text)
-    # Hide raw HTML widgets/iframes; keep a short explanatory note.
     text = re.sub(r'<div[^>]*>.*?</div>', '', text, flags=re.S|re.I)
     text = re.sub(r'<iframe.*?</iframe>', '*Video disponible en la versión web del libro.*', text, flags=re.S|re.I)
     text = re.sub(r'\n{3,}', '\n\n', text)
@@ -53,7 +52,6 @@ def clean_markdown(text):
 
 def parse_qmd(path):
     text = Path(path).read_text(encoding="utf-8-sig")
-    # Remove YAML front matter when present.
     if text.startswith("---\n"):
         end = text.find("\n---\n", 4)
         if end != -1:
@@ -70,9 +68,7 @@ def parse_qmd(path):
         engine = m.group(1).strip()
         body = m.group(2)
         if engine.startswith("r"):
-            # Knitr cell options are comments in R but are not needed in Colab.
             body = "\n".join(line for line in body.splitlines() if not line.lstrip().startswith("#|"))
-            # Skip chunks explicitly disabled for evaluation.
             if "eval: false" not in m.group(2):
                 cells.append(code_cell(body))
         elif engine.startswith("shinylive-r"):
@@ -118,11 +114,11 @@ Cuaderno completo y ejecutable que acompaña la versión web y PDF del libro. Fu
 
 Repositorio del libro: {REPO}
 
-> **Importante:** ejecute las celdas en orden durante la primera sesión. Los laboratorios Shinylive permanecen en la versión web; en Colab se incluyen los códigos R reproducibles de los capítulos.
+> **Importante:** ejecute las celdas en orden durante la primera sesión. La primera celda instala paquetes y descarga automáticamente los archivos auxiliares y datos preparados necesarios para los ejemplos. Los laboratorios Shinylive permanecen en la versión web.
 """
 all_cells.append(md_cell(intro))
 
-setup = r'''# Preparación recomendada para Google Colab con runtime R
+setup = f'''# Preparación automática para Google Colab con runtime R
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 
 paquetes_libro <- c(
@@ -136,7 +132,33 @@ faltantes <- paquetes_libro[
 ]
 if (length(faltantes)) install.packages(faltantes)
 
-cat("Paquetes listos. R:", R.version.string, "\n")
+# Crear la misma estructura de carpetas que usa el libro
+dir.create("datos", showWarnings = FALSE, recursive = TRUE)
+dir.create("datos/covid19/procesados", showWarnings = FALSE, recursive = TRUE)
+dir.create("datos/covid19/muestras", showWarnings = FALSE, recursive = TRUE)
+dir.create("datos/covid19/diccionarios", showWarnings = FALSE, recursive = TRUE)
+
+# Archivos necesarios para ejecutar los ejemplos sin clonar el repositorio
+archivos_colab <- c(
+  "util_graficas.R" = "{RAW}/util_graficas.R",
+  "datos/atus_ml_preparado.csv" = "{RAW}/datos/atus_ml_preparado.csv",
+  "datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz" = "{RAW}/datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz",
+  "datos/covid19/muestras/covid19_mexico_2022_muestra.csv.gz" = "{RAW}/datos/covid19/muestras/covid19_mexico_2022_muestra.csv.gz",
+  "datos/covid19/diccionarios/diccionario_covid19_ml.csv" = "{RAW}/datos/covid19/diccionarios/diccionario_covid19_ml.csv"
+)
+
+for (destino in names(archivos_colab)) {{
+  if (!file.exists(destino)) {{
+    message("Descargando: ", destino)
+    download.file(archivos_colab[[destino]], destino, mode = "wb", quiet = TRUE)
+  }}
+}}
+
+stopifnot(file.exists("util_graficas.R"))
+source("util_graficas.R")
+
+cat("Entorno listo. R:", R.version.string, "\n")
+cat("Archivos auxiliares y datos preparados disponibles.\n")
 '''
 all_cells.append(code_cell(setup))
 
