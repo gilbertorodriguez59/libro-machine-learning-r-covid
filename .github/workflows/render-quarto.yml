@@ -1,17 +1,23 @@
-name: Publicar comparación COVID y k-means
+name: Revision final, web, PDF y Colab
 
 on:
   push:
     branches: [main]
     paths:
-      - "08-evaluacion-modelos.qmd"
-      - "12-kmeans.qmd"
-      - "scripts/agregar_comparacion_covid_capitulo_9.py"
-      - "scripts/agregar_covid_kmeans.py"
+      - "*.qmd"
+      - "*.yml"
+      - "*.yaml"
+      - "*.R"
+      - "*.ipynb"
+      - "scripts/**"
+      - "latex/**"
+      - "imagenes/**"
+      - "recursos/**"
+      - "recursos_colab/**"
       - "datos/covid19/procesados/**"
+      - "datos/covid19/muestras/**"
       - "datos/covid19/diccionarios/**"
-      - "_quarto.yml"
-      - "util_graficas.R"
+      - "datos/atus_ml_preparado.csv"
       - "_extensions/**"
       - ".github/workflows/render-quarto.yml"
   workflow_dispatch:
@@ -20,17 +26,35 @@ permissions:
   contents: write
 
 jobs:
-  render-html:
+  cierre:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply COVID comparison and k-means section
+      - name: Apply final interactives
         run: |
-          python scripts/agregar_comparacion_covid_capitulo_9.py
-          python scripts/agregar_covid_kmeans.py
+          python scripts/agregar_interactivos_cierre.py
+
+      - name: Regenerate complete Colab notebook
+        run: |
+          python scripts/generar_colab_desde_quarto.py
+          python - <<'PY'
+          import json
+          p = 'Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb'
+          x = json.load(open(p, encoding='utf-8'))
+          assert x['nbformat'] == 4
+          assert len(x['cells']) > 100
+          s = json.dumps(x, ensure_ascii=False)
+          assert 'Caso aplicado B: k-NN con COVID-19' in s
+          assert 'Caso aplicado B: k-means con COVID-19' in s
+          print('Colab validado:', len(x['cells']), 'celdas')
+          PY
+
+      - name: Run editorial and structural review
+        run: |
+          python scripts/revision_cierre.py
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -40,6 +64,24 @@ jobs:
         with:
           r-version: 'release'
           use-public-rspm: true
+
+      - name: Setup TinyTeX
+        uses: r-lib/actions/setup-tinytex@v2
+
+      - name: Install system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libfontconfig1-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libfreetype6-dev \
+            libpng-dev \
+            libtiff-dev \
+            libjpeg-dev
 
       - name: Install R dependencies with pak
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -51,65 +93,97 @@ jobs:
             any::readr
             any::dplyr
             any::tidyr
+            any::stringr
+            any::data.table
             any::scales
             any::class
             any::rpart
+            any::randomForest
             any::ranger
             any::e1071
+            any::naivebayes
             any::neuralnet
             any::cluster
+            any::caret
+            any::factoextra
+            any::plotly
+            any::DT
+            any::htmltools
+            any::jsonlite
+            any::fs
             any::shiny
             any::shinylive
-          cache-version: 7
+          cache-version: 8
 
-      - name: Verify R and Shinylive packages
+      - name: Verify R packages
         shell: Rscript {0}
         run: |
           pkgs <- c(
             "rmarkdown", "knitr", "ggplot2", "readr", "dplyr", "tidyr",
-            "scales", "class", "rpart", "ranger", "e1071", "neuralnet",
-            "cluster", "shiny", "shinylive"
+            "stringr", "data.table", "scales", "class", "rpart", "randomForest",
+            "ranger", "e1071", "naivebayes", "neuralnet", "cluster", "caret",
+            "factoextra", "plotly", "DT", "shiny", "shinylive"
           )
           faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
           if (length(faltan)) stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
           cat("R:", R.version.string, "\n")
           cat("shinylive:", as.character(packageVersion("shinylive")), "\n")
 
-      - name: Render chapter 9 and chapter 13 as HTML
+      - name: Render complete web book
         run: |
-          quarto render 08-evaluacion-modelos.qmd --to html --no-cache
-          quarto render 12-kmeans.qmd --to html --no-cache
+          quarto render --to html --no-cache 2>&1 | tee render-web-final.log
+          if grep -E "\[WARNING\].*Div at line.*unclosed" render-web-final.log; then
+            echo "Se detectaron Div sin cerrar en la web"
+            exit 1
+          fi
 
-      - name: Normalize PDF links and verify COVID sections
+      - name: Normalize PDF links in HTML
         run: |
-          for f in docs/08-evaluacion-modelos.html docs/12-kmeans.html; do
-            sed -i 's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g' "$f"
-          done
+          find docs -type f -name '*.html' -print0 | xargs -0 sed -i \
+            's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
 
+      - name: Render complete PDF book
+        run: |
+          quarto render --profile pdf --to pdf --no-cache 2>&1 | tee render-pdf-final.log
+          if grep -E "\[WARNING\].*Div at line.*unclosed" render-pdf-final.log; then
+            echo "Se detectaron Div sin cerrar en el PDF"
+            exit 1
+          fi
+          test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
+
+      - name: Final validation
+        run: |
+          test -f docs/index.html
+          test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
+          test -s docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
+          test -f Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
+
+          grep -q "Laboratorio interactivo ATUS: mes, hora y víctimas" docs/03-analisis-exploratorio.html
+          grep -q "Laboratorio interactivo COVID: agrupamiento k-means" docs/12-kmeans.html
           grep -q "Comparación integrada de modelos con COVID-19" docs/08-evaluacion-modelos.html
-          grep -q "Regresión logística" docs/08-evaluacion-modelos.html
-          grep -q "Random Forest" docs/08-evaluacion-modelos.html
-          grep -q "SVM radial" docs/08-evaluacion-modelos.html
-          grep -q "Naive Bayes" docs/08-evaluacion-modelos.html
-          grep -q "Red neuronal" docs/08-evaluacion-modelos.html
-
           grep -q "Caso aplicado B: k-means con COVID-19" docs/12-kmeans.html
-          grep -q "MURIO queda fuera del agrupamiento" docs/12-kmeans.html
+          grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
+          grep -qi "shinylive" docs/03-analisis-exploratorio.html
+          grep -qi "shinylive" docs/12-kmeans.html
 
-      - name: Commit updated sources and HTML chapters
+          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
+          rm -f docs/libro-machine-learning-r.pdf
+
+      - name: Commit final reviewed version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add -A \
-            08-evaluacion-modelos.qmd \
+            03-analisis-exploratorio.qmd \
             12-kmeans.qmd \
-            docs/08-evaluacion-modelos.html \
-            docs/12-kmeans.html \
-            docs/site_libs
+            Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb \
+            revision-cierre.md \
+            docs
 
           if git diff --cached --quiet; then
-            echo "No hay cambios para publicar"
+            echo "No hay cambios finales para publicar"
           else
-            git commit -m "Publicar comparación COVID y caso k-means [skip ci]"
+            git commit -m "Revision final: interactivos ATUS-COVID, Colab y PDF actualizado [skip ci]"
             git push
           fi
