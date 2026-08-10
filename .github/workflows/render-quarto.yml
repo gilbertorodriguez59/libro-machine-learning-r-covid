@@ -33,6 +33,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Apply robust ATUS preparation fix
+        run: |
+          python scripts/corregir_preparacion_atus.py
+
       - name: Apply final interactives
         run: |
           python scripts/agregar_interactivos_cierre.py
@@ -113,7 +117,7 @@ jobs:
             any::fs
             any::shiny
             any::shinylive
-          cache-version: 8
+          cache-version: 9
 
       - name: Verify R packages
         shell: Rscript {0}
@@ -175,6 +179,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A \
+            02-preparacion-datos.qmd \
             03-analisis-exploratorio.qmd \
             12-kmeans.qmd \
             Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb \
@@ -184,6 +189,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
           else
-            git commit -m "Revision final: interactivos ATUS-COVID, Colab y PDF actualizado [skip ci]"
+            git commit -m "Revision final: ATUS robusto, interactivos, Colab y PDF actualizado [skip ci]"
             git push
           fi
