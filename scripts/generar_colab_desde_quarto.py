@@ -114,7 +114,14 @@ Cuaderno completo y ejecutable que acompaña la versión web y PDF del libro. Fu
 
 Repositorio del libro: {REPO}
 
-> **Importante:** ejecute las celdas en orden durante la primera sesión. La primera celda instala paquetes y descarga automáticamente los archivos auxiliares y datos preparados necesarios para los ejemplos. Los laboratorios Shinylive permanecen en la versión web.
+## Cómo ejecutar este cuaderno
+
+1. **Ejecute primero la celda de preparación automática.** Esa celda instala los paquetes faltantes y descarga `util_graficas.R`, la base ATUS preparada y los archivos COVID-19 utilizados por los ejemplos.
+2. **Ejecute las celdas en orden, de arriba hacia abajo.** Muchos ejemplos crean objetos que se utilizan en las celdas siguientes.
+3. **Si Colab reinicia o desconecta el entorno de ejecución, vuelva a ejecutar desde la primera celda.** Los objetos que estaban en memoria se pierden al reiniciarse la sesión.
+4. Los laboratorios Shinylive permanecen en la versión web; en Colab se conserva el código R reproducible asociado a cada capítulo.
+
+> **Comprobación rápida:** cuando la primera celda termine correctamente debe mostrar `Entorno listo` y `Archivos auxiliares y datos preparados disponibles`.
 """
 all_cells.append(md_cell(intro))
 
@@ -155,6 +162,8 @@ for (destino in names(archivos_colab)) {{
 }}
 
 stopifnot(file.exists("util_graficas.R"))
+stopifnot(file.exists("datos/atus_ml_preparado.csv"))
+stopifnot(file.exists("datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"))
 source("util_graficas.R")
 
 cat("Entorno listo. R:", R.version.string, "\n")
