@@ -203,7 +203,7 @@ if (exists("modelo_covid_km")) {
       y = "Componente principal 2",
       color = "Cluster"
     ) +
-    tema_libro()
+    ggplot2::theme_minimal()
 }
 ```
 
@@ -217,7 +217,6 @@ if title not in text:
         raise SystemExit("No se encontró el marcador de materiales complementarios")
     text = text.replace(marker, section + marker, 1)
 
-# Corrige la frase que anuncia un capítulo PCA inexistente en el índice actual.
 old = "\nEn el siguiente capítulo estudiaremos el **Análisis de Componentes Principales (PCA)** como técnica de reducción de dimensión.\n"
 new = "\nCon este capítulo cerramos la ruta principal de algoritmos del libro. Los apéndices reúnen el glosario, las referencias y los índices para consulta.\n"
 text = text.replace(old, new)
