@@ -121,7 +121,7 @@ jobs:
             any::fs
             any::shiny
             any::shinylive
-          cache-version: 11
+          cache-version: 12
 
       - name: Verify R packages
         shell: Rscript {0}
@@ -137,24 +137,13 @@ jobs:
           cat("R:", R.version.string, "\n")
           cat("shinylive:", as.character(packageVersion("shinylive")), "\n")
 
-      - name: Render complete web book
+      - name: Render complete PDF book first
         run: |
-          quarto render --to html --no-cache 2>&1 | tee render-web-final.log
-          if grep -E "\[WARNING\].*Div at line.*unclosed" render-web-final.log; then
-            echo "Se detectaron Div sin cerrar en la web"
-            exit 1
-          fi
-
-      - name: Normalize PDF links in HTML
-        run: |
-          find docs -type f -name '*.html' -print0 | xargs -0 sed -i \
-            's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
-
-      - name: Render complete PDF book
-        run: |
+          rm -rf docs .quarto _freeze
           quarto render --profile pdf --to pdf --no-cache 2>&1 | tee render-pdf-final.log
           test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
           test -s docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
+          cp docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf /tmp/libro-final.pdf
 
           if grep -E "\[WARNING\].*Div at line.*unclosed" render-pdf-final.log > div-warnings-pdf.txt; then
             echo "" >> revision-cierre.md
@@ -167,6 +156,24 @@ jobs:
           else
             echo "PDF generado sin advertencias de Div."
           fi
+
+      - name: Render complete web book
+        run: |
+          quarto render --to html --no-cache 2>&1 | tee render-web-final.log
+          if grep -E "\[WARNING\].*Div at line.*unclosed" render-web-final.log; then
+            echo "Se detectaron Div sin cerrar en la web"
+            exit 1
+          fi
+
+      - name: Restore PDF and normalize links
+        run: |
+          cp /tmp/libro-final.pdf docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
+
+          find docs -type f -name '*.html' -print0 | xargs -0 sed -i \
+            's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
+
+          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
+          rm -f docs/libro-machine-learning-r.pdf
 
       - name: Final validation
         run: |
@@ -182,9 +189,6 @@ jobs:
           grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
           grep -qi "shinylive" docs/03-analisis-exploratorio.html
           grep -qi "shinylive" docs/12-kmeans.html
-
-          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
-          rm -f docs/libro-machine-learning-r.pdf
 
       - name: Commit final reviewed version
         run: |
@@ -224,6 +228,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
           else
-            git commit -m "Revision final: publicar PDF, Colab e interactivos para inspeccion visual [skip ci]"
+            git commit -m "Revision final: web PDF Colab e interactivos sincronizados [skip ci]"
             git push
           fi
