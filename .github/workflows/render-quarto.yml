@@ -60,7 +60,7 @@ jobs:
             any::cluster
             any::shiny
             any::shinylive
-          cache-version: 6
+          cache-version: 7
 
       - name: Verify R and Shinylive packages
         shell: Rscript {0}
@@ -74,7 +74,6 @@ jobs:
           if (length(faltan)) stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
           cat("R:", R.version.string, "\n")
           cat("shinylive:", as.character(packageVersion("shinylive")), "\n")
-          shinylive:::quarto_ext()
 
       - name: Render chapter 9 and chapter 13 as HTML
         run: |
