@@ -1,5 +1,8 @@
 from pathlib import Path
 
+# -----------------------------------------------------------------------------
+# 1. Preparación robusta de ATUS
+# -----------------------------------------------------------------------------
 p = Path('02-preparacion-datos.qmd')
 text = p.read_text(encoding='utf-8')
 
@@ -129,3 +132,42 @@ for old, new, label in [
 
 p.write_text(text, encoding='utf-8')
 print('02-preparacion-datos.qmd actualizado')
+
+# -----------------------------------------------------------------------------
+# 2. Sintaxis moderna de dplyr::across() detectada durante la prueba de Colab
+# -----------------------------------------------------------------------------
+p_eval = Path('08-evaluacion-modelos.qmd')
+text_eval = p_eval.read_text(encoding='utf-8')
+
+old_across = '''resumen_cv <- resultados_cv |>
+  summarise(
+    across(
+      where(is.numeric) & !matches("pliegue"),
+      list(media = mean, desviacion = sd),
+      na.rm = TRUE
+    )
+  )
+'''
+
+new_across = '''resumen_cv <- resultados_cv |>
+  summarise(
+    across(
+      where(is.numeric) & !matches("pliegue"),
+      list(
+        media = ~ mean(.x, na.rm = TRUE),
+        desviacion = ~ sd(.x, na.rm = TRUE)
+      )
+    )
+  )
+'''
+
+if old_across in text_eval:
+    text_eval = text_eval.replace(old_across, new_across, 1)
+    print('Corregido: sintaxis across() para dplyr >= 1.1.0')
+elif new_across in text_eval:
+    print('Ya corregido: sintaxis across()')
+else:
+    raise SystemExit('No se encontró el bloque esperado de resumen_cv en 08-evaluacion-modelos.qmd')
+
+p_eval.write_text(text_eval, encoding='utf-8')
+print('08-evaluacion-modelos.qmd actualizado')
