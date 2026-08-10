@@ -4,12 +4,15 @@ on:
   push:
     branches: [main]
     paths:
-      - "05-knn.qmd"
-      - "06-arboles-decision.qmd"
-      - "07-random-forest.qmd"
+      - "09-svm.qmd"
+      - "10-naive-bayes.qmd"
+      - "11-redes-neuronales.qmd"
+      - "index.qmd"
       - "_quarto.yml"
       - "util_graficas.R"
+      - "scripts/agregar_covid_capitulos_10_12.py"
       - "datos/covid19/procesados/**"
+      - "datos/covid19/diccionarios/**"
       - "_extensions/**"
       - ".github/workflows/render-quarto.yml"
   workflow_dispatch:
@@ -24,6 +27,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Apply COVID sections to chapters 10 to 12
+        run: |
+          python scripts/agregar_covid_capitulos_10_12.py
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -46,46 +53,44 @@ jobs:
             any::tidyr
             any::shiny
             any::shinylive
-            any::rpart
-            any::ranger
-            any::class
-          cache-version: 2
+            any::e1071
+            any::neuralnet
+          cache-version: 3
 
       - name: Verify R packages
         shell: Rscript {0}
         run: |
           pkgs <- c("rmarkdown", "knitr", "ggplot2", "readr", "dplyr", "tidyr",
-                    "shiny", "shinylive", "rpart", "ranger", "class")
+                    "shiny", "shinylive", "e1071", "neuralnet")
           faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
           if (length(faltan)) stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
           cat("R:", R.version.string, "\n")
-          cat("rmarkdown:", as.character(packageVersion("rmarkdown")), "\n")
-          cat("knitr:", as.character(packageVersion("knitr")), "\n")
 
-      - name: Render only chapters 6 to 8 as HTML
+      - name: Render cover and chapters 10 to 12 as HTML
         run: |
-          quarto render 05-knn.qmd --to html --no-cache
-          quarto render 06-arboles-decision.qmd --to html --no-cache
-          quarto render 07-random-forest.qmd --to html --no-cache
+          quarto render index.qmd --to html --no-cache
+          quarto render 09-svm.qmd --to html --no-cache
+          quarto render 10-naive-bayes.qmd --to html --no-cache
+          quarto render 11-redes-neuronales.qmd --to html --no-cache
 
       - name: Normalize PDF links and verify COVID sections
         run: |
-          for f in docs/05-knn.html docs/06-arboles-decision.html docs/07-random-forest.html; do
+          for f in docs/index.html docs/09-svm.html docs/10-naive-bayes.html docs/11-redes-neuronales.html; do
             sed -i 's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g' "$f"
           done
 
-          grep -q "Caso aplicado B: k-NN con COVID-19" docs/05-knn.html
-          grep -q "Caso aplicado B: árbol de decisión con COVID-19" docs/06-arboles-decision.html
-          grep -q "Caso aplicado B: Random Forest con COVID-19" docs/07-random-forest.html
+          grep -q "Caso aplicado B: SVM con COVID-19" docs/09-svm.html
+          grep -q "Caso aplicado B: Naive Bayes con COVID-19" docs/10-naive-bayes.html
+          grep -q "Caso aplicado B: red neuronal con COVID-19" docs/11-redes-neuronales.html
 
-      - name: Commit updated HTML chapters
+      - name: Commit updated sources and HTML chapters
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A docs/05-knn.html docs/06-arboles-decision.html docs/07-random-forest.html docs/site_libs
+          git add -A 09-svm.qmd 10-naive-bayes.qmd 11-redes-neuronales.qmd docs/index.html docs/09-svm.html docs/10-naive-bayes.html docs/11-redes-neuronales.html docs/site_libs
           if git diff --cached --quiet; then
-            echo "No hay cambios HTML para publicar"
+            echo "No hay cambios para publicar"
           else
-            git commit -m "Publicar capítulos 6-8 con casos COVID [skip ci]"
+            git commit -m "Publicar capítulos 10-12 con casos COVID y actualizar portada [skip ci]"
             git push
           fi
