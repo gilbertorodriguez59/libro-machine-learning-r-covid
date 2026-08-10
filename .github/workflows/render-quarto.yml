@@ -41,6 +41,10 @@ jobs:
         run: |
           python scripts/agregar_interactivos_cierre.py
 
+      - name: Balance Quarto Divs
+        run: |
+          python scripts/corregir_divs_quarto.py
+
       - name: Regenerate complete Colab notebook
         run: |
           python scripts/generar_colab_desde_quarto.py
@@ -117,7 +121,7 @@ jobs:
             any::fs
             any::shiny
             any::shinylive
-          cache-version: 9
+          cache-version: 10
 
       - name: Verify R packages
         shell: Rscript {0}
@@ -179,9 +183,31 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A \
+            index.qmd \
+            00-bienvenida.qmd \
+            00-creditos-editoriales.qmd \
+            00-licencia-y-uso-academico.qmd \
+            00-prefacio.qmd \
+            00-agradecimientos.qmd \
+            00-cuaderno-google-colab.qmd \
+            01-introduccion.qmd \
             02-preparacion-datos.qmd \
             03-analisis-exploratorio.qmd \
+            04-regresion-lineal-multiple.qmd \
+            04-regresion-logistica.qmd \
+            05-knn.qmd \
+            06-arboles-decision.qmd \
+            07-random-forest.qmd \
+            08-evaluacion-modelos.qmd \
+            09-svm.qmd \
+            10-naive-bayes.qmd \
+            11-redes-neuronales.qmd \
             12-kmeans.qmd \
+            glosario.qmd \
+            referencias.qmd \
+            indice-figuras.qmd \
+            indice-tematico.qmd \
+            acerca-del-autor.qmd \
             Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb \
             revision-cierre.md \
             docs
@@ -189,6 +215,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
           else
-            git commit -m "Revision final: ATUS robusto, interactivos, Colab y PDF actualizado [skip ci]"
+            git commit -m "Revision final: Divs, fuentes PDF, interactivos y Colab [skip ci]"
             git push
           fi
