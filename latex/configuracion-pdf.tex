@@ -14,11 +14,12 @@
 \usepackage{needspace}
 \usepackage{etoolbox}
 
-% Tipografías incluidas normalmente con TeX Live/TinyTeX
-% Evitan depender de fuentes instaladas en Windows.
-\setmainfont{TeX Gyre Pagella}
-\setsansfont{TeX Gyre Heros}
-\setmonofont[Scale=0.86]{TeX Gyre Cursor}
+% Tipografías robustas para TeX Live/TinyTeX.
+% Latin Modern forma parte del ecosistema estándar de LaTeX y evita
+% depender de fuentes del sistema operativo del runner de GitHub Actions.
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont[Scale=0.86]{Latin Modern Mono}
 
 % Paleta visual
 \definecolor{AzulLibro}{HTML}{1F4E79}
