@@ -405,11 +405,12 @@ window.Quarto = {
   <li><a href="#observar-murio-después-de-formar-los-grupos" id="toc-observar-murio-después-de-formar-los-grupos" class="nav-link" data-scroll-target="#observar-murio-después-de-formar-los-grupos"><span class="header-section-number">13.20.7</span> Observar <code>MURIO</code> después de formar los grupos</a></li>
   <li><a href="#visualización-bidimensional-mediante-pca" id="toc-visualización-bidimensional-mediante-pca" class="nav-link" data-scroll-target="#visualización-bidimensional-mediante-pca"><span class="header-section-number">13.20.8</span> Visualización bidimensional mediante PCA</a></li>
   </ul></li>
-  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">13.21</span> Materiales complementarios del capítulo</a>
+  <li><a href="#laboratorio-interactivo-covid-agrupamiento-k-means" id="toc-laboratorio-interactivo-covid-agrupamiento-k-means" class="nav-link" data-scroll-target="#laboratorio-interactivo-covid-agrupamiento-k-means"><span class="header-section-number">13.21</span> Laboratorio interactivo COVID: agrupamiento k-means</a></li>
+  <li><a href="#materiales-complementarios-del-capítulo" id="toc-materiales-complementarios-del-capítulo" class="nav-link" data-scroll-target="#materiales-complementarios-del-capítulo"><span class="header-section-number">13.22</span> Materiales complementarios del capítulo</a>
   <ul class="collapse">
-  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">13.21.1</span> Video del capítulo</a></li>
+  <li><a href="#video-del-capítulo" id="toc-video-del-capítulo" class="nav-link" data-scroll-target="#video-del-capítulo"><span class="header-section-number">13.22.1</span> Video del capítulo</a></li>
   </ul></li>
-  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">13.22</span> Conclusión</a></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">13.23</span> Conclusión</a></li>
   </ul>
 </nav>
     </div>
@@ -1111,10 +1112,79 @@ shinyApp(ui, server)</code></pre>
 </div>
 </section>
 </section>
-<section id="materiales-complementarios-del-capítulo" class="level2" data-number="13.21">
-<h2 data-number="13.21" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">13.21</span> Materiales complementarios del capítulo</h2>
-<section id="video-del-capítulo" class="level3" data-number="13.21.1">
-<h3 data-number="13.21.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">13.21.1</span> Video del capítulo</h3>
+<section id="laboratorio-interactivo-covid-agrupamiento-k-means" class="level2" data-number="13.21">
+<h2 data-number="13.21" class="anchored" data-anchor-id="laboratorio-interactivo-covid-agrupamiento-k-means"><span class="header-section-number">13.21</span> Laboratorio interactivo COVID: agrupamiento k-means</h2>
+<p>Este laboratorio utiliza una <strong>submuestra reproducible de la muestra COVID-19 México 2022 incluida en el libro</strong>. Puedes modificar el número de clusters y observar cómo cambian los perfiles en una proyección de componentes principales.</p>
+<pre class="shinylive-r" data-engine="r"><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| viewerHeight: 780
+#| components: [viewer]
+
+library(shiny)
+
+covid_interactivo &lt;- data.frame(
+  EDAD = c(41,20,13,45,67,60,25,60,28,20,37,3,72,57,31,61,50,33,58,25,92,74,12,30,36,58,20,69,51,24,47,29,28,49,42,67,81,30,20,37,28,74,59,37,86,33,18,56,36,56,64,23,47,27,82,69,43,50,62,26,22,31,40,34,36,63,88,54,22,53,22,23,26,53,55,24,36,82,33,38,41,45,46,83,36,60,75,53,26,24,62,54,65,69,17,31,29,91,75,31,48,31,21,79,67,70,40,38,49,50,51,36,45,83,49,37,56,32,21,21,21,76,62,14,38,82,52,46,78,86,27,43,54,42,60,39,73,67,70,65,44,61,77,32,90,82,61,79,74,92,21,44,52,87,73,59,33,20,71,58,7,44,30,79,74,89,79,24,30,19,56,3,67,31,75,21,52,59,41,69,64,54,80,23,60,77,49,56,59,23,44,38,53,60,57,34,80,37,65,41,46,38,36,42,56,71,50,36,57,17,55,33,25,55,60,61,29,74,47,48,31,23,71,37,57,20,88,70,61,81,29,19,31,48,60,34,56,23,35,34,91,82,49,63,75,24,89,22,24,35,67,36,38,80,29,75,60,52,52,33,56,44,12,38,31,92,62,22,26,59,29,41,36,50,66,71,41,44,29,41,71,39,22,64,48,18,70,25,65,14,33,11,44,32,59,59,36,4,90,54,7,81,54,77,11,40,20,53,34,34,44,87,32,35,23,26,39,55,65,41,20,89,31,50,63,51,31,8,52,26,70,64,34,46,82,68,40,59,24,41,59,44,76,48,30,72,41,43,51,49,39,35,24,40,28,39,73,29,56,68),
+  NEUMONIA = c(0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1),
+  DIABETES = c(0,0,0,0,1,1,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,1,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0),
+  HIPERTENSION = c(0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,1,0,1,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,1,1,0,0,0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,1,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0),
+  OBESIDAD = c(0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0),
+  RENAL_CRONICA = c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0),
+  NUM_COMORBILIDADES = c(1,0,0,0,3,2,0,0,1,0,2,0,3,0,0,2,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,1,3,0,0,0,0,0,0,0,2,0,0,0,0,1,1,0,1,0,1,1,1,3,0,1,0,0,0,0,0,1,3,1,2,1,0,0,0,0,1,0,0,2,0,0,2,0,1,0,0,1,2,0,0,0,0,0,1,0,0,0,0,3,1,0,1,0,0,0,0,2,2,1,1,0,0,0,0,2,1,0,2,0,0,0,0,0,0,0,0,0,1,0,2,1,0,0,1,0,2,0,1,0,4,0,0,0,1,0,3,2,1,1,2,0,0,0,0,5,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,3,2,3,0,0,2,1,0,2,0,0,0,0,3,0,2,0,1,0,0,1,0,0,0,2,0,0,1,0,0,0,0,0,0,0,0,2,1,2,1,0,0,0,2,0,0,0,0,1,2,0,0,0,0,3,0,0,0,0,0,0,0,2,0,0,0,0,3,0,0,0,2,0,2,5,0,1,1,3,1,0,0,0,0,0,2,2,1,0,0,0,0,1,0,1,0,1,1,1,0,0,0,0,0,0,0,0,1,0,3,0,0,0,1,0,1,2,0,0,1,0,0,0,1,1,0,2,1,0,0,0,2,4,0,0,0,0,1,0,1,2,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,2,0,0,0,3,0,2,1,0,0,0,0,0,0,0,0,0,0,0,4,0)
+)
+
+ui &lt;- fluidPage(
+  titlePanel("COVID-19: explorador k-means"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("k", "Número de clusters", min = 2, max = 6, value = 3, step = 1),
+      numericInput("semilla", "Semilla", value = 2026, min = 1),
+      helpText("MURIO no se utiliza para formar los grupos.")
+    ),
+    mainPanel(
+      plotOutput("grafica", height = "470px"),
+      tableOutput("centroides"),
+      textOutput("nota")
+    )
+  )
+)
+
+server &lt;- function(input, output, session) {
+  resultado &lt;- reactive({
+    X &lt;- scale(covid_interactivo)
+    set.seed(input$semilla)
+    km &lt;- kmeans(X, centers = input$k, nstart = 25)
+    pca &lt;- prcomp(X, center = FALSE, scale. = FALSE)
+    list(X = X, km = km, pca = pca)
+  })
+
+  output$grafica &lt;- renderPlot({
+    r &lt;- resultado()
+    plot(r$pca$x[,1], r$pca$x[,2],
+         col = r$km$cluster, pch = 19,
+         xlab = "Componente principal 1",
+         ylab = "Componente principal 2",
+         main = paste("COVID-19: k-means con k =", input$k))
+    grid()
+  })
+
+  output$centroides &lt;- renderTable({
+    r &lt;- resultado()
+    round(r$km$centers, 2)
+  }, rownames = TRUE)
+
+  output$nota &lt;- renderText({
+    paste0("Los números de cluster no tienen orden clínico. La solución actual explica perfiles de similitud para k = ", input$k, ".")
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+</section>
+<section id="materiales-complementarios-del-capítulo" class="level2" data-number="13.22">
+<h2 data-number="13.22" class="anchored" data-anchor-id="materiales-complementarios-del-capítulo"><span class="header-section-number">13.22</span> Materiales complementarios del capítulo</h2>
+<section id="video-del-capítulo" class="level3" data-number="13.22.1">
+<h3 data-number="13.22.1" class="anchored" data-anchor-id="video-del-capítulo"><span class="header-section-number">13.22.1</span> Video del capítulo</h3>
 <iframe width="100%" height="420" src="https://www.youtube.com/embed/mZgUlnSxrgA" title="Capítulo 13. Agrupamiento con k-means" frameborder="0" allowfullscreen="">
 </iframe>
 <table class="caption-top table">
@@ -1152,8 +1222,8 @@ shinyApp(ui, server)</code></pre>
 <p>Los materiales fueron creados con apoyo de NotebookLM de Google a partir del contenido del libro y revisados y adaptados por el autor.</p>
 </section>
 </section>
-<section id="conclusión" class="level2" data-number="13.22">
-<h2 data-number="13.22" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">13.22</span> Conclusión</h2>
+<section id="conclusión" class="level2" data-number="13.23">
+<h2 data-number="13.23" class="anchored" data-anchor-id="conclusión"><span class="header-section-number">13.23</span> Conclusión</h2>
 <p>k-means descubre grupos mediante distancias y centroides. Su utilidad depende de una preparación adecuada, una selección razonada de <span class="math inline">\(k\)</span> y una interpretación basada en los perfiles de cada cluster.</p>
 <p>Con este capítulo cerramos la ruta principal de algoritmos del libro. Los apéndices reúnen el glosario, las referencias y los índices para consulta.</p>
 
