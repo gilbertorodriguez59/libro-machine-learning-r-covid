@@ -9,6 +9,7 @@ on:
       - "*.yaml"
       - "*.R"
       - "*.ipynb"
+      - "colab/**"
       - "scripts/**"
       - "latex/**"
       - "imagenes/**"
@@ -45,19 +46,42 @@ jobs:
         run: |
           python scripts/corregir_divs_quarto.py
 
-      - name: Regenerate complete Colab notebook
+      - name: Regenerate master and chapter Colab notebooks
         run: |
           python scripts/generar_colab_desde_quarto.py
           python - <<'PY'
           import json
-          p = 'Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb'
-          x = json.load(open(p, encoding='utf-8'))
+          from pathlib import Path
+
+          master = Path('Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb')
+          assert master.exists()
+          x = json.load(open(master, encoding='utf-8'))
           assert x['nbformat'] == 4
           assert len(x['cells']) > 100
           s = json.dumps(x, ensure_ascii=False)
           assert 'Caso aplicado B: k-NN con COVID-19' in s
           assert 'Caso aplicado B: k-means con COVID-19' in s
-          print('Colab validado:', len(x['cells']), 'celdas')
+
+          indice = Path('colab/00-indice-colabs.ipynb')
+          assert indice.exists()
+
+          capitulos = sorted(Path('colab').glob('[0-9][0-9]-*.ipynb'))
+          capitulos = [p for p in capitulos if p.name != '00-indice-colabs.ipynb']
+          assert len(capitulos) == 13, f'Se esperaban 13 Colabs de capítulo y hay {len(capitulos)}'
+
+          for p in capitulos:
+              nb = json.load(open(p, encoding='utf-8'))
+              contenido = json.dumps(nb, ensure_ascii=False)
+              assert nb['nbformat'] == 4
+              assert 'independiente y autónomo' in contenido
+              assert 'Preparación automática y autónoma del capítulo' in contenido
+              assert 'util_graficas.R' in contenido
+              assert 'atus_ml_preparado.csv' in contenido
+              assert 'covid19_mexico_2022_ml_preparado.csv.gz' in contenido
+
+          print('Colab maestro validado:', len(x['cells']), 'celdas')
+          print('Índice Colab validado')
+          print('13 Colabs autónomos validados')
           PY
 
       - name: Run editorial and structural review
@@ -121,7 +145,7 @@ jobs:
             any::fs
             any::shiny
             any::shinylive
-          cache-version: 12
+          cache-version: 13
 
       - name: Verify R packages
         shell: Rscript {0}
@@ -181,12 +205,17 @@ jobs:
           test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
           test -s docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
           test -f Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
+          test -f colab/00-indice-colabs.ipynb
+          test -f colab/01-introduccion.ipynb
+          test -f colab/13-kmeans.ipynb
 
           grep -q "Laboratorio interactivo ATUS: mes, hora y víctimas" docs/03-analisis-exploratorio.html
           grep -q "Laboratorio interactivo COVID: agrupamiento k-means" docs/12-kmeans.html
           grep -q "Comparación integrada de modelos con COVID-19" docs/08-evaluacion-modelos.html
           grep -q "Caso aplicado B: k-means con COVID-19" docs/12-kmeans.html
           grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
+          grep -q "Índice de cuadernos por capítulo" docs/00-cuaderno-google-colab.html
+          grep -q "00-indice-colabs.ipynb" docs/00-cuaderno-google-colab.html
           grep -qi "shinylive" docs/03-analisis-exploratorio.html
           grep -qi "shinylive" docs/12-kmeans.html
 
@@ -222,12 +251,13 @@ jobs:
             indice-tematico.qmd \
             acerca-del-autor.qmd \
             Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb \
+            colab \
             revision-cierre.md \
             docs
 
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
           else
-            git commit -m "Revision final: web PDF Colab e interactivos sincronizados [skip ci]"
+            git commit -m "Publicar Colab maestro e independientes por capitulo [skip ci]"
             git push
           fi
