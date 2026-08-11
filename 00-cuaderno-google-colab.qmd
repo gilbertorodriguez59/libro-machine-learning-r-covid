@@ -1,94 +1,80 @@
-# Cuaderno completo para Google Colab {.unnumbered}
+# Google Colab: cuaderno completo y cuadernos por capítulo {.unnumbered}
 
-Además de la versión web y del documento PDF, el libro cuenta con un **cuaderno completo de Google Colab**. En él, las explicaciones aparecen en celdas de texto y cada bloque de código R se encuentra en una celda independiente para que pueda ejecutarse paso a paso.
+Además de la versión web y del documento PDF, el libro cuenta ahora con **dos formas complementarias de trabajar en Google Colab**:
 
-::: {.callout-tip title="Abrir o descargar el cuaderno"}
+1. un **cuaderno maestro completo**, con todos los capítulos en un solo archivo;
+2. **13 cuadernos independientes y autónomos**, uno por capítulo, pensados para estudiar o practicar un tema sin tener que ejecutar todo el libro.
 
-**Abrir directamente en Google Colab:**  
-[Ejecutar el libro completo en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+::: {.callout-tip title="Acceso recomendado"}
 
-**Descargar el archivo `.ipynb`:**  
-[Descargar el cuaderno completo](Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
+**Índice de cuadernos por capítulo:**  
+[Abrir el índice de Colabs](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/00-indice-colabs.ipynb)
+
+**Cuaderno maestro completo:**  
+[Abrir el libro completo en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)
 
 :::
 
+## Cuadernos autónomos por capítulo {.unnumbered}
 
+Cada cuaderno puede abrirse directamente y contiene su propia celda inicial de preparación. No es necesario ejecutar capítulos anteriores.
 
+| Capítulo | Tema | Abrir en Colab |
+|---:|---|---|
+| 1 | Introducción al aprendizaje automático | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb) |
+| 2 | Preparación de datos reales | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/02-preparacion-datos.ipynb) |
+| 3 | Análisis exploratorio de datos | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/03-analisis-exploratorio.ipynb) |
+| 4 | Regresión lineal simple y múltiple | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/04-regresion-lineal.ipynb) |
+| 5 | Regresión logística | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb) |
+| 6 | k vecinos más cercanos (k-NN) | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/06-knn.ipynb) |
+| 7 | Árboles de decisión | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/07-arboles-decision.ipynb) |
+| 8 | Random Forest | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/08-random-forest.ipynb) |
+| 9 | Evaluación y comparación de modelos | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/09-evaluacion-modelos.ipynb) |
+| 10 | Máquinas de vectores de soporte (SVM) | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/10-svm.ipynb) |
+| 11 | Naive Bayes | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/11-naive-bayes.ipynb) |
+| 12 | Redes neuronales | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/12-redes-neuronales.ipynb) |
+| 13 | Agrupamiento k-means | [Abrir](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/13-kmeans.ipynb) |
 
-## ¿Qué contiene el cuaderno? {.unnumbered}
+## ¿Qué significa que cada cuaderno sea autónomo? {.unnumbered}
 
-El cuaderno reproduce el contenido del libro y contiene:
+La primera celda de cada capítulo:
 
-- un índice navegable con todos los capítulos y secciones;
-- explicaciones conceptuales en celdas de texto;
-- fórmulas matemáticas;
-- códigos R separados en celdas independientes;
-- instalación y carga de los paquetes necesarios;
-- preparación y lectura de los datos ATUS;
-- análisis exploratorio;
-- regresión logística;
-- k vecinos más cercanos;
-- árboles de decisión;
-- Random Forest;
-- evaluación y comparación de modelos;
-- ejercicios, interpretaciones y referencias.
+- instala automáticamente los paquetes de R que hagan falta;
+- crea las carpetas necesarias;
+- descarga `util_graficas.R`;
+- descarga la base ATUS preparada;
+- descarga los archivos COVID-19 2022 utilizados por los ejemplos;
+- comprueba que los recursos existan antes de continuar;
+- carga las funciones gráficas del libro.
 
-## Cómo utilizarlo {.unnumbered}
+Por ello un estudiante puede abrir, por ejemplo, el capítulo de **SVM** o el de **Random Forest** y comenzar directamente desde ese cuaderno.
 
-1. Abra el enlace **Ejecutar el libro completo en Google Colab**.
-2. Inicie sesión con una cuenta de Google, si Colab lo solicita.
-3. Seleccione **Archivo → Guardar una copia en Drive** para conservar una copia editable.
+::: {.callout-warning title="Ejecute las celdas en orden dentro del capítulo"}
+Aunque los cuadernos por capítulo son independientes entre sí, dentro de cada cuaderno algunas celdas utilizan objetos creados en celdas anteriores. Si Colab reinicia o desconecta la sesión, vuelva a ejecutar desde la primera celda.
+:::
+
+## Cuaderno maestro completo {.unnumbered}
+
+El cuaderno maestro conserva todo el recorrido del libro en un solo archivo. Es útil para:
+
+- estudiar el libro completo de principio a fin;
+- disponer de una copia integral del código R;
+- comparar algoritmos en una misma sesión;
+- conservar todos los ejemplos ATUS y COVID-19 en un solo cuaderno.
+
+Debido a su extensión, para clases, prácticas y consultas rápidas se recomienda utilizar los cuadernos autónomos por capítulo.
+
+## Cómo trabajar en Google Colab {.unnumbered}
+
+1. Abra el índice o el capítulo que desea estudiar.
+2. Inicie sesión con una cuenta de Google si Colab lo solicita.
+3. Opcionalmente seleccione **Archivo → Guardar una copia en Drive**.
 4. Compruebe que el entorno de ejecución utilice **R**.
-5. Ejecute primero las celdas de preparación e instalación de paquetes.
-6. Continúe en orden, ejecutando cada celda con el botón de reproducción o con `Shift + Enter`.
+5. Ejecute primero la celda de preparación automática.
+6. Continúe en orden con el botón de reproducción o con `Shift + Enter`.
 
-::: {.callout-warning title="Ejecución en orden"}
-Algunos capítulos utilizan objetos creados en capítulos anteriores. Durante la primera ejecución se recomienda avanzar en el orden establecido y no saltar las celdas de preparación de datos.
-:::
+## Libro web, Colab e interactivos {.unnumbered}
 
-## Diferencias entre el libro web y el cuaderno {.unnumbered}
+La versión web sigue siendo la opción principal para lectura, navegación y laboratorios Shinylive. Los cuadernos Colab están pensados para modificar código, repetir experimentos y trabajar con los modelos en R sin instalar R ni RStudio localmente.
 
-La versión web es la opción más cómoda para leer y consultar el contenido. El cuaderno de Colab está pensado para experimentar: permite modificar valores, ejecutar nuevamente los modelos y observar cómo cambian los resultados sin instalar R ni RStudio en la computadora.
-
-::: {.callout-note title="Datos y acceso a internet"}
-El cuaderno necesita conexión a internet para instalar paquetes y descargar los archivos de datos cuando no estén disponibles en la sesión. La descarga de ATUS puede tardar debido al tamaño de la base.
-:::
-
-
-## Ejecución autónoma en Google Colab
-
-El cuaderno incluye una celda inicial de **preparación automática** que:
-
-- instala los paquetes de R que hagan falta;
-- define dentro del propio cuaderno todas las funciones gráficas;
-- crea la carpeta `datos`;
-- descarga las bases ATUS desde el repositorio estable cuando no estén presentes;
-- comprueba que los recursos necesarios estén disponibles.
-
-Por esta razón, el usuario no necesita descargar manualmente `util_graficas.R` ni subir archivos auxiliares a Colab.
-
-
-## Instalación automática de paquetes
-
-El cuaderno utiliza la función `cargar_paquete()`. Antes de cargar un paquete, comprueba si está instalado y, cuando hace falta, lo instala automáticamente desde CRAN. Esto evita errores como `there is no package called 'ranger'`.
-
-## Referencias bibliográficas en Colab
-
-En los capítulos Quarto se conservan claves como `@breiman1984classification`, porque Quarto las transforma al generar el libro. En Google Colab esas claves se sustituyen por citas legibles como **Breiman et al. (1984)**, y la bibliografía completa aparece al final del cuaderno.
-
-
-## Descarga automática de los datos
-
-Para evitar archivos demasiado grandes dentro del cuaderno, las bases ATUS se publican en formato comprimido `.csv.gz`. La primera celda de Colab:
-
-1. descarga los archivos comprimidos desde GitHub Pages;
-2. los descomprime automáticamente;
-3. guarda los CSV en la carpeta `datos`;
-4. comprueba que quedaron disponibles antes de continuar.
-
-Los archivos publicados son:
-
-- `recursos_colab/atus_ml_preparado.csv.gz`;
-- `recursos_colab/atus_2024.csv.gz`.
-
-Si la celda informa un error 404, primero debe publicarse esta versión del sitio para que esos recursos estén disponibles.
+Los laboratorios Shinylive permanecen en la versión web; los cuadernos Colab contienen el desarrollo reproducible de los algoritmos y los casos aplicados con ATUS y COVID-19.
