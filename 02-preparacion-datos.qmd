@@ -360,6 +360,16 @@ En este capítulo descargamos y documentamos una base real del INEGI, verificamo
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/02-preparacion-datos.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 Estos recursos permiten repasar la preparación de datos reales mediante una presentación, una infografía y un video explicativo.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -609,5 +619,7 @@ covid |>
 Estos datos se emplean con fines educativos. Los registros administrativos
 pueden contener sesgos, valores desconocidos y diferencias de cobertura. Los
 modelos construidos con esta base no sustituyen una valoración médica.
+
+:::
 
 :::

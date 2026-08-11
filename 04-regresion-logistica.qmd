@@ -182,6 +182,16 @@ if (exists("prueba")) {
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 Estos recursos permiten estudiar la regresión logística desde una perspectiva audiovisual, gráfica y práctica.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -561,3 +571,5 @@ La regresión logística es un modelo interpretable para clasificación binaria.
 ## Referencias fundamentales de la regresión logística
 
 La formulación moderna de la regresión para respuestas binarias se relaciona con el trabajo de Cox [@cox1958regression]. Para profundizar en ajuste, interpretación, diagnóstico y aplicaciones del modelo logístico puede consultarse a @hosmer2013applied. Una presentación orientada al aprendizaje estadístico y a su implementación en R aparece en @james2021islr.
+
+:::

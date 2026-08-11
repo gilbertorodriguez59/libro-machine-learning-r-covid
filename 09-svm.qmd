@@ -839,6 +839,16 @@ La comparación permite estudiar si una frontera no lineal aporta una ventaja re
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/10-svm.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 ::: {.content-visible when-format="html"}
 
 ### Video del capítulo
@@ -875,3 +885,5 @@ Disponible en YouTube:
 
 Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
 contenido del libro y revisados y adaptados por el autor.
+
+:::

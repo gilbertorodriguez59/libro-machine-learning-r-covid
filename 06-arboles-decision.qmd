@@ -436,6 +436,16 @@ La principal ventaja del árbol es que transforma el modelo en una secuencia vis
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/07-arboles-decision.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 ::: {.content-visible when-format="html"}
 
 ### Video del capítulo
@@ -481,3 +491,5 @@ Los árboles de decisión son modelos intuitivos, visuales e interpretables. Est
 ## Referencias fundamentales de los árboles de decisión
 
 La metodología CART fue desarrollada sistemáticamente por @breiman1984classification. El algoritmo ID3 y la inducción de árboles mediante ganancia de información fueron presentados por @quinlan1986induction. Para una introducción contemporánea con ejemplos en R puede consultarse @james2021islr.
+
+:::

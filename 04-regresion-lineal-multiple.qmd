@@ -526,6 +526,16 @@ La regresión lineal simple explica una respuesta cuantitativa mediante una vari
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/04-regresion-lineal.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
 |---|---|---|---|
 | Video explicativo | Explicación audiovisual de la regresión lineal simple y múltiple. | [Ver en YouTube](https://www.youtube.com/watch?v=SE6DCeU9h1w){target="_blank"} | — |
@@ -553,4 +563,6 @@ La regresión lineal simple explica una respuesta cuantitativa mediante una vari
 
 ::: {.callout-tip title="Curso completo en YouTube"}
 [Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::
+
 :::

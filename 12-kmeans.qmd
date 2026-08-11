@@ -595,6 +595,16 @@ La versión web permite cambiar el número de clusters y visualizar una submuest
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/13-kmeans.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 ::: {.content-visible when-format="html"}
 
 ### Video del capítulo
@@ -637,3 +647,5 @@ contenido del libro y revisados y adaptados por el autor.
 k-means descubre grupos mediante distancias y centroides. Su utilidad depende de una preparación adecuada, una selección razonada de $k$ y una interpretación basada en los perfiles de cada cluster.
 
 Con este capítulo cerramos la ruta principal de algoritmos del libro. Los apéndices reúnen el glosario, las referencias y los índices para consulta.
+
+:::

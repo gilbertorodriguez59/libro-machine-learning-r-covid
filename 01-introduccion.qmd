@@ -145,6 +145,16 @@ La matriz de confusión compara la clase real contra la clase predicha. La exact
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 Estos recursos permiten repasar los conceptos principales del capítulo mediante distintos formatos. La presentación puede consultarse en PDF o modificarse en PowerPoint; la infografía ofrece una síntesis visual y el video explica los contenidos de manera audiovisual.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -270,3 +280,5 @@ Permite cambiar el umbral de una regla de clasificación y observar la exactitud
 ## Conclusión
 
 El aprendizaje automático permite construir modelos que aprenden patrones a partir de datos. En este capítulo vimos la diferencia entre reglas manuales y aprendizaje a partir de ejemplos.
+
+:::

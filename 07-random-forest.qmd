@@ -379,6 +379,16 @@ Random Forest suele ser más estable que un árbol individual porque combina muc
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/08-random-forest.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 ::: {.content-visible when-format="html"}
 
 ### Video del capítulo
@@ -424,3 +434,5 @@ Random Forest mejora la estabilidad y la capacidad predictiva de un solo árbol 
 ## Referencias fundamentales de Random Forest
 
 El algoritmo Random Forest fue formalizado por @breiman2001random como un ensamble de árboles construido mediante remuestreo y selección aleatoria de variables. Una explicación didáctica y comparativa puede consultarse también en @james2021islr.
+
+:::

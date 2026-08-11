@@ -380,6 +380,16 @@ El valor de $k$ controla cuánto se suaviza la decisión. Valores pequeños reac
 
 ## Materiales complementarios del capítulo
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/06-knn.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 ::: {.content-visible when-format="html"}
 
 ### Video del capítulo
@@ -425,3 +435,5 @@ k-NN es un método intuitivo basado en similitud. Su desempeño depende del valo
 ## Referencias fundamentales de k-NN
 
 El método de los vecinos más cercanos tiene como antecedente clásico el informe de @fix1951discriminatory. Sus propiedades de clasificación y cotas de error fueron estudiadas por @cover1967nearest. Una exposición moderna, acompañada de aplicaciones en R, puede consultarse en @james2021islr.
+
+:::
