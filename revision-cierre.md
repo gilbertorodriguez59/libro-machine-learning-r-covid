@@ -15,10 +15,10 @@
 
 El PDF fue generado correctamente, pero Pandoc reportó cierres implícitos de Div durante la concatenación del libro. Se conserva el PDF para inspección visual detallada antes de considerar cerrada la edición.
 
-- `[WARNING] Div at line 3675 column 1 unclosed at line 13031 column 1, closing implicitly.`
-- `[WARNING] Div at line 3185 column 1 unclosed at line 13031 column 1, closing implicitly.`
-- `[WARNING] Div at line 2381 column 1 unclosed at line 13031 column 1, closing implicitly.`
-- `[WARNING] Div at line 2116 column 1 unclosed at line 13031 column 1, closing implicitly.`
-- `[WARNING] Div at line 1477 column 1 unclosed at line 13031 column 1, closing implicitly.`
-- `[WARNING] Div at line 868 column 1 unclosed at line 13031 column 1, closing implicitly.`
-- `[WARNING] Div at line 841 column 1 unclosed at line 13031 column 1, closing implicitly.`
+- `[WARNING] Div at line 3687 column 1 unclosed at line 13069 column 1, closing implicitly.`
+- `[WARNING] Div at line 3191 column 1 unclosed at line 13069 column 1, closing implicitly.`
+- `[WARNING] Div at line 2387 column 1 unclosed at line 13069 column 1, closing implicitly.`
+- `[WARNING] Div at line 2124 column 1 unclosed at line 13069 column 1, closing implicitly.`
+- `[WARNING] Div at line 1483 column 1 unclosed at line 13069 column 1, closing implicitly.`
+- `[WARNING] Div at line 870 column 1 unclosed at line 13069 column 1, closing implicitly.`
+- `[WARNING] Div at line 845 column 1 unclosed at line 13069 column 1, closing implicitly.`

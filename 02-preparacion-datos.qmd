@@ -367,6 +367,7 @@ Estos recursos permiten repasar la preparación de datos reales mediante una pre
 | Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pdf){download="capitulo-02-preparacion-datos-reales.pdf"} |
 | Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pptx) | [Descargar PPTX](recursos/capitulo-02/capitulo-02-preparacion-datos-reales.pptx){download="capitulo-02-preparacion-datos-reales.pptx"} |
 | Infografía | Resumen visual de las etapas de preparación de datos. | [Ver infografía](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png){download="capitulo-02-preparacion-datos-reales-infografia.png"} |
+| Cuaderno Google Colab | Cuaderno autónomo para ejecutar los ejemplos del capítulo sin necesidad de ejecutar los capítulos anteriores. | [Abrir en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/02-preparacion-datos.ipynb){target="_blank"} | — |
 
 ::: {.content-visible when-format="html"}
 ### Video explicativo
@@ -374,6 +375,9 @@ Estos recursos permiten repasar la preparación de datos reales mediante una pre
 <div class="video-responsive">
   <iframe src="https://www.youtube.com/embed/bmv-tDPZGjQ"
     title="Capítulo 2. Preparación de datos reales"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
     allowfullscreen
@@ -398,7 +402,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=bmv-tDPZGjQ>
 
@@ -415,7 +418,6 @@ Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificaci
 
 [Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
 :::
-
 
 ## Laboratorio interactivo: preparar datos
 

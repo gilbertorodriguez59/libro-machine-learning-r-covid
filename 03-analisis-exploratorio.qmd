@@ -197,6 +197,7 @@ Estos recursos permiten repasar los conceptos esenciales del análisis explorato
 | Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos.pdf){download="capitulo-03-analisis-exploratorio-datos.pdf"} |
 | Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos.pptx) | [Descargar PPTX](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos.pptx){download="capitulo-03-analisis-exploratorio-datos.pptx"} |
 | Infografía | Síntesis visual de conceptos, procedimientos y gráficos del capítulo. | [Ver infografía](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos-infografia.png){download="capitulo-03-analisis-exploratorio-datos-infografia.png"} |
+| Cuaderno Google Colab | Cuaderno autónomo para ejecutar los ejemplos del capítulo sin necesidad de ejecutar los capítulos anteriores. | [Abrir en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/03-analisis-exploratorio.ipynb){target="_blank"} | — |
 
 ::: {.content-visible when-format="html"}
 ### Video explicativo
@@ -204,6 +205,9 @@ Estos recursos permiten repasar los conceptos esenciales del análisis explorato
 <div class="video-responsive">
   <iframe src="https://www.youtube.com/embed/U2hd8iEovCY"
     title="Capítulo 3. Análisis exploratorio de datos"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
     allowfullscreen
@@ -228,7 +232,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=U2hd8iEovCY>
 
@@ -244,7 +247,6 @@ Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificaci
 ::: {.callout-note title="Elaboración de los materiales"}
 Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor. El texto del libro y sus archivos fuente constituyen la referencia principal.
 :::
-
 ## Laboratorio interactivo: exploración de distribuciones
 
 ::: {.content-visible when-format="html"}

@@ -1595,14 +1595,24 @@ La red puede representar relaciones no lineales entre edad y comorbilidades, per
 :::
 
 ## Materiales complementarios del capítulo
-::: {.content-visible when-format="html"}
 
-### Video del capítulo
+Estos recursos permiten repasar los conceptos principales del capítulo mediante distintos formatos. La presentación puede consultarse en PDF o modificarse en PowerPoint; la infografía ofrece una síntesis visual, el video explica los contenidos y el cuaderno Colab permite ejecutar los ejemplos de manera autónoma.
+
+| Recurso | Utilidad | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Video explicativo | Explicación audiovisual de los contenidos del capítulo. | [Ver en YouTube](https://www.youtube.com/watch?v=gk3bt0h3WUU){target="_blank"} | — |
+| Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pdf){download="capitulo-12-redes-neuronales-presentacion.pdf"} |
+| Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pptx) | [Descargar PPTX](recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pptx){download="capitulo-12-redes-neuronales-presentacion.pptx"} |
+| Infografía | Resumen visual de las ideas fundamentales. | [Ver infografía](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png){download="capitulo-12-redes-neuronales-infografia.png"} |
+| Cuaderno Google Colab | Cuaderno autónomo para ejecutar los ejemplos del capítulo sin necesidad de ejecutar los capítulos anteriores. | [Abrir en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/12-redes-neuronales.ipynb){target="_blank"} | — |
+
+::: {.content-visible when-format="html"}
+### Video explicativo
 
 <div class="video-responsive">
-  <iframe src="https://www.youtube.com/embed/gk3bt0h3WUU"
-title="Capítulo 12. Redes neuronales artificiales"
-allowfullscreen
+  <iframe
+    src="https://www.youtube.com/embed/gk3bt0h3WUU"
+    title="Capítulo 12. Redes neuronales"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -1610,6 +1620,9 @@ allowfullscreen
   </iframe>
 </div>
 
+### Vista previa de la infografía
+
+[![Infografía del capítulo 12](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png)](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png)
 :::
 
 <!-- colab-capitulo -->
@@ -1621,31 +1634,21 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
 ::: {.content-visible when-format="pdf"}
+**Video del capítulo:** <https://www.youtube.com/watch?v=gk3bt0h3WUU>
 
-### Video del capítulo
-
-Disponible en YouTube:
-
-<https://youtu.be/gk3bt0h3WUU>
-
+La presentación PDF, el archivo editable, la infografía y el cuaderno Colab pueden consultarse desde la versión web del libro.
 :::
 
-| Recurso | Descripción | Abrir o descargar |
-|---|---|---|
-| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pdf){target="_blank"} |
-| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-12/capitulo-12-redes-neuronales-presentacion.pptx) |
-| Infografía | Resumen visual del capítulo. | [Abrir infografía](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png){target="_blank"} |
-
-::: {.content-visible when-format="html"}
-
-![Infografía del capítulo 12](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png){fig-alt="Capítulo 12. Redes neuronales artificiales" width="85%"}
-
+::: {.callout-note title="Elaboración de los materiales"}
+Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor. El texto del libro y sus archivos fuente constituyen la referencia principal.
 :::
 
-Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
-contenido del libro y revisados y adaptados por el autor.
+::: {.callout-tip title="Curso completo en YouTube"}
+Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificación Automática con R**.
+
+[Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::
 
 ## Conclusión
 

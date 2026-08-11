@@ -152,6 +152,7 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 | Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pdf){download="capitulo-01-introduccion-aprendizaje-automatico.pdf"} |
 | Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pptx) | [Descargar PPTX](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico.pptx){download="capitulo-01-introduccion-aprendizaje-automatico.pptx"} |
 | Infografía | Resumen visual de las ideas fundamentales. | [Ver infografía](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png){download="capitulo-01-introduccion-aprendizaje-automatico-infografia.png"} |
+| Cuaderno Google Colab | Cuaderno autónomo para ejecutar los ejemplos del capítulo sin necesidad de ejecutar los capítulos anteriores. | [Abrir en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb){target="_blank"} | — |
 
 ::: {.content-visible when-format="html"}
 ### Video explicativo
@@ -159,6 +160,9 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 <div class="video-responsive">
   <iframe src="https://www.youtube.com/embed/N2SkzjT2LpU"
     title="Capítulo 1. Introducción al aprendizaje automático"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
     allowfullscreen
@@ -183,7 +187,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=N2SkzjT2LpU>
 
@@ -199,7 +202,6 @@ Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificaci
 
 [Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
 :::
-
 ## Laboratorio interactivo: una regla de clasificación
 
 ::: {.content-visible when-format="html"}

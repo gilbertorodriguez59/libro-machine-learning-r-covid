@@ -435,13 +435,24 @@ La principal ventaja del árbol es que transforma el modelo en una secuencia vis
 :::
 
 ## Materiales complementarios del capítulo
-::: {.content-visible when-format="html"}
 
-### Video del capítulo
+Estos recursos permiten repasar los conceptos principales del capítulo mediante distintos formatos. La presentación puede consultarse en PDF o modificarse en PowerPoint; la infografía ofrece una síntesis visual, el video explica los contenidos y el cuaderno Colab permite ejecutar los ejemplos de manera autónoma.
+
+| Recurso | Utilidad | Abrir o reproducir | Descargar |
+|---|---|---|---|
+| Video explicativo | Explicación audiovisual de los contenidos del capítulo. | [Ver en YouTube](https://www.youtube.com/watch?v=UperQjxBYEY){target="_blank"} | — |
+| Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-07/capitulo-07-arboles-presentacion.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-07/capitulo-07-arboles-presentacion.pdf){download="capitulo-07-arboles-presentacion.pdf"} |
+| Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-07/capitulo-07-arboles-presentacion.pptx) | [Descargar PPTX](recursos/capitulo-07/capitulo-07-arboles-presentacion.pptx){download="capitulo-07-arboles-presentacion.pptx"} |
+| Infografía | Resumen visual de las ideas fundamentales. | [Ver infografía](recursos/capitulo-07/capitulo-07-arboles-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-07/capitulo-07-arboles-infografia.png){download="capitulo-07-arboles-infografia.png"} |
+| Cuaderno Google Colab | Cuaderno autónomo para ejecutar los ejemplos del capítulo sin necesidad de ejecutar los capítulos anteriores. | [Abrir en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/07-arboles-decision.ipynb){target="_blank"} | — |
+
+::: {.content-visible when-format="html"}
+### Video explicativo
 
 <div class="video-responsive">
-  <iframe src="https://www.youtube.com/embed/UperQjxBYEY"
-title="Capítulo 7. Árboles de decisión para clasificación" allowfullscreen
+  <iframe
+    src="https://www.youtube.com/embed/UperQjxBYEY"
+    title="Capítulo 7. Árboles de decisión para clasificación"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -449,6 +460,9 @@ title="Capítulo 7. Árboles de decisión para clasificación" allowfullscreen
   </iframe>
 </div>
 
+### Vista previa de la infografía
+
+[![Infografía del capítulo 7](recursos/capitulo-07/capitulo-07-arboles-infografia.png)](recursos/capitulo-07/capitulo-07-arboles-infografia.png)
 :::
 
 <!-- colab-capitulo -->
@@ -460,31 +474,21 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
 ::: {.content-visible when-format="pdf"}
+**Video del capítulo:** <https://www.youtube.com/watch?v=UperQjxBYEY>
 
-### Video del capítulo
-
-Disponible en YouTube:
-
-<https://youtu.be/UperQjxBYEY>
-
+La presentación PDF, el archivo editable, la infografía y el cuaderno Colab pueden consultarse desde la versión web del libro.
 :::
 
-| Recurso | Descripción | Abrir o descargar |
-|---|---|---|
-| Presentación en PDF | Síntesis del capítulo para lectura o exposición. | [Abrir PDF](recursos/capitulo-07/capitulo-07-arboles-presentacion.pdf){target="_blank"} |
-| Presentación editable | Diapositivas en PowerPoint. | [Descargar PPTX](recursos/capitulo-07/capitulo-07-arboles-presentacion.pptx) |
-| Infografía | Resumen visual de árboles de decisión. | [Abrir infografía](recursos/capitulo-07/capitulo-07-arboles-infografia.png){target="_blank"} |
-
-::: {.content-visible when-format="html"}
-
-![Infografía del capítulo 7](recursos/capitulo-07/capitulo-07-arboles-infografia.png){fig-alt="Infografía sobre árboles de decisión" width="85%"}
-
+::: {.callout-note title="Elaboración de los materiales"}
+Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor. El texto del libro y sus archivos fuente constituyen la referencia principal.
 :::
 
-Los materiales fueron creados con apoyo de NotebookLM de Google a partir del
-contenido del libro y revisados y adaptados por el autor.
+::: {.callout-tip title="Curso completo en YouTube"}
+Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificación Automática con R**.
+
+[Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
+:::
 
 ## Conclusión
 

@@ -189,6 +189,7 @@ Estos recursos permiten estudiar la regresión logística desde una perspectiva 
 | Presentación en PDF | Diapositivas para lectura, estudio o exposición. | [Ver PDF](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pdf){target="_blank"} | [Descargar PDF](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pdf){download="capitulo-05-regresion-logistica-clasificacion.pdf"} |
 | Presentación editable | Archivo PowerPoint para utilizarlo en clase o adaptarlo. | [Abrir PPTX](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pptx) | [Descargar PPTX](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion.pptx){download="capitulo-05-regresion-logistica-clasificacion.pptx"} |
 | Infografía | Síntesis visual de los conceptos, la función logística y el proceso de clasificación. | [Ver infografía](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png){target="_blank"} | [Descargar PNG](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png){download="capitulo-05-regresion-logistica-clasificacion-infografia.png"} |
+| Cuaderno Google Colab | Cuaderno autónomo para ejecutar los ejemplos del capítulo sin necesidad de ejecutar los capítulos anteriores. | [Abrir en Google Colab](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb){target="_blank"} | — |
 
 ::: {.content-visible when-format="html"}
 ### Video explicativo
@@ -196,6 +197,9 @@ Estos recursos permiten estudiar la regresión logística desde una perspectiva 
 <div class="video-responsive">
   <iframe src="https://www.youtube.com/embed/7CwP40QDeys"
     title="Capítulo 5. Regresión logística para clasificación"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
     allowfullscreen
@@ -220,7 +224,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=7CwP40QDeys>
 
@@ -238,7 +241,6 @@ Este video forma parte de la lista oficial del curso.
 ::: {.callout-note title="Elaboración de los materiales"}
 Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Google**, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor.
 :::
-
 ## Laboratorio interactivo: regresión logística
 
 ::: {.content-visible when-format="html"}
