@@ -42,6 +42,10 @@ jobs:
         run: |
           python scripts/agregar_colab_por_capitulo.py
 
+      - name: Normalize complementary materials
+        run: |
+          python scripts/normalizar_materiales_complementarios.py
+
       - name: Apply final interactives
         run: |
           python scripts/agregar_interactivos_cierre.py
@@ -222,6 +226,9 @@ jobs:
           grep -q "00-indice-colabs.ipynb" docs/00-cuaderno-google-colab.html
           grep -q "06-knn.ipynb" docs/05-knn.html
           grep -q "13-kmeans.ipynb" docs/12-kmeans.html
+          grep -qi "video-responsive" docs/01-introduccion.html
+          grep -qi "video-responsive" docs/12-kmeans.html
+          grep -qi "Ver en YouTube" docs/01-introduccion.html
           grep -qi "shinylive" docs/03-analisis-exploratorio.html
           grep -qi "shinylive" docs/12-kmeans.html
 
@@ -264,6 +271,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
           else
-            git commit -m "Publicar Colab maestro e independientes por capitulo [skip ci]"
+            git commit -m "Normalizar materiales complementarios y Colabs [skip ci]"
             git push
           fi
