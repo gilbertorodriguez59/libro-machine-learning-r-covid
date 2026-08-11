@@ -1,5 +1,7 @@
 from pathlib import Path
 import re
+import subprocess
+import sys
 
 CAPITULOS = [
     "01-introduccion.qmd",
@@ -33,7 +35,6 @@ def youtube_id_from_section(section):
 
 
 def normalize_iframe(section):
-    """Normaliza cualquier iframe YouTube al mismo contenedor responsive."""
     pattern = re.compile(
         r'(?:<div\s+class="video-responsive">\s*)?'
         r'<iframe\b([^>]*?youtube\.com/embed/[A-Za-z0-9_-]+[^>]*)>\s*</iframe>'
@@ -62,8 +63,6 @@ def normalize_iframe(section):
 
 
 def insert_colab_after_html(section, colab):
-    """Orden uniforme: enlaces/tabla -> bloque HTML (video/vista previa) -> Colab -> notas finales."""
-    # Inserta después del primer bloque content-visible HTML completo que incluya YouTube.
     blocks = list(re.finditer(
         r'::: \{\.content-visible when-format="html"\}.*?\n:::',
         section,
@@ -74,19 +73,18 @@ def insert_colab_after_html(section, colab):
             pos = b.end()
             return section[:pos] + "\n\n" + colab.strip() + "\n" + section[pos:]
 
-    # Respaldo: después de la tabla de recursos, si existe.
     table = re.search(r'\n\| Recurso \|.*?(?=\n\n)', section, re.S)
     if table:
         pos = table.end()
         return section[:pos] + "\n\n" + colab.strip() + "\n" + section[pos:]
 
-    # Último respaldo: inmediatamente después del encabezado.
     pos = section.find('\n', len(ENCABEZADO))
     if pos == -1:
         pos = len(ENCABEZADO)
     return section[:pos] + "\n\n" + colab.strip() + "\n" + section[pos:]
 
 
+# Primera pasada: normalizar videos y coherencia de enlaces.
 for nombre in CAPITULOS:
     p = Path(nombre)
     text = p.read_text(encoding="utf-8")
@@ -96,24 +94,17 @@ for nombre in CAPITULOS:
         raise SystemExit(f"Falta la sección de materiales en {nombre}")
 
     siguiente = re.search(r'^##\s+', text[inicio + len(ENCABEZADO):], re.M)
-    if siguiente:
-        fin = inicio + len(ENCABEZADO) + siguiente.start()
-    else:
-        fin = len(text)
-
+    fin = inicio + len(ENCABEZADO) + siguiente.start() if siguiente else len(text)
     section = text[inicio:fin]
 
-    # Extraer el bloque Colab existente para recolocarlo siempre en el mismo sitio.
     m_colab = COLAB_RE.search(section)
     if not m_colab:
         raise SystemExit(f"Falta bloque Colab en {nombre}")
     colab = m_colab.group(0).strip()
     section = COLAB_RE.sub("\n", section, count=1)
 
-    # Unificar el ID del video tomando como referencia el iframe incrustado.
     video_id = youtube_id_from_section(section)
     if video_id:
-        # Cualquier enlace individual de YouTube dentro de materiales apuntará al mismo video.
         section = re.sub(
             r'https://www\.youtube\.com/watch\?v=[A-Za-z0-9_-]+',
             f'https://www.youtube.com/watch?v={video_id}',
@@ -121,13 +112,24 @@ for nombre in CAPITULOS:
         )
         section = normalize_iframe(section)
 
-    # Recolocar Colab después del bloque visual del video, de manera uniforme.
     section = insert_colab_after_html(section, colab)
-
-    # Limpieza de espacios excesivos.
     section = re.sub(r'\n{4,}', '\n\n\n', section)
     text = text[:inicio] + section + text[fin:]
     p.write_text(text, encoding="utf-8")
     print(f"Normalizado: {nombre} | video={video_id or 'sin video'}")
 
-print("Materiales complementarios normalizados en los 13 capítulos.")
+# Segunda pasada: capítulos 6 a 13 adoptan exactamente la tabla editorial
+# de cuatro columnas usada en los capítulos 1 a 5.
+subprocess.run(
+    [sys.executable, "scripts/uniformar_materiales_capitulos_06_13.py"],
+    check=True,
+)
+
+# Tercera pasada: agregar Google Colab como recurso dentro de la tabla de
+# materiales complementarios de los 13 capítulos.
+subprocess.run(
+    [sys.executable, "scripts/agregar_colab_a_tablas_materiales.py"],
+    check=True,
+)
+
+print("Materiales complementarios uniformes en los 13 capítulos, con Colab incluido en cada tabla.")
