@@ -2,24 +2,27 @@ from pathlib import Path
 import json, re, datetime
 
 CHAPTERS = [
-    "01-introduccion.qmd",
-    "02-preparacion-datos.qmd",
-    "03-analisis-exploratorio.qmd",
-    "04-regresion-lineal-multiple.qmd",
-    "04-regresion-logistica.qmd",
-    "05-knn.qmd",
-    "06-arboles-decision.qmd",
-    "07-random-forest.qmd",
-    "08-evaluacion-modelos.qmd",
-    "09-svm.qmd",
-    "10-naive-bayes.qmd",
-    "11-redes-neuronales.qmd",
-    "12-kmeans.qmd",
+    (1, "01-introduccion.qmd", "Introducción al aprendizaje automático", "01-introduccion.ipynb"),
+    (2, "02-preparacion-datos.qmd", "Preparación de datos reales", "02-preparacion-datos.ipynb"),
+    (3, "03-analisis-exploratorio.qmd", "Análisis exploratorio de datos", "03-analisis-exploratorio.ipynb"),
+    (4, "04-regresion-lineal-multiple.qmd", "Regresión lineal simple y múltiple", "04-regresion-lineal.ipynb"),
+    (5, "04-regresion-logistica.qmd", "Regresión logística", "05-regresion-logistica.ipynb"),
+    (6, "05-knn.qmd", "k vecinos más cercanos (k-NN)", "06-knn.ipynb"),
+    (7, "06-arboles-decision.qmd", "Árboles de decisión", "07-arboles-decision.ipynb"),
+    (8, "07-random-forest.qmd", "Random Forest", "08-random-forest.ipynb"),
+    (9, "08-evaluacion-modelos.qmd", "Evaluación y comparación de modelos", "09-evaluacion-modelos.ipynb"),
+    (10, "09-svm.qmd", "Máquinas de vectores de soporte (SVM)", "10-svm.ipynb"),
+    (11, "10-naive-bayes.qmd", "Naive Bayes", "11-naive-bayes.ipynb"),
+    (12, "11-redes-neuronales.qmd", "Redes neuronales", "12-redes-neuronales.ipynb"),
+    (13, "12-kmeans.qmd", "Agrupamiento k-means", "13-kmeans.ipynb"),
 ]
 
-OUT = Path("Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb")
+OUT_MASTER = Path("Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb")
+OUT_DIR = Path("colab")
+OUT_INDEX = OUT_DIR / "00-indice-colabs.ipynb"
 REPO = "https://github.com/gilbertorodriguez59/libro-machine-learning-r-covid"
 RAW = "https://raw.githubusercontent.com/gilbertorodriguez59/libro-machine-learning-r-covid/main"
+COLAB_BASE = "https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main"
 
 
 def md_cell(text):
@@ -29,13 +32,8 @@ def md_cell(text):
 
 def code_cell(code):
     code = code.strip("\n")
-    return {
-        "cell_type": "code",
-        "execution_count": None,
-        "metadata": {},
-        "outputs": [],
-        "source": [x + "\n" for x in code.splitlines()],
-    }
+    return {"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [],
+            "source": [x + "\n" for x in code.splitlines()]}
 
 
 def clean_markdown(text):
@@ -55,77 +53,31 @@ def parse_qmd(path):
     if text.startswith("---\n"):
         end = text.find("\n---\n", 4)
         if end != -1:
-            text = text[end+5:]
-
-    cells = []
-    pos = 0
+            text = text[end + 5:]
+    cells, pos = [], 0
     fence = re.compile(r'```\{([^}]+)\}\n(.*?)\n```', re.S)
     for m in fence.finditer(text):
         before = clean_markdown(text[pos:m.start()])
         if before:
             cells.append(md_cell(before))
-
-        engine = m.group(1).strip()
-        body = m.group(2)
-        if engine.startswith("r"):
+        engine, body = m.group(1).strip(), m.group(2)
+        if engine.startswith("shinylive-r"):
+            cells.append(md_cell("**Laboratorio interactivo:** este bloque se ejecuta en la versión web mediante Shinylive; aquí se conserva el desarrollo reproducible del capítulo."))
+        elif engine.startswith("r"):
             body = "\n".join(line for line in body.splitlines() if not line.lstrip().startswith("#|"))
             if "eval: false" not in m.group(2):
                 cells.append(code_cell(body))
-        elif engine.startswith("shinylive-r"):
-            cells.append(md_cell(
-                "**Laboratorio interactivo:** este bloque se ejecuta en la versión web del libro mediante Shinylive. "
-                "En Colab se conserva el desarrollo algorítmico del capítulo, pero no la interfaz Shiny del navegador."
-            ))
         else:
             cells.append(md_cell("```" + engine + "\n" + body + "\n```"))
         pos = m.end()
-
     tail = clean_markdown(text[pos:])
     if tail:
         cells.append(md_cell(tail))
     return cells
 
 
-def extract_toc(cells):
-    toc = ["# Índice general", ""]
-    for cell in cells:
-        if cell["cell_type"] != "markdown":
-            continue
-        for line in cell["source"]:
-            s = line.strip()
-            m = re.match(r'^(#{1,2})\s+(.+)$', s)
-            if not m:
-                continue
-            level = len(m.group(1))
-            title = re.sub(r'[*`]', '', m.group(2)).strip()
-            if title in {"Índice general"}:
-                continue
-            indent = "  " if level == 2 else ""
-            toc.append(f"{indent}- {title}")
-    return "\n".join(toc)
-
-
-all_cells = []
-intro = f"""# Aprendizaje y Clasificación Automática con R
-
-**Autor:** Jesús Gilberto Rodríguez Escobedo
-
-Cuaderno completo y ejecutable que acompaña la versión web y PDF del libro. Fue generado automáticamente a partir de los archivos Quarto actuales para mantener sincronizados capítulos, ejemplos ATUS y casos COVID-19.
-
-Repositorio del libro: {REPO}
-
-## Cómo ejecutar este cuaderno
-
-1. **Ejecute primero la celda de preparación automática.** Esa celda instala los paquetes faltantes y descarga `util_graficas.R`, la base ATUS preparada y los archivos COVID-19 utilizados por los ejemplos.
-2. **Ejecute las celdas en orden, de arriba hacia abajo.** Muchos ejemplos crean objetos que se utilizan en las celdas siguientes.
-3. **Si Colab reinicia o desconecta el entorno de ejecución, vuelva a ejecutar desde la primera celda.** Los objetos que estaban en memoria se pierden al reiniciarse la sesión.
-4. Los laboratorios Shinylive permanecen en la versión web; en Colab se conserva el código R reproducible asociado a cada capítulo.
-
-> **Comprobación rápida:** cuando la primera celda termine correctamente debe mostrar `Entorno listo` y `Archivos auxiliares y datos preparados disponibles`.
-"""
-all_cells.append(md_cell(intro))
-
-setup = f'''# Preparación automática para Google Colab con runtime R
+def setup_cell():
+    return code_cell(f'''# Preparación automática y autónoma del capítulo
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 
 paquetes_libro <- c(
@@ -133,19 +85,13 @@ paquetes_libro <- c(
   "class", "rpart", "randomForest", "ranger", "e1071", "naivebayes",
   "neuralnet", "cluster", "caret", "factoextra", "scales", "plotly", "DT"
 )
-
-faltantes <- paquetes_libro[
-  !vapply(paquetes_libro, requireNamespace, logical(1), quietly = TRUE)
-]
+faltantes <- paquetes_libro[!vapply(paquetes_libro, requireNamespace, logical(1), quietly = TRUE)]
 if (length(faltantes)) install.packages(faltantes)
 
-# Crear la misma estructura de carpetas que usa el libro
-dir.create("datos", showWarnings = FALSE, recursive = TRUE)
 dir.create("datos/covid19/procesados", showWarnings = FALSE, recursive = TRUE)
 dir.create("datos/covid19/muestras", showWarnings = FALSE, recursive = TRUE)
 dir.create("datos/covid19/diccionarios", showWarnings = FALSE, recursive = TRUE)
 
-# Archivos necesarios para ejecutar los ejemplos sin clonar el repositorio
 archivos_colab <- c(
   "util_graficas.R" = "{RAW}/util_graficas.R",
   "datos/atus_ml_preparado.csv" = "{RAW}/datos/atus_ml_preparado.csv",
@@ -153,47 +99,93 @@ archivos_colab <- c(
   "datos/covid19/muestras/covid19_mexico_2022_muestra.csv.gz" = "{RAW}/datos/covid19/muestras/covid19_mexico_2022_muestra.csv.gz",
   "datos/covid19/diccionarios/diccionario_covid19_ml.csv" = "{RAW}/datos/covid19/diccionarios/diccionario_covid19_ml.csv"
 )
-
 for (destino in names(archivos_colab)) {{
-  if (!file.exists(destino)) {{
-    message("Descargando: ", destino)
-    download.file(archivos_colab[[destino]], destino, mode = "wb", quiet = TRUE)
-  }}
+  if (!file.exists(destino)) download.file(archivos_colab[[destino]], destino, mode = "wb", quiet = TRUE)
 }}
-
-stopifnot(file.exists("util_graficas.R"))
-stopifnot(file.exists("datos/atus_ml_preparado.csv"))
-stopifnot(file.exists("datos/covid19/procesados/covid19_mexico_2022_ml_preparado.csv.gz"))
+stopifnot(all(file.exists(names(archivos_colab))))
 source("util_graficas.R")
+cat("Entorno autónomo listo. R:", R.version.string, "\\n")
+''')
 
-cat("Entorno listo. R:", R.version.string, "\n")
-cat("Archivos auxiliares y datos preparados disponibles.\n")
-'''
-all_cells.append(code_cell(setup))
 
-chapter_cells = []
-for chapter in CHAPTERS:
-    if not Path(chapter).exists():
-        raise SystemExit(f"Falta el capítulo {chapter}")
-    chapter_cells.extend(parse_qmd(chapter))
-
-all_cells.append(md_cell(extract_toc(chapter_cells)))
-all_cells.extend(chapter_cells)
-
-notebook = {
-    "cells": all_cells,
-    "metadata": {
+def notebook(cells, meta_extra=None):
+    meta = {
         "kernelspec": {"display_name": "R", "language": "R", "name": "ir"},
         "language_info": {"name": "R"},
         "colab": {"provenance": []},
-        "libro_ml": {
-            "generated_from_quarto": True,
-            "generated_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "chapters": CHAPTERS,
-        },
-    },
-    "nbformat": 4,
-    "nbformat_minor": 5,
-}
-OUT.write_text(json.dumps(notebook, ensure_ascii=False, indent=1), encoding="utf-8")
-print(f"Cuaderno generado: {OUT} ({len(all_cells)} celdas)")
+        "libro_ml": {"generated_from_quarto": True, "generated_utc": datetime.datetime.now(datetime.timezone.utc).isoformat()},
+    }
+    if meta_extra:
+        meta["libro_ml"].update(meta_extra)
+    return {"cells": cells, "metadata": meta, "nbformat": 4, "nbformat_minor": 5}
+
+
+def write_notebook(path, cells, meta_extra=None):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(notebook(cells, meta_extra), ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"Generado: {path} ({len(cells)} celdas)")
+
+
+OUT_DIR.mkdir(exist_ok=True)
+
+# 1) Cuadernos autónomos por capítulo
+chapter_cells_all = []
+for number, qmd, title, filename in CHAPTERS:
+    if not Path(qmd).exists():
+        raise SystemExit(f"Falta el capítulo {qmd}")
+    chapter_cells = parse_qmd(qmd)
+    intro = md_cell(f'''# Capítulo {number}. {title}
+
+**Aprendizaje y Clasificación Automática con R**  
+**Autor:** Jesús Gilberto Rodríguez Escobedo
+
+Este cuaderno es **independiente y autónomo**: puede abrirse directamente sin ejecutar capítulos anteriores.
+
+1. Ejecute primero la celda **Preparación automática y autónoma del capítulo**.
+2. Después ejecute las celdas en orden.
+3. Si Colab reinicia la sesión, vuelva a ejecutar desde la primera celda.
+
+[Volver al índice de cuadernos Colab]({COLAB_BASE}/colab/00-indice-colabs.ipynb)
+''')
+    cells = [intro, setup_cell()] + chapter_cells
+    write_notebook(OUT_DIR / filename, cells, {"chapter": number, "source": qmd})
+    chapter_cells_all.extend(chapter_cells)
+
+# 2) Cuaderno índice / lanzador
+links = [
+    "# Cuadernos Google Colab por capítulo",
+    "",
+    "**Aprendizaje y Clasificación Automática con R**  ",
+    "**Autor:** Jesús Gilberto Rodríguez Escobedo",
+    "",
+    "Cada cuaderno es independiente: abre el capítulo que deseas estudiar y ejecuta su primera celda de preparación.",
+    "",
+    f"- [Abrir el cuaderno completo del libro]({COLAB_BASE}/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb)",
+    "",
+]
+for number, qmd, title, filename in CHAPTERS:
+    links.append(f"- [Capítulo {number}. {title}]({COLAB_BASE}/colab/{filename})")
+links += ["", f"[Abrir la versión web del libro](https://gilbertorodriguez59.github.io/libro-machine-learning-r-covid/)"]
+write_notebook(OUT_INDEX, [md_cell("\n".join(links))], {"type": "index"})
+
+# 3) Cuaderno maestro completo
+master_intro = md_cell(f'''# Aprendizaje y Clasificación Automática con R
+
+**Autor:** Jesús Gilberto Rodríguez Escobedo
+
+Este es el **cuaderno maestro completo**. Para trabajar de forma más ligera se recomienda usar los cuadernos autónomos por capítulo:
+
+[Abrir índice de Colabs por capítulo]({COLAB_BASE}/colab/00-indice-colabs.ipynb)
+
+## Cómo ejecutar este cuaderno completo
+
+1. Ejecute primero la celda de preparación automática.
+2. Ejecute las celdas en orden, de arriba hacia abajo.
+3. Si Colab reinicia o desconecta el entorno, vuelva a ejecutar desde la primera celda.
+''')
+master_cells = [master_intro, setup_cell()]
+master_cells.append(md_cell("# Índice general\n\n" + "\n".join(
+    f"- Capítulo {n}. {title}" for n, _, title, _ in CHAPTERS
+)))
+master_cells.extend(chapter_cells_all)
+write_notebook(OUT_MASTER, master_cells, {"type": "master", "chapters": [q for _, q, _, _ in CHAPTERS]})
