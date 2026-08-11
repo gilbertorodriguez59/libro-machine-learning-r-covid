@@ -38,6 +38,10 @@ jobs:
         run: |
           python scripts/corregir_preparacion_atus.py
 
+      - name: Add autonomous Colab links to each chapter
+        run: |
+          python scripts/agregar_colab_por_capitulo.py
+
       - name: Apply final interactives
         run: |
           python scripts/agregar_interactivos_cierre.py
@@ -216,6 +220,8 @@ jobs:
           grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
           grep -q "Índice de cuadernos por capítulo" docs/00-cuaderno-google-colab.html
           grep -q "00-indice-colabs.ipynb" docs/00-cuaderno-google-colab.html
+          grep -q "06-knn.ipynb" docs/05-knn.html
+          grep -q "13-kmeans.ipynb" docs/12-kmeans.html
           grep -qi "shinylive" docs/03-analisis-exploratorio.html
           grep -qi "shinylive" docs/12-kmeans.html
 
