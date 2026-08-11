@@ -212,81 +212,61 @@
   {
     "objectID": "00-cuaderno-google-colab.html",
     "href": "00-cuaderno-google-colab.html",
-    "title": "Cuaderno completo para Google Colab",
+    "title": "Google Colab: cuaderno completo y cuadernos por capítulo",
     "section": "",
-    "text": "¿Qué contiene el cuaderno?\nAdemás de la versión web y del documento PDF, el libro cuenta con un cuaderno completo de Google Colab. En él, las explicaciones aparecen en celdas de texto y cada bloque de código R se encuentra en una celda independiente para que pueda ejecutarse paso a paso.\nEl cuaderno reproduce el contenido del libro y contiene:",
+    "text": "Cuadernos autónomos por capítulo\nAdemás de la versión web y del documento PDF, el libro cuenta ahora con dos formas complementarias de trabajar en Google Colab:\nCada cuaderno puede abrirse directamente y contiene su propia celda inicial de preparación. No es necesario ejecutar capítulos anteriores.",
     "crumbs": [
-      "Cuaderno completo para Google Colab"
+      "Google Colab: cuaderno completo y cuadernos por capítulo"
     ]
   },
   {
-    "objectID": "00-cuaderno-google-colab.html#qué-contiene-el-cuaderno",
-    "href": "00-cuaderno-google-colab.html#qué-contiene-el-cuaderno",
-    "title": "Cuaderno completo para Google Colab",
+    "objectID": "00-cuaderno-google-colab.html#cuadernos-autónomos-por-capítulo",
+    "href": "00-cuaderno-google-colab.html#cuadernos-autónomos-por-capítulo",
+    "title": "Google Colab: cuaderno completo y cuadernos por capítulo",
     "section": "",
-    "text": "un índice navegable con todos los capítulos y secciones;\nexplicaciones conceptuales en celdas de texto;\nfórmulas matemáticas;\ncódigos R separados en celdas independientes;\ninstalación y carga de los paquetes necesarios;\npreparación y lectura de los datos ATUS;\nanálisis exploratorio;\nregresión logística;\nk vecinos más cercanos;\nárboles de decisión;\nRandom Forest;\nevaluación y comparación de modelos;\nejercicios, interpretaciones y referencias.",
+    "text": "Capítulo\nTema\nAbrir en Colab\n\n\n\n\n1\nIntroducción al aprendizaje automático\nAbrir\n\n\n2\nPreparación de datos reales\nAbrir\n\n\n3\nAnálisis exploratorio de datos\nAbrir\n\n\n4\nRegresión lineal simple y múltiple\nAbrir\n\n\n5\nRegresión logística\nAbrir\n\n\n6\nk vecinos más cercanos (k-NN)\nAbrir\n\n\n7\nÁrboles de decisión\nAbrir\n\n\n8\nRandom Forest\nAbrir\n\n\n9\nEvaluación y comparación de modelos\nAbrir\n\n\n10\nMáquinas de vectores de soporte (SVM)\nAbrir\n\n\n11\nNaive Bayes\nAbrir\n\n\n12\nRedes neuronales\nAbrir\n\n\n13\nAgrupamiento k-means\nAbrir",
     "crumbs": [
-      "Cuaderno completo para Google Colab"
+      "Google Colab: cuaderno completo y cuadernos por capítulo"
     ]
   },
   {
-    "objectID": "00-cuaderno-google-colab.html#cómo-utilizarlo",
-    "href": "00-cuaderno-google-colab.html#cómo-utilizarlo",
-    "title": "Cuaderno completo para Google Colab",
-    "section": "Cómo utilizarlo",
-    "text": "Cómo utilizarlo\n\nAbra el enlace Ejecutar el libro completo en Google Colab.\nInicie sesión con una cuenta de Google, si Colab lo solicita.\nSeleccione Archivo → Guardar una copia en Drive para conservar una copia editable.\nCompruebe que el entorno de ejecución utilice R.\nEjecute primero las celdas de preparación e instalación de paquetes.\nContinúe en orden, ejecutando cada celda con el botón de reproducción o con Shift + Enter.\n\n\n\n\n\n\n\nAdvertenciaEjecución en orden\n\n\n\nAlgunos capítulos utilizan objetos creados en capítulos anteriores. Durante la primera ejecución se recomienda avanzar en el orden establecido y no saltar las celdas de preparación de datos.",
+    "objectID": "00-cuaderno-google-colab.html#qué-significa-que-cada-cuaderno-sea-autónomo",
+    "href": "00-cuaderno-google-colab.html#qué-significa-que-cada-cuaderno-sea-autónomo",
+    "title": "Google Colab: cuaderno completo y cuadernos por capítulo",
+    "section": "¿Qué significa que cada cuaderno sea autónomo?",
+    "text": "¿Qué significa que cada cuaderno sea autónomo?\nLa primera celda de cada capítulo:\n\ninstala automáticamente los paquetes de R que hagan falta;\ncrea las carpetas necesarias;\ndescarga util_graficas.R;\ndescarga la base ATUS preparada;\ndescarga los archivos COVID-19 2022 utilizados por los ejemplos;\ncomprueba que los recursos existan antes de continuar;\ncarga las funciones gráficas del libro.\n\nPor ello un estudiante puede abrir, por ejemplo, el capítulo de SVM o el de Random Forest y comenzar directamente desde ese cuaderno.\n\n\n\n\n\n\nAdvertenciaEjecute las celdas en orden dentro del capítulo\n\n\n\nAunque los cuadernos por capítulo son independientes entre sí, dentro de cada cuaderno algunas celdas utilizan objetos creados en celdas anteriores. Si Colab reinicia o desconecta la sesión, vuelva a ejecutar desde la primera celda.",
     "crumbs": [
-      "Cuaderno completo para Google Colab"
+      "Google Colab: cuaderno completo y cuadernos por capítulo"
     ]
   },
   {
-    "objectID": "00-cuaderno-google-colab.html#diferencias-entre-el-libro-web-y-el-cuaderno",
-    "href": "00-cuaderno-google-colab.html#diferencias-entre-el-libro-web-y-el-cuaderno",
-    "title": "Cuaderno completo para Google Colab",
-    "section": "Diferencias entre el libro web y el cuaderno",
-    "text": "Diferencias entre el libro web y el cuaderno\nLa versión web es la opción más cómoda para leer y consultar el contenido. El cuaderno de Colab está pensado para experimentar: permite modificar valores, ejecutar nuevamente los modelos y observar cómo cambian los resultados sin instalar R ni RStudio en la computadora.\n\n\n\n\n\n\nNotaDatos y acceso a internet\n\n\n\nEl cuaderno necesita conexión a internet para instalar paquetes y descargar los archivos de datos cuando no estén disponibles en la sesión. La descarga de ATUS puede tardar debido al tamaño de la base.",
+    "objectID": "00-cuaderno-google-colab.html#cuaderno-maestro-completo",
+    "href": "00-cuaderno-google-colab.html#cuaderno-maestro-completo",
+    "title": "Google Colab: cuaderno completo y cuadernos por capítulo",
+    "section": "Cuaderno maestro completo",
+    "text": "Cuaderno maestro completo\nEl cuaderno maestro conserva todo el recorrido del libro en un solo archivo. Es útil para:\n\nestudiar el libro completo de principio a fin;\ndisponer de una copia integral del código R;\ncomparar algoritmos en una misma sesión;\nconservar todos los ejemplos ATUS y COVID-19 en un solo cuaderno.\n\nDebido a su extensión, para clases, prácticas y consultas rápidas se recomienda utilizar los cuadernos autónomos por capítulo.",
     "crumbs": [
-      "Cuaderno completo para Google Colab"
+      "Google Colab: cuaderno completo y cuadernos por capítulo"
     ]
   },
   {
-    "objectID": "00-cuaderno-google-colab.html#ejecución-autónoma-en-google-colab",
-    "href": "00-cuaderno-google-colab.html#ejecución-autónoma-en-google-colab",
-    "title": "Cuaderno completo para Google Colab",
-    "section": "Ejecución autónoma en Google Colab",
-    "text": "Ejecución autónoma en Google Colab\nEl cuaderno incluye una celda inicial de preparación automática que:\n\ninstala los paquetes de R que hagan falta;\ndefine dentro del propio cuaderno todas las funciones gráficas;\ncrea la carpeta datos;\ndescarga las bases ATUS desde el repositorio estable cuando no estén presentes;\ncomprueba que los recursos necesarios estén disponibles.\n\nPor esta razón, el usuario no necesita descargar manualmente util_graficas.R ni subir archivos auxiliares a Colab.",
+    "objectID": "00-cuaderno-google-colab.html#cómo-trabajar-en-google-colab",
+    "href": "00-cuaderno-google-colab.html#cómo-trabajar-en-google-colab",
+    "title": "Google Colab: cuaderno completo y cuadernos por capítulo",
+    "section": "Cómo trabajar en Google Colab",
+    "text": "Cómo trabajar en Google Colab\n\nAbra el índice o el capítulo que desea estudiar.\nInicie sesión con una cuenta de Google si Colab lo solicita.\nOpcionalmente seleccione Archivo → Guardar una copia en Drive.\nCompruebe que el entorno de ejecución utilice R.\nEjecute primero la celda de preparación automática.\nContinúe en orden con el botón de reproducción o con Shift + Enter.",
     "crumbs": [
-      "Cuaderno completo para Google Colab"
+      "Google Colab: cuaderno completo y cuadernos por capítulo"
     ]
   },
   {
-    "objectID": "00-cuaderno-google-colab.html#instalación-automática-de-paquetes",
-    "href": "00-cuaderno-google-colab.html#instalación-automática-de-paquetes",
-    "title": "Cuaderno completo para Google Colab",
-    "section": "Instalación automática de paquetes",
-    "text": "Instalación automática de paquetes\nEl cuaderno utiliza la función cargar_paquete(). Antes de cargar un paquete, comprueba si está instalado y, cuando hace falta, lo instala automáticamente desde CRAN. Esto evita errores como there is no package called 'ranger'.",
+    "objectID": "00-cuaderno-google-colab.html#libro-web-colab-e-interactivos",
+    "href": "00-cuaderno-google-colab.html#libro-web-colab-e-interactivos",
+    "title": "Google Colab: cuaderno completo y cuadernos por capítulo",
+    "section": "Libro web, Colab e interactivos",
+    "text": "Libro web, Colab e interactivos\nLa versión web sigue siendo la opción principal para lectura, navegación y laboratorios Shinylive. Los cuadernos Colab están pensados para modificar código, repetir experimentos y trabajar con los modelos en R sin instalar R ni RStudio localmente.\nLos laboratorios Shinylive permanecen en la versión web; los cuadernos Colab contienen el desarrollo reproducible de los algoritmos y los casos aplicados con ATUS y COVID-19.",
     "crumbs": [
-      "Cuaderno completo para Google Colab"
-    ]
-  },
-  {
-    "objectID": "00-cuaderno-google-colab.html#referencias-bibliográficas-en-colab",
-    "href": "00-cuaderno-google-colab.html#referencias-bibliográficas-en-colab",
-    "title": "Cuaderno completo para Google Colab",
-    "section": "Referencias bibliográficas en Colab",
-    "text": "Referencias bibliográficas en Colab\nEn los capítulos Quarto se conservan claves como @breiman1984classification, porque Quarto las transforma al generar el libro. En Google Colab esas claves se sustituyen por citas legibles como Breiman et al. (1984), y la bibliografía completa aparece al final del cuaderno.",
-    "crumbs": [
-      "Cuaderno completo para Google Colab"
-    ]
-  },
-  {
-    "objectID": "00-cuaderno-google-colab.html#descarga-automática-de-los-datos",
-    "href": "00-cuaderno-google-colab.html#descarga-automática-de-los-datos",
-    "title": "Cuaderno completo para Google Colab",
-    "section": "Descarga automática de los datos",
-    "text": "Descarga automática de los datos\nPara evitar archivos demasiado grandes dentro del cuaderno, las bases ATUS se publican en formato comprimido .csv.gz. La primera celda de Colab:\n\ndescarga los archivos comprimidos desde GitHub Pages;\nlos descomprime automáticamente;\nguarda los CSV en la carpeta datos;\ncomprueba que quedaron disponibles antes de continuar.\n\nLos archivos publicados son:\n\nrecursos_colab/atus_ml_preparado.csv.gz;\nrecursos_colab/atus_2024.csv.gz.\n\nSi la celda informa un error 404, primero debe publicarse esta versión del sitio para que esos recursos estén disponibles.",
-    "crumbs": [
-      "Cuaderno completo para Google Colab"
+      "Google Colab: cuaderno completo y cuadernos por capítulo"
     ]
   },
   {
@@ -1054,7 +1034,7 @@
     "href": "04-regresion-logistica.html#ajustar-modelo",
     "title": "5  Regresión logística para clasificación",
     "section": "5.6 Ajustar modelo",
-    "text": "5.6 Ajustar modelo\n\nif (exists(\"entrenamiento\")) {\n  modelo_logistico &lt;- glm(\n    victimas_binaria ~ MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,\n    data = entrenamiento,\n    family = binomial\n  )\n\n  head(summary(modelo_logistico)$coefficients, 12)\n}\n\n                Estimate   Std. Error     z value     Pr(&gt;|z|)\n(Intercept) 18.106842040 101.82605763  0.17782130 8.588633e-01\nMES02       -0.045765700   0.02975556 -1.53805548 1.240350e-01\nMES03       -0.032191364   0.02927313 -1.09968980 2.714673e-01\nMES04       -0.002838049   0.02945462 -0.09635327 9.232400e-01\nMES05       -0.015408552   0.02906672 -0.53010979 5.960358e-01\nMES06       -0.054753129   0.02983667 -1.83509526 6.649158e-02\nMES07       -0.076296781   0.03035194 -2.51373620 1.194598e-02\nMES08       -0.094049541   0.02997105 -3.13801278 1.700975e-03\nMES09       -0.077109438   0.03015044 -2.55748998 1.054306e-02\nMES10       -0.154152374   0.02979697 -5.17342485 2.298416e-07\nMES11       -0.106385033   0.02950811 -3.60528073 3.118157e-04\nMES12       -0.111888509   0.02959338 -3.78086333 1.562855e-04\n\n\n\n\n\n\n\n\nTipInterpretación del resultado\n\n\n\nLos coeficientes estiman el efecto de cada variable sobre el logit de la probabilidad de accidente con víctimas.",
+    "text": "5.6 Ajustar modelo\n\nif (exists(\"entrenamiento\")) {\n  modelo_logistico &lt;- glm(\n    victimas_binaria ~ MES + ID_HORA + DIASEMANA + TIPACCID + CAUSAACCI,\n    data = entrenamiento,\n    family = binomial\n  )\n\n  head(summary(modelo_logistico)$coefficients, 12)\n}\n\n                Estimate   Std. Error     z value     Pr(&gt;|z|)\n(Intercept) 18.106842037 101.82605759  0.17782130 8.588633e-01\nMES02       -0.045765700   0.02975556 -1.53805548 1.240350e-01\nMES03       -0.032191364   0.02927313 -1.09968980 2.714673e-01\nMES04       -0.002838049   0.02945462 -0.09635327 9.232400e-01\nMES05       -0.015408552   0.02906672 -0.53010979 5.960358e-01\nMES06       -0.054753129   0.02983667 -1.83509526 6.649158e-02\nMES07       -0.076296781   0.03035194 -2.51373620 1.194598e-02\nMES08       -0.094049541   0.02997105 -3.13801278 1.700975e-03\nMES09       -0.077109438   0.03015044 -2.55748998 1.054306e-02\nMES10       -0.154152374   0.02979697 -5.17342485 2.298416e-07\nMES11       -0.106385033   0.02950811 -3.60528073 3.118157e-04\nMES12       -0.111888509   0.02959338 -3.78086333 1.562855e-04\n\n\n\n\n\n\n\n\nTipInterpretación del resultado\n\n\n\nLos coeficientes estiman el efecto de cada variable sobre el logit de la probabilidad de accidente con víctimas.",
     "crumbs": [
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Regresión logística para clasificación</span>"
     ]

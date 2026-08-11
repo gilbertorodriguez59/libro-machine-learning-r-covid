@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Cuaderno completo para Google Colab – Aprendizaje y Clasificación Automática con R</title>
+<title>Google Colab: cuaderno completo y cuadernos por capítulo – Aprendizaje y Clasificación Automática con R</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -88,7 +88,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-cuaderno-google-colab.html">Cuaderno completo para Google Colab</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-cuaderno-google-colab.html">Google Colab: cuaderno completo y cuadernos por capítulo</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -155,7 +155,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./00-cuaderno-google-colab.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Cuaderno completo para Google Colab</span></a>
+ <span class="menu-text">Google Colab: cuaderno completo y cuadernos por capítulo</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -287,13 +287,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Tabla de contenidos</h2>
    
   <ul>
-  <li><a href="#qué-contiene-el-cuaderno" id="toc-qué-contiene-el-cuaderno" class="nav-link active" data-scroll-target="#qué-contiene-el-cuaderno">¿Qué contiene el cuaderno?</a></li>
-  <li><a href="#cómo-utilizarlo" id="toc-cómo-utilizarlo" class="nav-link" data-scroll-target="#cómo-utilizarlo">Cómo utilizarlo</a></li>
-  <li><a href="#diferencias-entre-el-libro-web-y-el-cuaderno" id="toc-diferencias-entre-el-libro-web-y-el-cuaderno" class="nav-link" data-scroll-target="#diferencias-entre-el-libro-web-y-el-cuaderno">Diferencias entre el libro web y el cuaderno</a></li>
-  <li><a href="#ejecución-autónoma-en-google-colab" id="toc-ejecución-autónoma-en-google-colab" class="nav-link" data-scroll-target="#ejecución-autónoma-en-google-colab">Ejecución autónoma en Google Colab</a></li>
-  <li><a href="#instalación-automática-de-paquetes" id="toc-instalación-automática-de-paquetes" class="nav-link" data-scroll-target="#instalación-automática-de-paquetes">Instalación automática de paquetes</a></li>
-  <li><a href="#referencias-bibliográficas-en-colab" id="toc-referencias-bibliográficas-en-colab" class="nav-link" data-scroll-target="#referencias-bibliográficas-en-colab">Referencias bibliográficas en Colab</a></li>
-  <li><a href="#descarga-automática-de-los-datos" id="toc-descarga-automática-de-los-datos" class="nav-link" data-scroll-target="#descarga-automática-de-los-datos">Descarga automática de los datos</a></li>
+  <li><a href="#cuadernos-autónomos-por-capítulo" id="toc-cuadernos-autónomos-por-capítulo" class="nav-link active" data-scroll-target="#cuadernos-autónomos-por-capítulo">Cuadernos autónomos por capítulo</a></li>
+  <li><a href="#qué-significa-que-cada-cuaderno-sea-autónomo" id="toc-qué-significa-que-cada-cuaderno-sea-autónomo" class="nav-link" data-scroll-target="#qué-significa-que-cada-cuaderno-sea-autónomo">¿Qué significa que cada cuaderno sea autónomo?</a></li>
+  <li><a href="#cuaderno-maestro-completo" id="toc-cuaderno-maestro-completo" class="nav-link" data-scroll-target="#cuaderno-maestro-completo">Cuaderno maestro completo</a></li>
+  <li><a href="#cómo-trabajar-en-google-colab" id="toc-cómo-trabajar-en-google-colab" class="nav-link" data-scroll-target="#cómo-trabajar-en-google-colab">Cómo trabajar en Google Colab</a></li>
+  <li><a href="#libro-web-colab-e-interactivos" id="toc-libro-web-colab-e-interactivos" class="nav-link" data-scroll-target="#libro-web-colab-e-interactivos">Libro web, Colab e interactivos</a></li>
   </ul>
 </nav>
     </div>
@@ -302,7 +300,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Cuaderno completo para Google Colab</h1>
+<h1 class="title">Google Colab: cuaderno completo y cuadernos por capítulo</h1>
 </div>
 
 
@@ -319,118 +317,160 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Además de la versión web y del documento PDF, el libro cuenta con un <strong>cuaderno completo de Google Colab</strong>. En él, las explicaciones aparecen en celdas de texto y cada bloque de código R se encuentra en una celda independiente para que pueda ejecutarse paso a paso.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Abrir o descargar el cuaderno">
+<p>Además de la versión web y del documento PDF, el libro cuenta ahora con <strong>dos formas complementarias de trabajar en Google Colab</strong>:</p>
+<ol type="1">
+<li>un <strong>cuaderno maestro completo</strong>, con todos los capítulos en un solo archivo;</li>
+<li><strong>13 cuadernos independientes y autónomos</strong>, uno por capítulo, pensados para estudiar o practicar un tema sin tener que ejecutar todo el libro.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled" title="Acceso recomendado">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Abrir o descargar el cuaderno
+<span class="screen-reader-only">Tip</span>Acceso recomendado
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Abrir directamente en Google Colab:</strong><br>
-<a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb">Ejecutar el libro completo en Google Colab</a></p>
-<p><strong>Descargar el archivo <code>.ipynb</code>:</strong><br>
-<a href="Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb">Descargar el cuaderno completo</a></p>
+<p><strong>Índice de cuadernos por capítulo:</strong><br>
+<a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/00-indice-colabs.ipynb">Abrir el índice de Colabs</a></p>
+<p><strong>Cuaderno maestro completo:</strong><br>
+<a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb">Abrir el libro completo en Google Colab</a></p>
 </div>
 </div>
-<section id="qué-contiene-el-cuaderno" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="qué-contiene-el-cuaderno">¿Qué contiene el cuaderno?</h2>
-<p>El cuaderno reproduce el contenido del libro y contiene:</p>
-<ul>
-<li>un índice navegable con todos los capítulos y secciones;</li>
-<li>explicaciones conceptuales en celdas de texto;</li>
-<li>fórmulas matemáticas;</li>
-<li>códigos R separados en celdas independientes;</li>
-<li>instalación y carga de los paquetes necesarios;</li>
-<li>preparación y lectura de los datos ATUS;</li>
-<li>análisis exploratorio;</li>
-<li>regresión logística;</li>
-<li>k vecinos más cercanos;</li>
-<li>árboles de decisión;</li>
-<li>Random Forest;</li>
-<li>evaluación y comparación de modelos;</li>
-<li>ejercicios, interpretaciones y referencias.</li>
-</ul>
+<section id="cuadernos-autónomos-por-capítulo" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="cuadernos-autónomos-por-capítulo">Cuadernos autónomos por capítulo</h2>
+<p>Cada cuaderno puede abrirse directamente y contiene su propia celda inicial de preparación. No es necesario ejecutar capítulos anteriores.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Capítulo</th>
+<th>Tema</th>
+<th>Abrir en Colab</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td>Introducción al aprendizaje automático</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb">Abrir</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td>Preparación de datos reales</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/02-preparacion-datos.ipynb">Abrir</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td>Análisis exploratorio de datos</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/03-analisis-exploratorio.ipynb">Abrir</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td>Regresión lineal simple y múltiple</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/04-regresion-lineal.ipynb">Abrir</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td>Regresión logística</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb">Abrir</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td>k vecinos más cercanos (k-NN)</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/06-knn.ipynb">Abrir</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td>Árboles de decisión</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/07-arboles-decision.ipynb">Abrir</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td>Random Forest</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/08-random-forest.ipynb">Abrir</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td>Evaluación y comparación de modelos</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/09-evaluacion-modelos.ipynb">Abrir</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td>Máquinas de vectores de soporte (SVM)</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/10-svm.ipynb">Abrir</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11</td>
+<td>Naive Bayes</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/11-naive-bayes.ipynb">Abrir</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">12</td>
+<td>Redes neuronales</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/12-redes-neuronales.ipynb">Abrir</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">13</td>
+<td>Agrupamiento k-means</td>
+<td><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/13-kmeans.ipynb">Abrir</a></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="cómo-utilizarlo" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="cómo-utilizarlo">Cómo utilizarlo</h2>
+<section id="qué-significa-que-cada-cuaderno-sea-autónomo" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="qué-significa-que-cada-cuaderno-sea-autónomo">¿Qué significa que cada cuaderno sea autónomo?</h2>
+<p>La primera celda de cada capítulo:</p>
+<ul>
+<li>instala automáticamente los paquetes de R que hagan falta;</li>
+<li>crea las carpetas necesarias;</li>
+<li>descarga <code>util_graficas.R</code>;</li>
+<li>descarga la base ATUS preparada;</li>
+<li>descarga los archivos COVID-19 2022 utilizados por los ejemplos;</li>
+<li>comprueba que los recursos existan antes de continuar;</li>
+<li>carga las funciones gráficas del libro.</li>
+</ul>
+<p>Por ello un estudiante puede abrir, por ejemplo, el capítulo de <strong>SVM</strong> o el de <strong>Random Forest</strong> y comenzar directamente desde ese cuaderno.</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Ejecute las celdas en orden dentro del capítulo">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Ejecute las celdas en orden dentro del capítulo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aunque los cuadernos por capítulo son independientes entre sí, dentro de cada cuaderno algunas celdas utilizan objetos creados en celdas anteriores. Si Colab reinicia o desconecta la sesión, vuelva a ejecutar desde la primera celda.</p>
+</div>
+</div>
+</section>
+<section id="cuaderno-maestro-completo" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="cuaderno-maestro-completo">Cuaderno maestro completo</h2>
+<p>El cuaderno maestro conserva todo el recorrido del libro en un solo archivo. Es útil para:</p>
+<ul>
+<li>estudiar el libro completo de principio a fin;</li>
+<li>disponer de una copia integral del código R;</li>
+<li>comparar algoritmos en una misma sesión;</li>
+<li>conservar todos los ejemplos ATUS y COVID-19 en un solo cuaderno.</li>
+</ul>
+<p>Debido a su extensión, para clases, prácticas y consultas rápidas se recomienda utilizar los cuadernos autónomos por capítulo.</p>
+</section>
+<section id="cómo-trabajar-en-google-colab" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="cómo-trabajar-en-google-colab">Cómo trabajar en Google Colab</h2>
 <ol type="1">
-<li>Abra el enlace <strong>Ejecutar el libro completo en Google Colab</strong>.</li>
-<li>Inicie sesión con una cuenta de Google, si Colab lo solicita.</li>
-<li>Seleccione <strong>Archivo → Guardar una copia en Drive</strong> para conservar una copia editable.</li>
+<li>Abra el índice o el capítulo que desea estudiar.</li>
+<li>Inicie sesión con una cuenta de Google si Colab lo solicita.</li>
+<li>Opcionalmente seleccione <strong>Archivo → Guardar una copia en Drive</strong>.</li>
 <li>Compruebe que el entorno de ejecución utilice <strong>R</strong>.</li>
-<li>Ejecute primero las celdas de preparación e instalación de paquetes.</li>
-<li>Continúe en orden, ejecutando cada celda con el botón de reproducción o con <code>Shift + Enter</code>.</li>
+<li>Ejecute primero la celda de preparación automática.</li>
+<li>Continúe en orden con el botón de reproducción o con <code>Shift + Enter</code>.</li>
 </ol>
-<div class="callout callout-style-default callout-warning callout-titled" title="Ejecución en orden">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Advertencia</span>Ejecución en orden
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Algunos capítulos utilizan objetos creados en capítulos anteriores. Durante la primera ejecución se recomienda avanzar en el orden establecido y no saltar las celdas de preparación de datos.</p>
-</div>
-</div>
 </section>
-<section id="diferencias-entre-el-libro-web-y-el-cuaderno" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="diferencias-entre-el-libro-web-y-el-cuaderno">Diferencias entre el libro web y el cuaderno</h2>
-<p>La versión web es la opción más cómoda para leer y consultar el contenido. El cuaderno de Colab está pensado para experimentar: permite modificar valores, ejecutar nuevamente los modelos y observar cómo cambian los resultados sin instalar R ni RStudio en la computadora.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Datos y acceso a internet">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>Datos y acceso a internet
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>El cuaderno necesita conexión a internet para instalar paquetes y descargar los archivos de datos cuando no estén disponibles en la sesión. La descarga de ATUS puede tardar debido al tamaño de la base.</p>
-</div>
-</div>
-</section>
-<section id="ejecución-autónoma-en-google-colab" class="level2">
-<h2 class="anchored" data-anchor-id="ejecución-autónoma-en-google-colab">Ejecución autónoma en Google Colab</h2>
-<p>El cuaderno incluye una celda inicial de <strong>preparación automática</strong> que:</p>
-<ul>
-<li>instala los paquetes de R que hagan falta;</li>
-<li>define dentro del propio cuaderno todas las funciones gráficas;</li>
-<li>crea la carpeta <code>datos</code>;</li>
-<li>descarga las bases ATUS desde el repositorio estable cuando no estén presentes;</li>
-<li>comprueba que los recursos necesarios estén disponibles.</li>
-</ul>
-<p>Por esta razón, el usuario no necesita descargar manualmente <code>util_graficas.R</code> ni subir archivos auxiliares a Colab.</p>
-</section>
-<section id="instalación-automática-de-paquetes" class="level2">
-<h2 class="anchored" data-anchor-id="instalación-automática-de-paquetes">Instalación automática de paquetes</h2>
-<p>El cuaderno utiliza la función <code>cargar_paquete()</code>. Antes de cargar un paquete, comprueba si está instalado y, cuando hace falta, lo instala automáticamente desde CRAN. Esto evita errores como <code>there is no package called 'ranger'</code>.</p>
-</section>
-<section id="referencias-bibliográficas-en-colab" class="level2">
-<h2 class="anchored" data-anchor-id="referencias-bibliográficas-en-colab">Referencias bibliográficas en Colab</h2>
-<p>En los capítulos Quarto se conservan claves como <code>@breiman1984classification</code>, porque Quarto las transforma al generar el libro. En Google Colab esas claves se sustituyen por citas legibles como <strong>Breiman et al.&nbsp;(1984)</strong>, y la bibliografía completa aparece al final del cuaderno.</p>
-</section>
-<section id="descarga-automática-de-los-datos" class="level2">
-<h2 class="anchored" data-anchor-id="descarga-automática-de-los-datos">Descarga automática de los datos</h2>
-<p>Para evitar archivos demasiado grandes dentro del cuaderno, las bases ATUS se publican en formato comprimido <code>.csv.gz</code>. La primera celda de Colab:</p>
-<ol type="1">
-<li>descarga los archivos comprimidos desde GitHub Pages;</li>
-<li>los descomprime automáticamente;</li>
-<li>guarda los CSV en la carpeta <code>datos</code>;</li>
-<li>comprueba que quedaron disponibles antes de continuar.</li>
-</ol>
-<p>Los archivos publicados son:</p>
-<ul>
-<li><code>recursos_colab/atus_ml_preparado.csv.gz</code>;</li>
-<li><code>recursos_colab/atus_2024.csv.gz</code>.</li>
-</ul>
-<p>Si la celda informa un error 404, primero debe publicarse esta versión del sitio para que esos recursos estén disponibles.</p>
+<section id="libro-web-colab-e-interactivos" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="libro-web-colab-e-interactivos">Libro web, Colab e interactivos</h2>
+<p>La versión web sigue siendo la opción principal para lectura, navegación y laboratorios Shinylive. Los cuadernos Colab están pensados para modificar código, repetir experimentos y trabajar con los modelos en R sin instalar R ni RStudio localmente.</p>
+<p>Los laboratorios Shinylive permanecen en la versión web; los cuadernos Colab contienen el desarrollo reproducible de los algoritmos y los casos aplicados con ATUS y COVID-19.</p>
 
 
 </section>
