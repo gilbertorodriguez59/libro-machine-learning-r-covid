@@ -379,6 +379,21 @@ El valor de $k$ controla cuánto se suaviza la decisión. Valores pequeños reac
 :::
 
 ## Materiales complementarios del capítulo
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<div class="video-responsive">
+  <iframe src="https://www.youtube.com/embed/NLJj0QAWomU"
+title="Capítulo 6. k vecinos más cercanos, k-NN" allowfullscreen
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+:::
 
 <!-- colab-capitulo -->
 ::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
@@ -389,18 +404,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
-::: {.content-visible when-format="html"}
-
-### Video del capítulo
-
-<div class="video-responsive">
-<iframe src="https://www.youtube.com/embed/NLJj0QAWomU"
-title="Capítulo 6. k vecinos más cercanos, k-NN"
-frameborder="0" allowfullscreen></iframe>
-</div>
-
-:::
 
 ::: {.content-visible when-format="pdf"}
 

@@ -189,17 +189,6 @@ Esta gráfica compara proporciones, no cantidades absolutas. Permite identificar
 :::
 
 ## Materiales complementarios del capítulo
-
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/03-analisis-exploratorio.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
-
 Estos recursos permiten repasar los conceptos esenciales del análisis exploratorio de datos mediante distintos formatos.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -213,9 +202,11 @@ Estos recursos permiten repasar los conceptos esenciales del análisis explorato
 ### Video explicativo
 
 <div class="video-responsive">
-  <iframe
-    src="https://www.youtube.com/embed/U2hd8iEovCY"
+  <iframe src="https://www.youtube.com/embed/U2hd8iEovCY"
     title="Capítulo 3. Análisis exploratorio de datos"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -227,6 +218,16 @@ Estos recursos permiten repasar los conceptos esenciales del análisis explorato
 
 [![Infografía del capítulo 3](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos-infografia.png)](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos-infografia.png)
 :::
+
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/03-analisis-exploratorio.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
 
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=U2hd8iEovCY>

@@ -838,6 +838,22 @@ La comparación permite estudiar si una frontera no lineal aporta una ventaja re
 :::
 
 ## Materiales complementarios del capítulo
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<div class="video-responsive">
+  <iframe src="https://www.youtube.com/embed/upiQi4xIBrQ"
+title="Capítulo 10. Máquinas de vectores de soporte"
+allowfullscreen
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+:::
 
 <!-- colab-capitulo -->
 ::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
@@ -848,18 +864,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
-::: {.content-visible when-format="html"}
-
-### Video del capítulo
-
-<iframe width="100%" height="420"
-src="https://www.youtube.com/embed/upiQi4xIBrQ"
-title="Capítulo 10. Máquinas de vectores de soporte"
-frameborder="0"
-allowfullscreen></iframe>
-
-:::
 
 ::: {.content-visible when-format="pdf"}
 

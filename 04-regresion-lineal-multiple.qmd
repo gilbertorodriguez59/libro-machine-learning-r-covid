@@ -525,17 +525,6 @@ La regresión lineal simple explica una respuesta cuantitativa mediante una vari
 
 
 ## Materiales complementarios del capítulo
-
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/04-regresion-lineal.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
-
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
 |---|---|---|---|
 | Video explicativo | Explicación audiovisual de la regresión lineal simple y múltiple. | [Ver en YouTube](https://www.youtube.com/watch?v=SE6DCeU9h1w){target="_blank"} | — |
@@ -547,13 +536,28 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 ### Video explicativo
 
 <div class="video-responsive">
-  <iframe src="https://www.youtube.com/embed/SE6DCeU9h1w" title="Capítulo 4. Regresión lineal simple y múltiple" frameborder="0" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/SE6DCeU9h1w" title="Capítulo 4. Regresión lineal simple y múltiple" allowfullscreen
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
 </div>
 
 ### Vista previa de la infografía
 
 [![Infografía del capítulo 4](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png)](recursos/capitulo-04/capitulo-04-regresion-lineal-simple-multiple-infografia.png)
 :::
+
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/04-regresion-lineal.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
 
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=SE6DCeU9h1w>

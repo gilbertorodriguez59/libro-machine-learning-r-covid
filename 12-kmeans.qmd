@@ -594,6 +594,22 @@ La versión web permite cambiar el número de clusters y visualizar una submuest
 :::
 
 ## Materiales complementarios del capítulo
+::: {.content-visible when-format="html"}
+
+### Video del capítulo
+
+<div class="video-responsive">
+  <iframe src="https://www.youtube.com/embed/mZgUlnSxrgA"
+title="Capítulo 13. Agrupamiento con k-means"
+allowfullscreen
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
+
+:::
 
 <!-- colab-capitulo -->
 ::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
@@ -604,18 +620,6 @@ Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrir
 
 ::: <!-- /colab-capitulo -->
 
-
-::: {.content-visible when-format="html"}
-
-### Video del capítulo
-
-<iframe width="100%" height="420"
-src="https://www.youtube.com/embed/mZgUlnSxrgA"
-title="Capítulo 13. Agrupamiento con k-means"
-frameborder="0"
-allowfullscreen></iframe>
-
-:::
 
 ::: {.content-visible when-format="pdf"}
 

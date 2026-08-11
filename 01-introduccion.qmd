@@ -144,17 +144,6 @@ La matriz de confusión compara la clase real contra la clase predicha. La exact
 :::
 
 ## Materiales complementarios del capítulo
-
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
-
 Estos recursos permiten repasar los conceptos principales del capítulo mediante distintos formatos. La presentación puede consultarse en PDF o modificarse en PowerPoint; la infografía ofrece una síntesis visual y el video explica los contenidos de manera audiovisual.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -168,9 +157,11 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 ### Video explicativo
 
 <div class="video-responsive">
-  <iframe
-    src="https://www.youtube.com/embed/N2SkzjT2LpU"
+  <iframe src="https://www.youtube.com/embed/N2SkzjT2LpU"
     title="Capítulo 1. Introducción al aprendizaje automático"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -183,8 +174,18 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 1](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png)](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png)
 :::
 
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
+
 ::: {.content-visible when-format="pdf"}
-**Video del capítulo:** <https://www.youtube.com/watch?v=xzTLERULM6s>
+**Video del capítulo:** <https://www.youtube.com/watch?v=N2SkzjT2LpU>
 
 La presentación PDF, el archivo editable y la infografía pueden descargarse desde la versión web del libro.
 :::

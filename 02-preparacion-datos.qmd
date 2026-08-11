@@ -359,17 +359,6 @@ En este capítulo descargamos y documentamos una base real del INEGI, verificamo
 
 
 ## Materiales complementarios del capítulo
-
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/02-preparacion-datos.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
-
 Estos recursos permiten repasar la preparación de datos reales mediante una presentación, una infografía y un video explicativo.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -383,9 +372,11 @@ Estos recursos permiten repasar la preparación de datos reales mediante una pre
 ### Video explicativo
 
 <div class="video-responsive">
-  <iframe
-    src="https://www.youtube.com/embed/bmv-tDPZGjQ"
+  <iframe src="https://www.youtube.com/embed/bmv-tDPZGjQ"
     title="Capítulo 2. Preparación de datos reales"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -397,6 +388,16 @@ Estos recursos permiten repasar la preparación de datos reales mediante una pre
 
 [![Infografía del capítulo 2](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png)](recursos/capitulo-02/capitulo-02-preparacion-datos-reales-infografia.png)
 :::
+
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/02-preparacion-datos.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
 
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=bmv-tDPZGjQ>

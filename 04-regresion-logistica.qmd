@@ -181,17 +181,6 @@ if (exists("prueba")) {
 ```
 
 ## Materiales complementarios del capítulo
-
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
-
 Estos recursos permiten estudiar la regresión logística desde una perspectiva audiovisual, gráfica y práctica.
 
 | Recurso | Utilidad | Abrir o reproducir | Descargar |
@@ -205,9 +194,11 @@ Estos recursos permiten estudiar la regresión logística desde una perspectiva 
 ### Video explicativo
 
 <div class="video-responsive">
-  <iframe
-    src="https://www.youtube.com/embed/7CwP40QDeys"
+  <iframe src="https://www.youtube.com/embed/7CwP40QDeys"
     title="Capítulo 5. Regresión logística para clasificación"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
@@ -219,6 +210,16 @@ Estos recursos permiten estudiar la regresión logística desde una perspectiva 
 
 [![Infografía del capítulo 5](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png)](recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png)
 :::
+
+<!-- colab-capitulo -->
+::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
+
+Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
+
+[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb){target="_blank"}
+
+::: <!-- /colab-capitulo -->
+
 
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=7CwP40QDeys>
