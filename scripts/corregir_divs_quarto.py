@@ -36,30 +36,69 @@ fence_pat = re.compile(r'^\s*```')
 for p in files:
     if not p.exists():
         continue
+
     lines = p.read_text(encoding='utf-8').splitlines()
     in_code = False
     balance = 0
-    min_balance = 0
+    repaired = []
+    removed = 0
+
+    # Primera pasada: eliminar solo cierres ::: que aparecen cuando no existe
+    # ningún Div abierto. Los bloques de código se dejan intactos.
     for line in lines:
+        if fence_pat.match(line):
+            in_code = not in_code
+            repaired.append(line)
+            continue
+
+        if in_code:
+            repaired.append(line)
+            continue
+
+        if open_pat.match(line):
+            balance += 1
+            repaired.append(line)
+            continue
+
+        if close_pat.match(line):
+            if balance == 0:
+                removed += 1
+                continue
+            balance -= 1
+            repaired.append(line)
+            continue
+
+        repaired.append(line)
+
+    # Segunda reparación: si quedaron Div abiertos, cerrarlos al final.
+    added = balance
+    if added > 0:
+        if repaired and repaired[-1].strip():
+            repaired.append('')
+        repaired.extend([':::'] * added)
+
+    # Verificación final estricta.
+    check_balance = 0
+    in_code = False
+    for line in repaired:
         if fence_pat.match(line):
             in_code = not in_code
             continue
         if in_code:
             continue
         if open_pat.match(line):
-            balance += 1
+            check_balance += 1
         elif close_pat.match(line):
-            balance -= 1
-            min_balance = min(min_balance, balance)
+            check_balance -= 1
+            if check_balance < 0:
+                raise SystemExit(f'{p}: persistió un cierre ::: sin apertura')
 
-    if min_balance < 0:
-        raise SystemExit(f'{p}: hay cierres ::: sin apertura correspondiente')
+    if check_balance != 0:
+        raise SystemExit(f'{p}: balance final de Divs = {check_balance}')
 
-    if balance > 0:
-        with p.open('a', encoding='utf-8', newline='\n') as f:
-            f.write('\n')
-            for _ in range(balance):
-                f.write(':::\n')
-        print(f'{p}: agregados {balance} cierres ::: al final del archivo')
+    p.write_text('\n'.join(repaired).rstrip() + '\n', encoding='utf-8')
+
+    if removed or added:
+        print(f'{p}: reparado; cierres sobrantes eliminados={removed}, cierres faltantes agregados={added}')
     else:
         print(f'{p}: Divs balanceados')
