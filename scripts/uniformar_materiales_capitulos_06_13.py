@@ -22,7 +22,11 @@ def first(pattern, text):
 
 
 def youtube_id(section):
-    for pat in [r'youtube\.com/embed/([A-Za-z0-9_-]+)', r'youtu\.be/([A-Za-z0-9_-]+)', r'youtube\.com/watch\?v=([A-Za-z0-9_-]+)']:
+    for pat in [
+        r'youtube\.com/embed/([A-Za-z0-9_-]+)',
+        r'youtu\.be/([A-Za-z0-9_-]+)',
+        r'youtube\.com/watch\?v=([A-Za-z0-9_-]+)',
+    ]:
         x = first(pat, section)
         if x:
             return x
@@ -43,10 +47,12 @@ def colab_url(section):
 
 def make_block(n, title, vid, pdf, pptx, png, colab):
     if not all([vid, pdf, pptx, png, colab]):
-        faltan = [k for k, v in {"video":vid,"pdf":pdf,"pptx":pptx,"png":png,"colab":colab}.items() if not v]
+        faltan = [k for k, v in {"video": vid, "pdf": pdf, "pptx": pptx, "png": png, "colab": colab}.items() if not v]
         raise SystemExit(f"Capítulo {n}: faltan recursos: {', '.join(faltan)}")
+
     youtube = f"https://www.youtube.com/watch?v={vid}"
     embed = f"https://www.youtube.com/embed/{vid}"
+
     return f'''{HEADING}
 
 Estos recursos permiten repasar los conceptos principales del capítulo mediante distintos formatos. La presentación puede consultarse en PDF o modificarse en PowerPoint; la infografía ofrece una síntesis visual, el video explica los contenidos y el cuaderno Colab permite ejecutar los ejemplos de manera autónoma.
@@ -78,15 +84,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo {n}]({png})]({png})
 :::
 
-<!-- colab-capitulo -->
-::: {{.callout-tip title="Cuaderno Google Colab del capítulo"}}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**]({colab}){{target="_blank"}}
-
-::: <!-- /colab-capitulo -->
-
 ::: {{.content-visible when-format="pdf"}}
 **Video del capítulo:** <{youtube}>
 
@@ -104,17 +101,28 @@ Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificaci
 :::
 '''
 
+
 for n, filename, title in CAPITULOS:
     p = Path(filename)
     text = p.read_text(encoding="utf-8")
     start = text.find(HEADING)
     if start < 0:
         raise SystemExit(f"Capítulo {n}: no se encontró materiales complementarios")
+
     m_next = re.search(r'^##\s+', text[start + len(HEADING):], re.M)
     end = start + len(HEADING) + m_next.start() if m_next else len(text)
     section = text[start:end]
-    nuevo = make_block(n, title, youtube_id(section), resource(section, "pdf"), resource(section, "pptx"), resource(section, "png"), colab_url(section))
+
+    nuevo = make_block(
+        n,
+        title,
+        youtube_id(section),
+        resource(section, "pdf"),
+        resource(section, "pptx"),
+        resource(section, "png"),
+        colab_url(section),
+    )
     p.write_text(text[:start] + nuevo + "\n" + text[end:], encoding="utf-8")
     print(f"Capítulo {n} uniformado")
 
-print("Capítulos 6 a 13 uniformados con tabla de cuatro columnas y Colab incluido.")
+print("Capítulos 6 a 13 uniformados: Colab solo dentro de la tabla.")
