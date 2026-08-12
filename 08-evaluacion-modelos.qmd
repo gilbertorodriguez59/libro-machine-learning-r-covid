@@ -699,15 +699,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 9](recursos/capitulo-09/capitulo-09-evaluacion-modelos-infografia.png)](recursos/capitulo-09/capitulo-09-evaluacion-modelos-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/09-evaluacion-modelos.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=ShiKrfhIfpY>
 
@@ -1229,6 +1220,3 @@ Al comparar los modelos conviene preguntar:
 5. ¿Cambiaría la conclusión si la muestra conservara la fuerte desproporción original entre clases?
 
 Esta comparación cierra la ruta supervisada del caso COVID-19 y conecta los capítulos de algoritmos con una evaluación común y reproducible.
-
-
-:::

@@ -507,7 +507,6 @@ Permite modificar probabilidades previas y condicionales.
 :::
 
 
-
 ## Caso aplicado B: Naive Bayes con COVID-19
 
 Ahora aplicamos Naive Bayes a COVID-19 México 2022. La variable objetivo es `MURIO` y utilizamos la misma familia de predictores empleada en los capítulos anteriores.
@@ -619,15 +618,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 11](recursos/capitulo-11/capitulo-11-naive-bayes-infografia.png)](recursos/capitulo-11/capitulo-11-naive-bayes-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/11-naive-bayes.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=UbfJ3bLDwUI>
 
@@ -642,7 +632,4 @@ Los materiales complementarios fueron elaborados con apoyo de **NotebookLM de Go
 Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificación Automática con R**.
 
 [Consultar todos los videos del curso](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){target="_blank"}
-:::
-
-
 :::

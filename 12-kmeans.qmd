@@ -624,15 +624,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 13](recursos/capitulo-13/capitulo-13-kmeans-infografia.png)](recursos/capitulo-13/capitulo-13-kmeans-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/13-kmeans.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=mZgUlnSxrgA>
 
@@ -654,5 +645,3 @@ Este video forma parte de la lista oficial del curso **Aprendizaje y Clasificaci
 k-means descubre grupos mediante distancias y centroides. Su utilidad depende de una preparación adecuada, una selección razonada de $k$ y una interpretación basada en los perfiles de cada cluster.
 
 Con este capítulo cerramos la ruta principal de algoritmos del libro. Los apéndices reúnen el glosario, las referencias y los índices para consulta.
-
-:::

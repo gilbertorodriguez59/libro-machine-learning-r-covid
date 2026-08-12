@@ -1625,15 +1625,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 12](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png)](recursos/capitulo-12/capitulo-12-redes-neuronales-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/12-redes-neuronales.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=gk3bt0h3WUU>
 
@@ -1676,5 +1667,3 @@ Una red efectiva no depende solamente de aumentar capas o neuronas. También req
 - comparación con modelos más sencillos.
 
 En el siguiente capítulo podremos abordar métodos no supervisados, comenzando con **agrupamiento k-means**.
-
-:::

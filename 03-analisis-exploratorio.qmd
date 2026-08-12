@@ -223,15 +223,6 @@ Estos recursos permiten repasar los conceptos esenciales del análisis explorato
 [![Infografía del capítulo 3](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos-infografia.png)](recursos/capitulo-03/capitulo-03-analisis-exploratorio-datos-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/03-analisis-exploratorio.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=U2hd8iEovCY>
 
@@ -531,5 +522,3 @@ La versión web permite seleccionar el mes, comparar accidentes por hora y obser
 ## Conclusión
 
 El análisis exploratorio permite detectar patrones iniciales, revisar el desbalance de clases e identificar variables útiles para modelar.
-
-:::

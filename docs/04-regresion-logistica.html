@@ -101,7 +101,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-77a5896a02b4ad985511de0e21379b11.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-40766f26011dd0955435ccc10f1198e2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="site_libs/quarto-contrib/shinylive-0.10.12/shinylive/run-python-blocks.js" type="module"></script>
@@ -389,6 +389,15 @@ window.Quarto = {
   <li><a href="#video-explicativo" id="toc-video-explicativo" class="nav-link" data-scroll-target="#video-explicativo"><span class="header-section-number">5.10.1</span> Video explicativo</a></li>
   <li><a href="#vista-previa-de-la-infografía" id="toc-vista-previa-de-la-infografía" class="nav-link" data-scroll-target="#vista-previa-de-la-infografía"><span class="header-section-number">5.10.2</span> Vista previa de la infografía</a></li>
   </ul></li>
+  <li><a href="#laboratorio-interactivo-regresión-logística" id="toc-laboratorio-interactivo-regresión-logística" class="nav-link" data-scroll-target="#laboratorio-interactivo-regresión-logística"><span class="header-section-number">5.11</span> Laboratorio interactivo: regresión logística</a></li>
+  <li><a href="#caso-aplicado-b-regresión-logística-con-covid-19" id="toc-caso-aplicado-b-regresión-logística-con-covid-19" class="nav-link" data-scroll-target="#caso-aplicado-b-regresión-logística-con-covid-19"><span class="header-section-number">5.12</span> Caso aplicado B: regresión logística con COVID-19</a>
+  <ul class="collapse">
+  <li><a href="#razones-de-momios" id="toc-razones-de-momios" class="nav-link" data-scroll-target="#razones-de-momios"><span class="header-section-number">5.12.1</span> Razones de momios</a></li>
+  <li><a href="#probabilidades-para-la-base-de-prueba" id="toc-probabilidades-para-la-base-de-prueba" class="nav-link" data-scroll-target="#probabilidades-para-la-base-de-prueba"><span class="header-section-number">5.12.2</span> Probabilidades para la base de prueba</a></li>
+  </ul></li>
+  <li><a href="#laboratorio-interactivo-probabilidad-estimada-covid-19" id="toc-laboratorio-interactivo-probabilidad-estimada-covid-19" class="nav-link" data-scroll-target="#laboratorio-interactivo-probabilidad-estimada-covid-19"><span class="header-section-number">5.13</span> Laboratorio interactivo: probabilidad estimada COVID-19</a></li>
+  <li><a href="#conclusión" id="toc-conclusión" class="nav-link" data-scroll-target="#conclusión"><span class="header-section-number">5.14</span> Conclusión</a></li>
+  <li><a href="#referencias-fundamentales-de-la-regresión-logística" id="toc-referencias-fundamentales-de-la-regresión-logística" class="nav-link" data-scroll-target="#referencias-fundamentales-de-la-regresión-logística"><span class="header-section-number">5.15</span> Referencias fundamentales de la regresión logística</a></li>
   </ul>
 </nav>
     </div>
@@ -761,27 +770,13 @@ Real           Con víctimas Solo daños
 </div>
 </section>
 <section id="vista-previa-de-la-infografía" class="level3" data-number="5.10.2">
-<h3 data-number="5.10.2" class="anchored"><span class="header-section-number">5.10.2</span> Vista previa de la infografía</h3>
+<h3 data-number="5.10.2" class="anchored" data-anchor-id="vista-previa-de-la-infografía"><span class="header-section-number">5.10.2</span> Vista previa de la infografía</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png"><img src="recursos/capitulo-05/capitulo-05-regresion-logistica-clasificacion-infografia.png" class="img-fluid figure-img"></a></p>
 <figcaption>Infografía del capítulo 5</figcaption>
 </figure>
 </div>
-<!-- colab-capitulo -->
-<div class="callout callout-style-default callout-tip callout-titled" title="Cuaderno Google Colab del capítulo">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Cuaderno Google Colab del capítulo
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Este capítulo cuenta con un <strong>cuaderno autónomo de Google Colab</strong>. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.</p>
-<p><a href="https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/05-regresion-logistica.ipynb" target="_blank"><strong>Abrir este capítulo en Google Colab</strong></a></p>
-<p>::: <!-- /colab-capitulo --></p>
 <div class="callout callout-style-default callout-tip callout-titled" title="Curso completo en YouTube">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -809,6 +804,8 @@ Real           Con víctimas Solo daños
 <p>Los materiales complementarios fueron elaborados con apoyo de <strong>NotebookLM de Google</strong>, a partir del contenido del capítulo, y posteriormente revisados y adaptados por el autor.</p>
 </div>
 </div>
+</section>
+</section>
 <section id="laboratorio-interactivo-regresión-logística" class="level2" data-number="5.11">
 <h2 data-number="5.11" class="anchored" data-anchor-id="laboratorio-interactivo-regresión-logística"><span class="header-section-number">5.11</span> Laboratorio interactivo: regresión logística</h2>
 <p>Explora cómo el intercepto, la pendiente y el umbral cambian la probabilidad estimada y la clasificación final.</p>
@@ -1149,9 +1146,6 @@ shinyApp(ui, server)</code></pre>
 <section id="referencias-fundamentales-de-la-regresión-logística" class="level2" data-number="5.15">
 <h2 data-number="5.15" class="anchored" data-anchor-id="referencias-fundamentales-de-la-regresión-logística"><span class="header-section-number">5.15</span> Referencias fundamentales de la regresión logística</h2>
 <p>La formulación moderna de la regresión para respuestas binarias se relaciona con el trabajo de Cox <span class="citation" data-cites="cox1958regression">(<a href="referencias.html#ref-cox1958regression" role="doc-biblioref">Cox 1958</a>)</span>. Para profundizar en ajuste, interpretación, diagnóstico y aplicaciones del modelo logístico puede consultarse a <span class="citation" data-cites="hosmer2013applied">Hosmer et&nbsp;al. (<a href="referencias.html#ref-hosmer2013applied" role="doc-biblioref">2013</a>)</span>. Una presentación orientada al aprendizaje estadístico y a su implementación en R aparece en <span class="citation" data-cites="james2021islr">James et&nbsp;al. (<a href="referencias.html#ref-james2021islr" role="doc-biblioref">2021</a>)</span>.</p>
-</section>
-</div>
-</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
@@ -1168,7 +1162,6 @@ James, Gareth, Daniela Witten, Trevor Hastie, y Robert Tibshirani. 2021. <em>An 
 Rodríguez Escobedo, Jesús Gilberto. 2026. <em>Fundamentos Matemáticos del Aprendizaje Automático: Teoría, demostraciones y formulación rigurosa de los métodos de regresión, clasificación y análisis de datos</em>. Primera edición digital. San Luis Potosí, México.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->

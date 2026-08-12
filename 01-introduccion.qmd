@@ -178,15 +178,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 1](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png)](recursos/capitulo-01/capitulo-01-introduccion-aprendizaje-automatico-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/01-introduccion.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=N2SkzjT2LpU>
 
@@ -283,5 +274,3 @@ Permite cambiar el umbral de una regla de clasificación y observar la exactitud
 ## Conclusión
 
 El aprendizaje automático permite construir modelos que aprenden patrones a partir de datos. En este capítulo vimos la diferencia entre reglas manuales y aprendizaje a partir de ejemplos.
-
-:::

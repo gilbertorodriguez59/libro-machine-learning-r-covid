@@ -408,15 +408,6 @@ Estos recursos permiten repasar los conceptos principales del capítulo mediante
 [![Infografía del capítulo 8](recursos/capitulo-08/capitulo-08-random-forest-infografia.png)](recursos/capitulo-08/capitulo-08-random-forest-infografia.png)
 :::
 
-<!-- colab-capitulo -->
-::: {.callout-tip title="Cuaderno Google Colab del capítulo"}
-
-Este capítulo cuenta con un **cuaderno autónomo de Google Colab**. Puede abrirse y ejecutarse de manera independiente, sin necesidad de ejecutar los capítulos anteriores.
-
-[**Abrir este capítulo en Google Colab**](https://colab.research.google.com/github/gilbertorodriguez59/libro-machine-learning-r-covid/blob/main/colab/08-random-forest.ipynb){target="_blank"}
-
-::: <!-- /colab-capitulo -->
-
 ::: {.content-visible when-format="pdf"}
 **Video del capítulo:** <https://www.youtube.com/watch?v=KELSgYttifs>
 
@@ -441,5 +432,3 @@ Random Forest mejora la estabilidad y la capacidad predictiva de un solo árbol 
 ## Referencias fundamentales de Random Forest
 
 El algoritmo Random Forest fue formalizado por @breiman2001random como un ensamble de árboles construido mediante remuestreo y selección aleatoria de variables. Una explicación didáctica y comparativa puede consultarse también en @james2021islr.
-
-:::
