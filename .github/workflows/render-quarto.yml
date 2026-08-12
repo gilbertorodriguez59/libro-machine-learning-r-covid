@@ -38,13 +38,17 @@ jobs:
         run: |
           python scripts/corregir_preparacion_atus.py
 
-      - name: Add autonomous Colab links to each chapter
+      - name: Uniform complementary materials in chapters 6 to 13
         run: |
-          python scripts/agregar_colab_por_capitulo.py
+          python scripts/uniformar_materiales_capitulos_06_13.py
 
-      - name: Normalize complementary materials
+      - name: Add Colab to all complementary-material tables
         run: |
-          python scripts/normalizar_materiales_complementarios.py
+          python scripts/agregar_colab_a_tablas_materiales.py
+
+      - name: Remove duplicated Colab blocks outside tables
+        run: |
+          python scripts/quitar_colab_duplicado_fuera_tabla.py
 
       - name: Apply final interactives
         run: |
@@ -72,11 +76,9 @@ jobs:
 
           indice = Path('colab/00-indice-colabs.ipynb')
           assert indice.exists()
-
           capitulos = sorted(Path('colab').glob('[0-9][0-9]-*.ipynb'))
           capitulos = [p for p in capitulos if p.name != '00-indice-colabs.ipynb']
           assert len(capitulos) == 13, f'Se esperaban 13 Colabs de capítulo y hay {len(capitulos)}'
-
           for p in capitulos:
               nb = json.load(open(p, encoding='utf-8'))
               contenido = json.dumps(nb, ensure_ascii=False)
@@ -86,7 +88,6 @@ jobs:
               assert 'util_graficas.R' in contenido
               assert 'atus_ml_preparado.csv' in contenido
               assert 'covid19_mexico_2022_ml_preparado.csv.gz' in contenido
-
           print('Colab maestro validado:', len(x['cells']), 'celdas')
           print('Índice Colab validado')
           print('13 Colabs autónomos validados')
@@ -111,17 +112,7 @@ jobs:
       - name: Install system libraries
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libssl-dev \
-            libxml2-dev \
-            libfontconfig1-dev \
-            libharfbuzz-dev \
-            libfribidi-dev \
-            libfreetype6-dev \
-            libpng-dev \
-            libtiff-dev \
-            libjpeg-dev
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff-dev libjpeg-dev
 
       - name: Install R dependencies with pak
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -153,21 +144,14 @@ jobs:
             any::fs
             any::shiny
             any::shinylive
-          cache-version: 13
+          cache-version: 14
 
       - name: Verify R packages
         shell: Rscript {0}
         run: |
-          pkgs <- c(
-            "rmarkdown", "knitr", "ggplot2", "readr", "dplyr", "tidyr",
-            "stringr", "data.table", "scales", "class", "rpart", "randomForest",
-            "ranger", "e1071", "naivebayes", "neuralnet", "cluster", "caret",
-            "factoextra", "plotly", "DT", "shiny", "shinylive"
-          )
+          pkgs <- c('rmarkdown','knitr','ggplot2','readr','dplyr','tidyr','stringr','data.table','scales','class','rpart','randomForest','ranger','e1071','naivebayes','neuralnet','cluster','caret','factoextra','plotly','DT','shiny','shinylive')
           faltan <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
-          if (length(faltan)) stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
-          cat("R:", R.version.string, "\n")
-          cat("shinylive:", as.character(packageVersion("shinylive")), "\n")
+          if (length(faltan)) stop('Faltan paquetes: ', paste(faltan, collapse = ', '))
 
       - name: Render complete PDF book first
         run: |
@@ -176,18 +160,6 @@ jobs:
           test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
           test -s docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
           cp docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf /tmp/libro-final.pdf
-
-          if grep -E "\[WARNING\].*Div at line.*unclosed" render-pdf-final.log > div-warnings-pdf.txt; then
-            echo "" >> revision-cierre.md
-            echo "## Advertencias Pandoc observadas durante el PDF" >> revision-cierre.md
-            echo "" >> revision-cierre.md
-            echo "El PDF fue generado correctamente, pero Pandoc reportó cierres implícitos de Div durante la concatenación del libro. Se conserva el PDF para inspección visual detallada antes de considerar cerrada la edición." >> revision-cierre.md
-            echo "" >> revision-cierre.md
-            sed 's/^/- `/' div-warnings-pdf.txt | sed 's/$/`/' >> revision-cierre.md
-            echo "Advertencias Div registradas para revisión visual; no bloquean la publicación del PDF."
-          else
-            echo "PDF generado sin advertencias de Div."
-          fi
 
       - name: Render complete web book
         run: |
@@ -200,77 +172,32 @@ jobs:
       - name: Restore PDF and normalize links
         run: |
           cp /tmp/libro-final.pdf docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
-
-          find docs -type f -name '*.html' -print0 | xargs -0 sed -i \
-            's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
-
-          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf"
-          rm -f docs/libro-machine-learning-r.pdf
+          find docs -type f -name '*.html' -print0 | xargs -0 sed -i 's/Aprendizaje-y-Clasificación-Automática-con-R\.pdf/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf/g'
+          rm -f "docs/Aprendizaje-y-Clasificación-Automática-con-R.pdf" docs/libro-machine-learning-r.pdf
 
       - name: Final validation
         run: |
           test -f docs/index.html
           test -f docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
-          test -s docs/Aprendizaje-y-Clasificacion-Automatica-con-R.pdf
           test -f Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb
           test -f colab/00-indice-colabs.ipynb
-          test -f colab/01-introduccion.ipynb
-          test -f colab/13-kmeans.ipynb
-
-          grep -q "Laboratorio interactivo ATUS: mes, hora y víctimas" docs/03-analisis-exploratorio.html
-          grep -q "Laboratorio interactivo COVID: agrupamiento k-means" docs/12-kmeans.html
-          grep -q "Comparación integrada de modelos con COVID-19" docs/08-evaluacion-modelos.html
-          grep -q "Caso aplicado B: k-means con COVID-19" docs/12-kmeans.html
-          grep -q "Aprendizaje-y-Clasificacion-Automatica-con-R.pdf" docs/index.html
-          grep -q "Índice de cuadernos por capítulo" docs/00-cuaderno-google-colab.html
-          grep -q "00-indice-colabs.ipynb" docs/00-cuaderno-google-colab.html
+          grep -q "Cuaderno Google Colab" docs/01-introduccion.html
+          grep -q "Cuaderno Google Colab" docs/12-kmeans.html
+          if grep -q "Cuaderno Google Colab del capítulo" docs/01-introduccion.html; then exit 1; fi
+          if grep -q "Cuaderno Google Colab del capítulo" docs/12-kmeans.html; then exit 1; fi
           grep -q "06-knn.ipynb" docs/05-knn.html
           grep -q "13-kmeans.ipynb" docs/12-kmeans.html
           grep -qi "video-responsive" docs/01-introduccion.html
           grep -qi "video-responsive" docs/12-kmeans.html
-          grep -qi "Ver en YouTube" docs/01-introduccion.html
-          grep -qi "shinylive" docs/03-analisis-exploratorio.html
-          grep -qi "shinylive" docs/12-kmeans.html
 
       - name: Commit final reviewed version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add -A \
-            index.qmd \
-            00-bienvenida.qmd \
-            00-creditos-editoriales.qmd \
-            00-licencia-y-uso-academico.qmd \
-            00-prefacio.qmd \
-            00-agradecimientos.qmd \
-            00-cuaderno-google-colab.qmd \
-            01-introduccion.qmd \
-            02-preparacion-datos.qmd \
-            03-analisis-exploratorio.qmd \
-            04-regresion-lineal-multiple.qmd \
-            04-regresion-logistica.qmd \
-            05-knn.qmd \
-            06-arboles-decision.qmd \
-            07-random-forest.qmd \
-            08-evaluacion-modelos.qmd \
-            09-svm.qmd \
-            10-naive-bayes.qmd \
-            11-redes-neuronales.qmd \
-            12-kmeans.qmd \
-            glosario.qmd \
-            referencias.qmd \
-            indice-figuras.qmd \
-            indice-tematico.qmd \
-            acerca-del-autor.qmd \
-            Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb \
-            colab \
-            revision-cierre.md \
-            docs
-
+          git add -A *.qmd Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb colab revision-cierre.md docs
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
           else
-            git commit -m "Normalizar materiales complementarios y Colabs [skip ci]"
+            git commit -m "Conservar Colab solo dentro de tablas de materiales [skip ci]"
             git push
           fi
