@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "*.qmd"
+      - "*.bib"
       - "*.yml"
       - "*.yaml"
       - "*.R"
@@ -26,6 +27,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: revision-final-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cierre:
     runs-on: ubuntu-latest
@@ -33,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Apply robust ATUS preparation fix
         run: |
@@ -189,15 +196,37 @@ jobs:
           grep -q "13-kmeans.ipynb" docs/12-kmeans.html
           grep -qi "video-responsive" docs/01-introduccion.html
           grep -qi "video-responsive" docs/12-kmeans.html
+          grep -q "Fundamentos Matemáticos del Aprendizaje Automático" docs/referencias.html
+          grep -q "Dirección General de Epidemiología" docs/referencias.html
 
       - name: Commit final reviewed version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A *.qmd Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb colab revision-cierre.md docs
+          git add -A *.qmd *.bib Aprendizaje_y_Clasificacion_Automatica_con_R_Colab.ipynb colab revision-cierre.md docs
+
           if git diff --cached --quiet; then
             echo "No hay cambios finales para publicar"
-          else
-            git commit -m "Conservar Colab solo dentro de tablas de materiales [skip ci]"
-            git push
+            exit 0
           fi
+
+          git commit -m "Revision final sincronizada: web PDF Colab y referencias [skip ci]"
+
+          for intento in 1 2 3; do
+            echo "Intento de publicación $intento de 3"
+            git fetch origin main
+
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "Publicación final completada"
+                exit 0
+              fi
+            else
+              git rebase --abort || true
+            fi
+
+            sleep 3
+          done
+
+          echo "No fue posible publicar después de 3 intentos"
+          exit 1
