@@ -112,15 +112,13 @@ Enlace directo: <https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q>
 :::
 
 ::: {.content-visible when-format="html"}
-<div class="playlist-card">
-  <div>
-    <strong>Lista oficial del curso</strong><br>
-    Presentación general y videos complementarios de los capítulos.
-  </div>
-  <div>
-    <a href="https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q" target="_blank" class="btn btn-danger">Abrir curso en YouTube</a>
-  </div>
-</div>
+
+**Lista oficial del curso**
+
+Presentación general y videos complementarios de los capítulos.
+
+[Abrir curso en YouTube](https://www.youtube.com/playlist?list=PLDJYd2v7Kt-Q){.btn .btn-danger target="_blank"}
+
 :::
 
 ::: {.content-visible when-format="pdf"}
