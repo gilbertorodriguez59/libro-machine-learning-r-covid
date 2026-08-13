@@ -3,8 +3,22 @@
 ::: {#refs}
 :::
 
-## Reconocimiento de la fuente de datos {.unnumbered}
+## Volumen teórico complementario {.unnumbered}
+
+Este libro práctico se complementa con *Fundamentos Matemáticos del Aprendizaje Automático* [@rodriguez2026fundamentos], donde se desarrollan con mayor profundidad la formulación matemática, las demostraciones y los fundamentos teóricos de los métodos utilizados aquí.
+
+[Consultar **Fundamentos Matemáticos del Aprendizaje Automático**](https://gilbertorodriguez59.github.io/libro-machine-learning-teorico/){target="_blank"}
+
+## Reconocimiento de las fuentes de datos {.unnumbered}
+
+### Accidentes de tránsito: ATUS
 
 Los datos de accidentes empleados en este libro proceden de la **Estadística de Accidentes de Tránsito Terrestre en Zonas Urbanas y Suburbanas (ATUS)** del Instituto Nacional de Estadística y Geografía [@inegi_atus_2024].
 
 Los datos originales pertenecen al INEGI. La limpieza, transformación, selección de variables, gráficas, modelos de aprendizaje automático e interpretaciones son elaboración del autor y no constituyen resultados oficiales ni implican el aval del Instituto.
+
+### COVID-19: Secretaría de Salud
+
+Los datos de COVID-19 utilizados en la ruta aplicada del libro se prepararon a partir de las **bases históricas de datos abiertos** de la **Dirección General de Epidemiología de la Secretaría de Salud de México**, en particular del cierre histórico correspondiente a 2022 [@salud_covid_historicos_2022].
+
+Los registros originales pertenecen a la Secretaría de Salud. Para fines estrictamente educativos, el autor realizó procesos de limpieza, selección de variables, recodificación, muestreo, generación de variables derivadas y preparación de archivos reproducibles para los ejemplos de aprendizaje automático. Los resultados, gráficas, modelos e interpretaciones presentados en este libro son elaboración académica del autor y no constituyen información clínica oficial, diagnóstico médico ni implican el aval de la Secretaría de Salud.
